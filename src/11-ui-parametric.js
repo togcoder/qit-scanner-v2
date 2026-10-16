@@ -1,4 +1,4 @@
-/* ════════════ GIAO DIỆN PHÂN TÍCH THÔNG SỐ ĐO & NĂNG LỰC CPK (PARAMETRIC UI) V2 ════════════ */
+/* ════════════ GIAO DIỆN PHÂN TÍCH THÔNG SỐ ĐO & NĂNG LỰC CPK (PARAMETRIC UI) V2 PRO ════════════ */
 
 function renderParametricDashboard() {
     renderMetricSelectorDropdown();
@@ -6,21 +6,21 @@ function renderParametricDashboard() {
     if (loadedFilesMap.size === 0 || parametricAnalysisMap.size === 0) {
         if (area) {
             area.innerHTML = `
-                <div class="card" style="padding:48px 24px; text-align:center; max-width:680px; margin:20px auto;">
+                <div class="card" style="padding:48px 24px; text-align:center; max-width:720px; margin:20px auto;">
                     <div style="font-size:48px; margin-bottom:14px;">📈</div>
-                    <h3 style="font-size:17px; font-weight:900; margin:0 0 8px; color:var(--text-main);">CHƯA CÓ DỮ LIỆU THÔNG SỐ ĐO VẬT LÝ & CPK</h3>
+                    <h3 style="font-size:17px; font-weight:900; margin:0 0 8px; color:var(--text-main);">CHƯA CÓ DỮ LIỆU THÔNG SỐ ĐO VẬT LÝ &amp; CPK</h3>
                     <p style="font-size:12.5px; color:var(--text-muted); line-height:1.6; margin:0 auto 24px;">
-                        Tính năng Phân Tích Thông Số &amp; Cpk cần các giá trị đo vật lý liên tục (Re, fs, SPL, THD...) từ tệp nhật ký Klippel để tính toán độ lệch chuẩn Gauss và giới hạn dung sai LSL/USL.
+                        Tính năng Phân Tích Thông Số &amp; Cpk khai thác các giá trị đo vật lý liên tục ($R_e, f_s, Q_{ts}$, SPL, THD...) từ tệp nhật ký Klippel để tính toán độ lệch chuẩn Gauss, $C_p, C_{pk}, P_{pk}$ và phát hiện sản phẩm cận biên LSL/USL.
                     </p>
-                    <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
-                        <button class="btn btn-primary" onclick="startFastDirectoryScan()" style="padding:10px 22px; font-weight:800; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                            <span>📁</span> <span>Chọn Thư Mục (Quét Siêu Tốc File Summary)</span>
+                    <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="loadBuiltInDemoKlippelLogs()" style="padding:10px 22px; font-weight:800; font-size:13px;">
+                            🧪 Nạp Bộ Dữ Liệu Mẫu Klippel (3 Trạm · Cpk 6-Sigma)
                         </button>
-                        <button class="btn btn-outline" onclick="document.getElementById('file-input').click()" style="padding:10px 20px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                            <span>📄</span> <span>Chọn Tệp Riêng Lẻ</span>
+                        <button class="btn btn-outline" onclick="startFastDirectoryScan()" style="padding:10px 20px; font-size:13px;">
+                            📁 Quét Thư Mục Summary
                         </button>
-                        <button class="btn btn-secondary" onclick="switchTab('audit')" style="padding:10px 20px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                            <span>🎯</span> <span>Sang Kiểm Tra Danh Sách (Không cần log)</span>
+                        <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()" style="padding:10px 20px; font-size:13px;">
+                            📄 Chọn Tệp Log (.log, .txt, .csv)
                         </button>
                     </div>
                 </div>
@@ -49,7 +49,8 @@ function renderMetricSelectorDropdown() {
     parametricAnalysisMap.forEach((m, key) => {
         const opt = document.createElement('option');
         opt.value = key;
-        opt.textContent = `${m.name} ${m.condition ? '(' + m.condition + ')' : ''} [${m.unit || 'unitless'}] — ${m.count} mẫu`;
+        const cpkTxt = m.cpk !== null ? ` · Cpk=${m.cpk.toFixed(2)}` : '';
+        opt.textContent = `${m.name} ${m.condition ? '(' + m.condition + ')' : ''} [${m.unit || '—'}] — ${m.count} mẫu${cpkTxt}`;
         selectEl.appendChild(opt);
     });
 
@@ -65,6 +66,8 @@ function renderMetricSelectorDropdown() {
 
 function onParametricMetricChange(val) {
     currentSelectedMetric = val;
+    const selectEl = document.getElementById('parametric-metric-select');
+    if (selectEl && selectEl.value !== val) selectEl.value = val;
     renderSelectedMetricCpk();
 }
 
@@ -76,6 +79,89 @@ function setParametricFilterMode(mode) {
     calculateParametricCpkStats();
     renderSelectedMetricCpk();
     showToast(`✓ Đã chuyển chế độ dữ liệu Cpk: ${mode === 'PASS_ONLY' ? 'Chỉ SP ĐẠT (Chuẩn SPC)' : (mode === 'TRIMMED_3SIGMA' ? 'Lọc dị biệt 3-Sigma' : 'Toàn bộ sản phẩm')}`, 'info');
+}
+
+/**
+ * Render bảng tổng hợp toàn bộ các thông số đo liên tục (All-Parameters SPC Matrix)
+ */
+function renderAllMetricsSummaryMatrix() {
+    let rowsHtml = '';
+    parametricAnalysisMap.forEach((item, key) => {
+        const isSelected = key === currentSelectedMetric;
+        let badge = `<span class="badge-pill" style="background:rgba(148,163,184,0.12); color:var(--text-muted);">N/A</span>`;
+        let cpkCol = 'var(--text-muted)';
+        if (item.cpk !== null) {
+            if (item.cpk >= CFG.CPK_EXCELLENT) {
+                badge = `<span class="badge-pill badge-pass">🌟 6-Sigma (&ge;${CFG.CPK_EXCELLENT})</span>`;
+                cpkCol = '#10b981';
+            } else if (item.cpk >= CFG.CPK_CAPABLE) {
+                badge = `<span class="badge-pill" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35);">✓ Đạt (&ge;${CFG.CPK_CAPABLE})</span>`;
+                cpkCol = '#38bdf8';
+            } else if (item.cpk >= CFG.CPK_MARGINAL) {
+                badge = `<span class="badge-pill badge-warn">⚠️ Cận biên</span>`;
+                cpkCol = '#f59e0b';
+            } else {
+                badge = `<span class="badge-pill badge-fail">✕ Kém (&lt;1.00)</span>`;
+                cpkCol = '#ef4444';
+            }
+        }
+        const nfLen = item.nearFailList ? item.nearFailList.length : 0;
+
+        rowsHtml += `
+            <tr style="cursor:pointer; ${isSelected ? 'background:rgba(0,242,254,0.10); border-left:3px solid var(--accent-cyan);' : ''}" onclick="onParametricMetricChange('${escapeHtml(key)}')" title="Nhấp để xem biểu đồ phân phối Gauss &amp; danh sách cận biên của thông số này">
+                <td style="font-weight:800; color:${isSelected ? 'var(--accent-cyan)' : 'var(--text-main)'};">
+                    ${isSelected ? '▶ ' : ''}${escapeHtml(item.name)}
+                    ${item.condition ? `<span style="font-size:10.5px; color:var(--text-muted); font-family:var(--font-mono);"> (${escapeHtml(item.condition)})</span>` : ''}
+                </td>
+                <td style="text-align:center; font-family:var(--font-mono); color:var(--accent-blue); font-weight:700;">${escapeHtml(item.unit || '—')}</td>
+                <td style="text-align:center; font-family:var(--font-mono);">${item.count}</td>
+                <td style="text-align:right; font-family:var(--font-mono); color:var(--text-muted);">${item.lsl !== null ? item.lsl : '—'}</td>
+                <td style="text-align:right; font-family:var(--font-mono); font-weight:700;">${item.mean.toFixed(3)}</td>
+                <td style="text-align:right; font-family:var(--font-mono); color:var(--text-muted);">${item.usl !== null ? item.usl : '—'}</td>
+                <td style="text-align:right; font-family:var(--font-mono);">${item.stdDev.toFixed(4)}</td>
+                <td style="text-align:right; font-family:var(--font-mono);">${item.cp !== null ? item.cp.toFixed(2) : '—'}</td>
+                <td style="text-align:right; font-family:var(--font-mono); font-weight:900; font-size:13px; color:${cpkCol};">${item.cpk !== null ? item.cpk.toFixed(2) : '—'}</td>
+                <td style="text-align:right; font-family:var(--font-mono); color:var(--text-muted);">${item.kFactor !== null ? (item.kFactor * 100).toFixed(1) + '%' : '—'}</td>
+                <td style="text-align:center; font-family:var(--font-mono); font-weight:800; color:${nfLen > 0 ? '#f59e0b' : 'var(--text-muted)'};">${nfLen}</td>
+                <td style="text-align:center;">${badge}</td>
+            </tr>
+        `;
+    });
+
+    return `
+        <div class="card" style="padding:16px 18px; margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                <div>
+                    <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--accent-cyan); letter-spacing:0.06em;">
+                        📋 BẢNG TỔNG HỢP NĂNG LỰC QUY TRÌNH TOÀN BỘ THÔNG SỐ (ALL-PARAMETER SPC MATRIX)
+                    </div>
+                    <div style="font-size:11px; color:var(--text-muted);">Nhấp vào bất kỳ dòng thông số nào dưới đây để chuyển biểu đồ Histogram Gauss và danh sách Cận biên</div>
+                </div>
+                <span class="meta-chip">${parametricAnalysisMap.size} thông số liên tục</span>
+            </div>
+            <div class="table-wrapper" style="max-height:240px; overflow-y:auto;">
+                <table class="data-table" style="font-size:11.5px;">
+                    <thead>
+                        <tr>
+                            <th>Thông Số Đo (Điều Kiện)</th>
+                            <th style="text-align:center;">Đơn Vị</th>
+                            <th style="text-align:center;">Mẫu (n)</th>
+                            <th style="text-align:right;">LSL (Min)</th>
+                            <th style="text-align:right;">Mean (μ)</th>
+                            <th style="text-align:right;">USL (Max)</th>
+                            <th style="text-align:right;">StdDev (σ)</th>
+                            <th style="text-align:right;">Cp</th>
+                            <th style="text-align:right;">Cpk</th>
+                            <th style="text-align:right;">Lệch Tâm (k)</th>
+                            <th style="text-align:center;">Cận Biên</th>
+                            <th style="text-align:center;">Phân Hạng SPC</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rowsHtml}</tbody>
+                </table>
+            </div>
+        </div>
+    `;
 }
 
 /**
@@ -97,7 +183,6 @@ function renderSelectedMetricCpk() {
 
     const m = parametricAnalysisMap.get(currentSelectedMetric);
 
-    // Đánh giá năng lực Cpk
     let ratingBadge = '';
     let ratingColor = '#94a3b8';
     if (m.cpk !== null) {
@@ -118,16 +203,18 @@ function renderSelectedMetricCpk() {
         ratingBadge = 'KHÔNG CÓ DUNG SAI LSL/USL';
     }
 
-    // Format số
     const fmt = num => (typeof num === 'number' && !isNaN(num)) ? (Math.abs(num) >= 100 ? num.toFixed(2) : (Math.abs(num) >= 0.01 ? num.toFixed(4) : num.toExponential(3))) : '—';
     const curFilter = m.filterMode || CFG.CPK_DATA_FILTER || 'PASS_ONLY';
 
     let html = `
+        <!-- BẢNG MA TRẬN TỔNG HỢP TẤT CẢ THÔNG SỐ -->
+        ${renderAllMetricsSummaryMatrix()}
+
         <!-- THANH CHỌN NGUỒN DỮ LIỆU TÍNH TOÁN CPK THEO CHUẨN SPC -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding:10px 14px; background:var(--bg-surface-elevated); border:1px solid var(--border-color); border-radius:10px; flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; align-items:center; gap:8px; font-size:12px;">
+            <div style="display:flex; align-items:center; gap:8px; font-size:12px; flex-wrap:wrap;">
                 <span style="font-weight:800; color:var(--accent-blue);">🎯 NGUỒN DỮ LIỆU TÍNH CPK:</span>
-                <div style="display:flex; gap:6px;">
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
                     <button class="btn btn-sm ${curFilter === 'PASS_ONLY' ? 'btn-primary' : 'btn-outline'}" onclick="setParametricFilterMode('PASS_ONLY')" title="Loại bỏ các mẫu rơi rớt / hở mạch ngoại lai để tính đúng độ biến thiên tự nhiên của máy">
                         ✓ Chỉ SP ĐẠT (Chuẩn SPC)
                     </button>
@@ -140,14 +227,14 @@ function renderSelectedMetricCpk() {
                 </div>
             </div>
             <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
-                Mẫu phân tích: <strong>${m.count}</strong> / Tổng: <strong>${m.totalCount}</strong> (Đạt: ${m.passCount})
+                Đang phân tích: <strong style="color:var(--accent-cyan);">${escapeHtml(m.name)}</strong> · Mẫu: <strong>${m.count}</strong> / Tổng: <strong>${m.totalCount}</strong> (Đạt: ${m.passCount})
             </div>
         </div>
 
         <!-- DÒNG 1: CÁC THẺ KPI THỐNG KÊ & CPK -->
         <div class="cpk-kpi-grid">
             <div class="cpk-card highlight-card" style="border-top-color:${ratingColor};">
-                <div class="cpk-label">CHỈ SỐ NĂNG LỰC CPK</div>
+                <div class="cpk-label">CHỈ SỐ NĂNG LỰC CPK (${escapeHtml(m.name)})</div>
                 <div class="cpk-val" style="color:${ratingColor};">${m.cpk !== null ? m.cpk.toFixed(2) : '—'}</div>
                 <div class="cpk-sub" style="color:${ratingColor}; font-weight:700;">${ratingBadge}</div>
             </div>
@@ -159,26 +246,29 @@ function renderSelectedMetricCpk() {
             </div>
 
             <div class="cpk-card">
-                <div class="cpk-label">GIÁ TRỊ TRUNG BÌNH (MEAN) & ĐỘ LỆCH TÂM (k)</div>
+                <div class="cpk-label">GIÁ TRỊ TRUNG BÌNH (MEAN) &amp; ĐỘ LỆCH TÂM (k)</div>
                 <div class="cpk-val">${fmt(m.mean)} <span class="unit-mini">${escapeHtml(m.unit)}</span></div>
-                <div class="cpk-sub">Độ lệch chuẩn s: ${fmt(m.stdDev)} ${m.kFactor !== null ? `| k: ${(m.kFactor * 100).toFixed(1)}%` : ''}</div>
+                <div class="cpk-sub">Độ lệch chuẩn σ: ${fmt(m.stdDev)} ${m.kFactor !== null ? `| k: ${(m.kFactor * 100).toFixed(1)}%` : ''}</div>
             </div>
 
             <div class="cpk-card">
                 <div class="cpk-label">GIỚI HẠN DUNG SAI (LSL / USL)</div>
                 <div class="cpk-val">${m.lsl !== null ? fmt(m.lsl) : '—'} / ${m.usl !== null ? fmt(m.usl) : '—'}</div>
-                <div class="cpk-sub">Min: ${fmt(m.min)} | Max: ${fmt(m.max)}</div>
+                <div class="cpk-sub">Thực tế Min: ${fmt(m.min)} | Max: ${fmt(m.max)}</div>
             </div>
         </div>
 
-        <!-- DÒNG 2: BIỂU ĐỒ PHÂN PHỐI HISTOGRAM & GAUSS -->
-        <div class="card" style="margin-top:20px; padding:18px;">
+        <!-- DÒNG 2: BIỂU ĐỒ PHÂN PHỐI HISTOGRAM & GAUSS KÈM VẠCH LSL/USL -->
+        <div class="card" style="margin-top:16px; padding:18px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
-                <div style="font-weight:800; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">
-                    📈 BIỂU ĐỒ PHÂN PHỐI THỰC TẾ & ĐƯỜNG CONG GAUSS (${escapeHtml(m.name)})
+                <div style="font-weight:800; font-size:13.5px; text-transform:uppercase; letter-spacing:0.5px;">
+                    📈 BIỂU ĐỒ PHÂN PHỐI HISTOGRAM &amp; ĐƯỜNG CONG GAUSS — <span style="color:var(--accent-cyan);">${escapeHtml(m.name)} ${m.condition ? '(' + escapeHtml(m.condition) + ')' : ''}</span>
                 </div>
-                <div style="font-size:12px; color:var(--text-muted);">
-                    Số mẫu: <strong>${m.count.toLocaleString()}</strong> | LSL: <strong>${m.lsl !== null ? m.lsl : '—'}</strong> | USL: <strong>${m.usl !== null ? m.usl : '—'}</strong>
+                <div style="display:flex; gap:14px; font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
+                    <span style="color:#38bdf8;">■ Tần suất mẫu (n=${m.count})</span>
+                    <span style="color:#f59e0b;">— Chuẩn Gauss N(μ,σ)</span>
+                    <span style="color:#ef4444;">┆ LSL: ${m.lsl !== null ? m.lsl : '—'} / USL: ${m.usl !== null ? m.usl : '—'}</span>
+                    <span style="color:#10b981;">┆ Mean μ: ${m.mean.toFixed(3)}</span>
                 </div>
             </div>
             <div style="position:relative; height:320px; width:100%;">
@@ -187,26 +277,33 @@ function renderSelectedMetricCpk() {
         </div>
 
         <!-- DÒNG 3: BẢNG CẢNH BÁO CẬN BIÊN LỖI (NEAR-FAIL WARNINGS) -->
-        <div class="card" style="margin-top:20px; padding:18px;">
+        <div class="card" style="margin-top:16px; padding:18px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
-                <div style="font-weight:800; font-size:14px; text-transform:uppercase; color:#f59e0b;">
-                    ⚠️ DANH SÁCH SẢN PHẨM CẬN BIÊN DUNG SAI (NEAR-FAIL: ${m.nearFailList.length} SP)
+                <div>
+                    <div style="font-weight:800; font-size:13.5px; text-transform:uppercase; color:#f59e0b;">
+                        ⚠️ DANH SÁCH SẢN PHẨM CẬN BIÊN DUNG SAI (NEAR-FAIL: ${m.nearFailList.length} SP)
+                    </div>
+                    <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
+                        Các mẫu PASS nhưng giá trị đo nằm sát mép giới hạn LSL/USL trong biên độ cảnh báo sớm ${CFG.NEAR_FAIL_MARGIN_PCT}%
+                    </div>
                 </div>
-                <div style="font-size:12px; color:var(--text-muted);">
-                    Các mẫu PASS nhưng giá trị lệch sát mép giới hạn (trong biên ${CFG.NEAR_FAIL_MARGIN_PCT}%)
-                </div>
+                ${m.nearFailList && m.nearFailList.length > 0 ? `
+                    <button class="btn btn-sm btn-outline" onclick="copyNearFailSerials()">📋 Copy ${m.nearFailList.length} Mã Cận Biên</button>
+                ` : ''}
             </div>
 
-            <div class="table-wrapper" style="max-height:260px; overflow-y:auto;">
+            <div class="table-wrapper" style="max-height:280px; overflow-y:auto;">
                 <table class="data-table">
                     <thead>
                         <tr>
                             <th style="width:50px; text-align:center;">STT</th>
-                            <th>Mã Serial Number</th>
+                            <th>Mã Serial Number / DUT</th>
                             <th>Giá Trị Đo Thực Tế</th>
                             <th>Cảnh Báo Giới Hạn</th>
+                            <th>Khoảng Cách An Toàn</th>
                             <th>Trạm Đo</th>
                             <th>Thời Gian Đo</th>
+                            <th style="text-align:center;">Hồ Sơ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -218,30 +315,50 @@ function renderSelectedMetricCpk() {
     `;
 
     container.innerHTML = html;
-
-    // Render Chart
     renderHistogramChart(m);
+}
+
+function copyNearFailSerials() {
+    if (!currentSelectedMetric || !parametricAnalysisMap.has(currentSelectedMetric)) return;
+    const m = parametricAnalysisMap.get(currentSelectedMetric);
+    if (!m.nearFailList || m.nearFailList.length === 0) return;
+    const sns = m.nearFailList.map(it => it.displayID || it.serialNo);
+    copyTextSafe(sns.join('\n'), `📋 Đã sao chép ${sns.length} mã cận biên của thông số ${m.name}!`);
 }
 
 function renderNearFailTableRows(m) {
     if (!m.nearFailList || m.nearFailList.length === 0) {
-        return `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:16px;">✓ ${_t('Toàn bộ sản phẩm nằm an toàn trong vùng dung sai tối ưu (không có mẫu cận biên).')}</td></tr>`;
+        return `<tr><td colspan="8" style="text-align:center; color:#10b981; padding:18px; font-weight:600;">✓ ${_t('Toàn bộ sản phẩm nằm an toàn trong vùng dung sai tối ưu (không có mẫu cận biên).')}</td></tr>`;
     }
 
+    const span = (m.usl !== null && m.lsl !== null && (m.usl - m.lsl) > 0) ? (m.usl - m.lsl) : 1;
+
     let html = '';
-    m.nearFailList.slice(0, 50).forEach((item, idx) => {
+    m.nearFailList.slice(0, 60).forEach((item, idx) => {
         const displaySN = item.displayID || (item.record && item.record.displayID) || item.serialNo;
         const station = item.stationName || (item.record && item.record.stationName) || '—';
         const ts = item.timestamp || (item.record && item.record.timestamp);
+        const recId = item.record ? item.record.id : '';
+
+        let distPct = '';
+        if (m.lsl !== null && item.nearLimit && item.nearLimit.startsWith('LSL')) {
+            distPct = `${(((item.value - m.lsl) / span) * 100).toFixed(2)}% cách LSL`;
+        } else if (m.usl !== null && item.nearLimit && item.nearLimit.startsWith('USL')) {
+            distPct = `${(((m.usl - item.value) / span) * 100).toFixed(2)}% cách USL`;
+        }
 
         html += `
             <tr>
-                <td style="text-align:center; color:var(--text-muted);">${idx + 1}</td>
+                <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono);">${idx + 1}</td>
                 <td style="font-weight:700; font-family:var(--font-mono);">${escapeHtml(displaySN)}</td>
                 <td style="font-weight:700; font-family:var(--font-mono); color:#f59e0b;">${item.value.toFixed(4)} ${escapeHtml(m.unit)}</td>
-                <td><span class="badge-pill" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.4);">${escapeHtml(item.nearLimit || 'Sát Mép')}</span></td>
+                <td><span class="badge-pill badge-warn">${escapeHtml(item.nearLimit || 'Sát Mép')}</span></td>
+                <td style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${escapeHtml(distPct || 'Trong biên ' + CFG.NEAR_FAIL_MARGIN_PCT + '%')}</td>
                 <td><span style="color:var(--accent-blue); font-weight:700;">${escapeHtml(station)}</span></td>
-                <td style="font-size:12px; color:var(--text-muted); font-family:var(--font-mono);">${ts ? ts.toLocaleString() : '—'}</td>
+                <td style="font-size:11.5px; color:var(--text-muted); font-family:var(--font-mono);">${ts ? ts.toLocaleString('vi-VN', { hour12: false }) : '—'}</td>
+                <td style="text-align:center;">
+                    ${recId ? `<button class="btn btn-sm btn-outline" style="padding:2px 8px; font-size:10.5px;" onclick="inspectRecordInModal('${escapeHtml(recId)}')">🔍 Xem</button>` : '—'}
+                </td>
             </tr>
         `;
     });
@@ -260,7 +377,6 @@ function renderHistogramChart(m) {
     const hist = m.histogram;
     const ctx = canvas.getContext('2d');
 
-    // Tạo đường phân phối chuẩn Gauss tương ứng
     const gaussPoints = hist.bins.map(b => {
         if (m.stdDev <= 0) return 0;
         const pdf = normalPdf(b.mid, m.mean, m.stdDev);
@@ -271,29 +387,70 @@ function renderHistogramChart(m) {
     const textCol = isLight ? '#475569' : '#94a3b8';
     const gridCol = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
 
+    // Plugin vẽ trực tiếp vạch giới hạn LSL, USL và Mean (μ) lên đồ thị Histogram
+    const spcLimitLinesPlugin = {
+        id: 'spcLimitLines',
+        afterDraw(chart) {
+            const { ctx, chartArea: { top, bottom, left, right }, scales: { x } } = chart;
+            if (!x || hist.plotMin === undefined || hist.plotMax === undefined) return;
+            const span = hist.plotMax - hist.plotMin;
+            if (span <= 0) return;
+
+            function drawVerticalLine(val, color, label, dashed = true) {
+                if (val === null || val === undefined || isNaN(val)) return;
+                const ratio = (val - hist.plotMin) / span;
+                if (ratio < 0 || ratio > 1) return;
+                const xPos = left + ratio * (right - left);
+
+                ctx.save();
+                ctx.beginPath();
+                if (dashed) ctx.setLineDash([5, 4]);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = color;
+                ctx.moveTo(xPos, top);
+                ctx.lineTo(xPos, bottom);
+                ctx.stroke();
+
+                ctx.fillStyle = color;
+                ctx.font = 'bold 10px monospace';
+                const textWidth = ctx.measureText(label).width;
+                const labelX = Math.min(right - textWidth - 4, Math.max(left + 4, xPos - textWidth / 2));
+                ctx.fillRect(labelX - 3, top + 4, textWidth + 6, 15);
+                ctx.fillStyle = '#090d16';
+                ctx.fillText(label, labelX, top + 15);
+                ctx.restore();
+            }
+
+            drawVerticalLine(m.lsl, '#ef4444', `LSL ${m.lsl}`, true);
+            drawVerticalLine(m.usl, '#ef4444', `USL ${m.usl}`, true);
+            drawVerticalLine(m.mean, '#10b981', `μ ${m.mean.toFixed(2)}`, false);
+        }
+    };
+
     histogramChartInstance = new Chart(ctx, {
+        plugins: [spcLimitLinesPlugin],
         data: {
             labels: hist.labels,
             datasets: [
                 {
                     type: 'bar',
-                    order: 2, // CỘT Ở DƯỚI
+                    order: 2,
                     label: _t('Tần suất mẫu thực tế'),
                     data: hist.counts,
-                    backgroundColor: 'rgba(56, 189, 248, 0.65)',
+                    backgroundColor: 'rgba(56, 189, 248, 0.62)',
                     borderColor: '#38bdf8',
                     borderWidth: 1,
-                    borderRadius: 3
+                    borderRadius: 4
                 },
                 {
                     type: 'line',
-                    order: 1, // ĐƯỜNG Ở TRÊN CÙNG
+                    order: 1,
                     label: _t('Đường phân phối Gauss lý thuyết'),
                     data: gaussPoints,
                     borderColor: '#f59e0b',
                     backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    pointRadius: 0,
+                    borderWidth: 2.5,
+                    pointRadius: 2,
                     tension: 0.4
                 }
             ]
@@ -335,7 +492,7 @@ function exportCpkExcel() {
         return;
     }
 
-    let csv = '\uFEFFThông Số Đo,Điều Kiện Đo,Đơn Vị,LSL (Dưới),USL (Trên),Số Mẫu (N),Trung Bình (Mean),Độ Lệch Chuẩn (StdDev),Min,Max,Cp,Cpk,Cpl,Cpu,Số Con Sát Giới Hạn (Near-Fail),Đánh Giá Năng Lực\n';
+    let csv = '\uFEFFThông Số Đo,Điều Kiện Đo,Đơn Vị,LSL (Dưới),USL (Trên),Số Mẫu (N),Trung Bình (Mean),Độ Lệch Chuẩn (StdDev),Min,Max,Cp,Cpk,Cpl,Cpu,Ppk,Số Con Sát Giới Hạn (Near-Fail),Đánh Giá Năng Lực\n';
 
     parametricAnalysisMap.forEach(m => {
         let rating = 'N/A';
@@ -346,7 +503,7 @@ function exportCpkExcel() {
             else rating = 'Không đạt (<1.00)';
         }
 
-        csv += `"${m.name}","${m.condition || 'Standard'}","${m.unit || ''}",${m.lsl !== null ? m.lsl : '—'},${m.usl !== null ? m.usl : '—'},${m.count},${m.mean.toFixed(4)},${m.stdDev.toFixed(4)},${m.min.toFixed(4)},${m.max.toFixed(4)},${m.cp !== null ? m.cp.toFixed(3) : '—'},${m.cpk !== null ? m.cpk.toFixed(3) : '—'},${m.cpl !== null ? m.cpl.toFixed(3) : '—'},${m.cpu !== null ? m.cpu.toFixed(3) : '—'},${m.nearFailList ? m.nearFailList.length : 0},"${rating}"\n`;
+        csv += `"${m.name}","${m.condition || 'Standard'}","${m.unit || ''}",${m.lsl !== null ? m.lsl : '—'},${m.usl !== null ? m.usl : '—'},${m.count},${m.mean.toFixed(4)},${m.stdDev.toFixed(4)},${m.min.toFixed(4)},${m.max.toFixed(4)},${m.cp !== null ? m.cp.toFixed(3) : '—'},${m.cpk !== null ? m.cpk.toFixed(3) : '—'},${m.cpl !== null ? m.cpl.toFixed(3) : '—'},${m.cpu !== null ? m.cpu.toFixed(3) : '—'},${m.ppk !== null ? m.ppk.toFixed(3) : '—'},${m.nearFailList ? m.nearFailList.length : 0},"${rating}"\n`;
     });
 
     downloadBlobFile(csv, `QIT_Cpk_Statistical_Report_${toLocalDateStr(new Date())}.csv`, 'text/csv;charset=utf-8');
@@ -363,15 +520,11 @@ function exportCpkHTML() {
     }
 
     let rowsHtml = '';
-    let totalParams = 0;
-    let excellentCount = 0;
-    let capableCount = 0;
-    let marginalCount = 0;
-    let incapableCount = 0;
+    let totalParams = 0, excellentCount = 0, capableCount = 0, marginalCount = 0, incapableCount = 0;
 
     parametricAnalysisMap.forEach(m => {
         totalParams++;
-        let ratingBadge = '<span class="badge" style="background:rgba(148,163,184,0.15); color:var(--txt-sub); border:1px solid var(--border);">N/A</span>';
+        let ratingBadge = '<span class="badge" style="background:rgba(148,163,184,0.15); color:var(--txt-sub);">N/A</span>';
         if (m.cpk !== null) {
             if (m.cpk >= CFG.CPK_EXCELLENT) {
                 ratingBadge = '<span class="badge badge-pass">🌟 Xuất Sắc (&ge;1.67)</span>';
@@ -393,7 +546,7 @@ function exportCpkHTML() {
 
         rowsHtml += `<tr>
             <td style="font-weight:700; text-align:left;">
-                ${escapeHtml(m.name)} 
+                ${escapeHtml(m.name)}
                 <span style="font-size:10px; color:var(--txt-sub); font-family:monospace; display:block;">(${escapeHtml(m.condition || 'Standard')})</span>
             </td>
             <td><strong style="color:var(--cyan); font-family:monospace;">${escapeHtml(m.unit || '—')}</strong></td>
@@ -413,73 +566,29 @@ function exportCpkHTML() {
 <html lang="vi" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<title>QIT Scanner v2 - Báo Cáo Năng Lực Quy Trình Cpk</title>
+<title>QIT Scanner v2 Pro - Báo Cáo Năng Lực Quy Trình Cpk</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root {
-    --bg: #090d16;
-    --bg-card: rgba(17, 24, 39, 0.88);
-    --bg-elevated: #1e293b;
-    --border: rgba(148, 163, 184, 0.16);
-    --border-hover: rgba(0, 242, 254, 0.35);
-    --txt: #f1f5f9;
-    --txt-sub: #94a3b8;
-    --cyan: #00f2fe;
-    --blue: #38bdf8;
-    --pass: #10b981;
-    --pass-bg: rgba(16, 185, 129, 0.16);
-    --capable-bg: rgba(56, 189, 248, 0.16);
-    --fail: #ef4444;
-    --fail-bg: rgba(239, 68, 68, 0.16);
-    --warn: #f59e0b;
-    --warn-bg: rgba(245, 158, 11, 0.16);
-    --shadow: 0 16px 36px -10px rgba(0,0,0,0.6);
+    --bg: #090d16; --bg-card: rgba(17, 24, 39, 0.88); --bg-elevated: #1e293b;
+    --border: rgba(148, 163, 184, 0.16); --txt: #f1f5f9; --txt-sub: #94a3b8;
+    --cyan: #00f2fe; --blue: #38bdf8; --pass: #10b981; --pass-bg: rgba(16, 185, 129, 0.16);
+    --capable-bg: rgba(56, 189, 248, 0.16); --fail: #ef4444; --fail-bg: rgba(239, 68, 68, 0.16);
+    --warn: #f59e0b; --warn-bg: rgba(245, 158, 11, 0.16);
   }
-  [data-theme="light"] {
-    --bg: #f1f5f9;
-    --bg-card: rgba(255, 255, 255, 0.94);
-    --bg-elevated: #e2e8f0;
-    --border: rgba(15, 23, 42, 0.1);
-    --border-hover: rgba(2, 132, 199, 0.4);
-    --txt: #0f172a;
-    --txt-sub: #475569;
-    --cyan: #0284c7;
-    --blue: #0369a1;
-    --pass: #059669;
-    --pass-bg: rgba(5, 150, 105, 0.12);
-    --capable-bg: rgba(2, 132, 199, 0.12);
-    --fail: #dc2626;
-    --fail-bg: rgba(220, 38, 38, 0.12);
-    --warn: #d97706;
-    --warn-bg: rgba(217, 119, 6, 0.12);
-    --shadow: 0 16px 36px -10px rgba(15, 23, 42, 0.12);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-  body { background: var(--bg); color: var(--txt); padding: 24px; min-height: 100vh; transition: background 0.25s ease, color 0.25s ease; }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  body { background: var(--bg); color: var(--txt); padding: 24px; }
   .container { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
-  
-  .header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid var(--border); padding-bottom: 18px; }
-  .brand { display: flex; align-items: center; gap: 14px; }
-  .brand-text h1 { font-size: 19px; font-weight: 900; letter-spacing: 0.04em; background: linear-gradient(135deg, var(--cyan), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .brand-text p { font-size: 11px; color: var(--txt-sub); font-family: monospace; letter-spacing: 0.1em; margin-top: 2px; }
-  
-  .header-actions { display: flex; align-items: center; gap: 12px; }
-  .theme-toggle-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--txt); width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: grid; place-items: center; font-size: 16px; transition: all 0.2s ease; box-shadow: var(--shadow); }
-  .theme-toggle-btn:hover { border-color: var(--border-hover); transform: scale(1.05); }
-  .meta { font-size: 11.5px; color: var(--txt-sub); text-align: right; font-family: monospace; line-height: 1.5; }
-  
+  .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
   .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-  .kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; text-align: center; box-shadow: var(--shadow); backdrop-filter: blur(10px); }
-  .kpi-label { font-size: 10.5px; font-weight: 800; color: var(--txt-sub); text-transform: uppercase; letter-spacing: 0.05em; }
+  .kpi-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center; }
+  .kpi-label { font-size: 10.5px; font-weight: 800; color: var(--txt-sub); text-transform: uppercase; }
   .kpi-val { font-size: 22px; font-weight: 900; margin-top: 4px; font-family: monospace; }
-  
-  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; box-shadow: var(--shadow); }
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; }
   table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; white-space: nowrap; }
-  th { background: var(--bg-elevated); color: var(--txt-sub); font-weight: 800; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 11.5px; }
+  th { background: var(--bg-elevated); color: var(--txt-sub); font-weight: 800; padding: 10px 14px; border-bottom: 1px solid var(--border); }
   td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
-  tr:hover td { background: rgba(255, 255, 255, 0.03); }
-  
-  .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; letter-spacing: 0.02em; }
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; }
   .badge-pass { background: var(--pass-bg); color: var(--pass); border: 1px solid var(--pass); }
   .badge-capable { background: var(--capable-bg); color: var(--blue); border: 1px solid var(--blue); }
   .badge-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn); }
@@ -489,42 +598,12 @@ function exportCpkHTML() {
 <body>
 <div class="container">
   <div class="header">
-    <div class="brand">
-      <svg viewBox="50 50 200 200" width="38" height="38">
-        <defs>
-          <linearGradient id="qGradExp3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient>
-          <linearGradient id="b13" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#0f2b5c"/><stop offset="100%" stop-color="#0ea5e9"/></linearGradient>
-          <linearGradient id="b23" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#2d1363"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient>
-          <linearGradient id="b33" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#093d5c"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
-          <linearGradient id="b43" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#3b0764"/><stop offset="100%" stop-color="#a855f7"/></linearGradient>
-        </defs>
-        <line x1="175" y1="175" x2="230" y2="230" stroke="url(#qGradExp3)" stroke-width="26" stroke-linecap="round"/>
-        <circle cx="140" cy="140" r="65" fill="none" stroke="url(#qGradExp3)" stroke-width="18"/>
-        <rect x="90" y="145" width="14" height="40" fill="url(#b13)"/>
-        <rect x="118" y="160" width="14" height="25" fill="url(#b23)"/>
-        <rect x="146" y="125" width="14" height="60" fill="url(#b33)"/>
-        <rect x="174" y="135" width="14" height="50" fill="url(#b43)"/>
-        <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-      </svg>
-      <div class="brand-text">
-        <h1>📈 BÁO CÁO NĂNG LỰC QUY TRÌNH & DUNG SAI 6-SIGMA (Cpk)</h1>
-        <p>QIT SCANNER V2 · PARAMETRIC STATISTICAL PROCESS CONTROL (SPC)</p>
-      </div>
+    <div>
+      <h1 style="font-size:19px; font-weight:900; color:var(--cyan);">📈 BÁO CÁO NĂNG LỰC QUY TRÌNH &amp; DUNG SAI 6-SIGMA (Cpk)</h1>
+      <p style="font-size:11px; color:var(--txt-sub); font-family:monospace; margin-top:3px;">QIT SCANNER V2 PRO · PARAMETRIC STATISTICAL PROCESS CONTROL (SPC)</p>
     </div>
-    <div class="header-actions">
-      <button class="theme-toggle-btn" onclick="toggleReportTheme()" title="Chuyển đổi giao diện Sáng / Tối">
-        <span id="theme-icon">☀️</span>
-      </button>
-      <div class="meta">
-        <div>Thời gian xuất: <strong>${new Date().toLocaleString()}</strong></div>
-      </div>
-    </div>
+    <div style="font-size:11.5px; color:var(--txt-sub); font-family:monospace;">Xuất lúc: <strong>${new Date().toLocaleString()}</strong></div>
   </div>
-
   <div class="kpi-grid">
     <div class="kpi-card"><div class="kpi-label">TỔNG THÔNG SỐ SPC</div><div class="kpi-val" style="color:var(--cyan);">${totalParams}</div></div>
     <div class="kpi-card"><div class="kpi-label">XUẤT SẮC (&ge;1.67)</div><div class="kpi-val" style="color:var(--pass);">${excellentCount}</div></div>
@@ -532,13 +611,12 @@ function exportCpkHTML() {
     <div class="kpi-card"><div class="kpi-label">CẬN BIÊN (1.00-1.33)</div><div class="kpi-val" style="color:var(--warn);">${marginalCount}</div></div>
     <div class="kpi-card"><div class="kpi-label">KHÔNG ĐẠT (&lt;1.00)</div><div class="kpi-val" style="color:var(--fail);">${incapableCount}</div></div>
   </div>
-
   <div class="card">
     <div style="overflow-x:auto;">
       <table>
         <thead>
           <tr>
-            <th style="text-align:left; min-width:180px;">Thông Số Đo</th>
+            <th style="text-align:left;">Thông Số Đo</th>
             <th>Đơn Vị</th>
             <th>LSL</th>
             <th>USL</th>
@@ -556,22 +634,6 @@ function exportCpkHTML() {
     </div>
   </div>
 </div>
-
-<script>
-  function initReportTheme() {
-    const saved = localStorage.getItem('qit_report_theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', saved);
-    document.getElementById('theme-icon').innerText = saved === 'light' ? '🌙' : '☀️';
-  }
-  function toggleReportTheme() {
-    const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const next = cur === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('qit_report_theme', next);
-    document.getElementById('theme-icon').innerText = next === 'light' ? '🌙' : '☀️';
-  }
-  initReportTheme();
-</script>
 </body>
 </html>`;
 

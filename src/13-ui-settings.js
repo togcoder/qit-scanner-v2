@@ -1,6 +1,6 @@
-/* ════════════ MODAL CÀI ĐẶT HỆ THỐNG TOÀN DIỆN (SETTINGS MODAL V2) ════════════ */
+/* ════════════ MODAL CÀI ĐẶT HỆ THỐNG TOÀN DIỆN (SETTINGS MODAL V2 PRO) ════════════ */
 
-let currentSettingsSubTab = 'display'; // 'display' | 'matcher' | 'audio' | 'cpk' | 'aliases' | 'backup'
+let currentSettingsSubTab = 'display'; // 'display' | 'shifts' | 'matcher' | 'audio' | 'cpk' | 'aliases' | 'backup'
 let aliasFilterKeyword = '';
 
 function openSettingsModal() {
@@ -27,7 +27,6 @@ function renderSettingsModalContent() {
     const bodyContainer = document.getElementById('settings-modal-body');
     if (!bodyContainer) return;
 
-    // Cập nhật tab active bên sidebar
     document.querySelectorAll('.settings-nav-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-subtab') === currentSettingsSubTab);
     });
@@ -37,16 +36,19 @@ function renderSettingsModalContent() {
     if (currentSettingsSubTab === 'display') {
         html = `
             <div class="settings-pane-content">
-                <h4 class="settings-sec-title">🎨 TÙY CHỈNH GIAO DIỆN & THU PHÓNG (ZOOM)</h4>
+                <h4 class="settings-sec-title">🎨 TÙY CHỈNH GIAO DIỆN &amp; THU PHÓNG (ZOOM)</h4>
 
                 <div class="setting-row">
                     <div class="setting-info">
                         <div class="setting-name">Chủ Đề Giao Diện (Theme)</div>
                         <div class="setting-desc">Chuyển đổi giữa chế độ Tối (Dark Lab) và chế độ Sáng (Light Office).</div>
                     </div>
-                    <div class="setting-ctrl">
-                        <button class="btn btn-sm btn-secondary" onclick="toggleTheme()">
-                            ${document.body.classList.contains('light-theme') ? '☀️ Đang Dùng Giao Diện Sáng' : '🌙 Đang Dùng Giao Diện Tối'}
+                    <div class="setting-ctrl" style="display:flex; gap:8px;">
+                        <button class="btn btn-sm ${!document.body.classList.contains('light-theme') ? 'btn-primary' : 'btn-secondary'}" onclick="setTheme('dark'); renderSettingsModalContent();">
+                            🌙 Dark Lab
+                        </button>
+                        <button class="btn btn-sm ${document.body.classList.contains('light-theme') ? 'btn-primary' : 'btn-secondary'}" onclick="setTheme('light'); renderSettingsModalContent();">
+                            ☀️ Light Office
                         </button>
                     </div>
                 </div>
@@ -54,7 +56,7 @@ function renderSettingsModalContent() {
                 <div class="setting-row">
                     <div class="setting-info">
                         <div class="setting-name">Tỷ Lệ Thu Phóng Giao Diện (UI Zoom Scale)</div>
-                        <div class="setting-desc">Tự động điều chỉnh kích thước phông chữ và bố cục phù hợp với màn hình của bạn.</div>
+                        <div class="setting-desc">Điều chỉnh kích thước phông chữ và toàn bộ khung giao diện (80% – 150%).</div>
                     </div>
                     <div class="setting-ctrl" style="min-width:220px;">
                         <div style="display:flex; justify-content:space-between; font-weight:700; font-size:12px; margin-bottom:4px;">
@@ -68,7 +70,7 @@ function renderSettingsModalContent() {
                 <div class="setting-row">
                     <div class="setting-info">
                         <div class="setting-name">Mật Độ Bảng Dữ Liệu (Table Density)</div>
-                        <div class="setting-desc">Khoảng cách giữa các dòng trong bảng số liệu đo và Pareto.</div>
+                        <div class="setting-desc">Khoảng cách giữa các dòng trong bảng số liệu đo, Đối soát và Pareto.</div>
                     </div>
                     <div class="setting-ctrl">
                         <select class="settings-select" onchange="applyTableDensity(this.value)">
@@ -144,7 +146,7 @@ function renderSettingsModalContent() {
     } else if (currentSettingsSubTab === 'matcher') {
         html = `
             <div class="settings-pane-content">
-                <h4 class="settings-sec-title">🔍 CẤU HÌNH QUÉT MÃ VẠCH & ĐỐI SOÁT (BARCODE MATCHER)</h4>
+                <h4 class="settings-sec-title">🔍 CẤU HÌNH QUÉT MÃ VẠCH &amp; KIỂM SOÁT GROUP (MATCHER &amp; AUDIT)</h4>
 
                 <div class="setting-row">
                     <div class="setting-info">
@@ -153,6 +155,29 @@ function renderSettingsModalContent() {
                     </div>
                     <div class="setting-ctrl">
                         <input type="number" min="1" max="20" value="${CFG.MIN_SCAN_LEN}" class="settings-input" style="width:80px;" onchange="updateCfgNum('MIN_SCAN_LEN', this.value)">
+                    </div>
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <div class="setting-name">Phạm Vi Quét Đối Soát Danh Sách (Audit Scan Scope)</div>
+                        <div class="setting-desc">Chọn 'Khóa Theo Group' khi đóng từng kiện để hệ thống cảnh báo nếu công nhân quét nhầm hàng của kiện khác.</div>
+                    </div>
+                    <div class="setting-ctrl">
+                        <select class="settings-select" onchange="setAuditScanScope(this.value)">
+                            <option value="GLOBAL" ${auditState.scanScope === 'GLOBAL' ? 'selected' : ''}>🌐 Tự động định tuyến mọi Group</option>
+                            <option value="ACTIVE" ${auditState.scanScope === 'ACTIVE' ? 'selected' : ''}>🎯 Khóa riêng trong Group đang chọn</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <div class="setting-name">Chốt Chặn Chất Lượng Xuất Kho (Outgoing Quality Gate)</div>
+                        <div class="setting-desc">Cảnh báo còi đỏ nếu mã quét có trong danh sách xuất kho nhưng bị FAIL trong tệp Klippel QC Log.</div>
+                    </div>
+                    <div class="setting-ctrl">
+                        <input type="checkbox" ${auditState.warnOnKlippelFail ? 'checked' : ''} onchange="auditState.warnOnKlippelFail = this.checked; updateCfgBool('AUDIT_WARN_KLIPPEL_FAIL', this.checked)" class="settings-checkbox">
                     </div>
                 </div>
 
@@ -191,7 +216,7 @@ function renderSettingsModalContent() {
     } else if (currentSettingsSubTab === 'audio') {
         html = `
             <div class="settings-pane-content">
-                <h4 class="settings-sec-title">🔊 ÂM THANH CẢNH BÁO & GIỌNG NÓI (AUDIO & SPEECH TTS)</h4>
+                <h4 class="settings-sec-title">🔊 ÂM THANH CẢNH BÁO &amp; GIỌNG NÓI (AUDIO &amp; SPEECH TTS)</h4>
 
                 <div class="setting-row">
                     <div class="setting-info">
@@ -230,7 +255,7 @@ function renderSettingsModalContent() {
     } else if (currentSettingsSubTab === 'cpk') {
         html = `
             <div class="settings-pane-content">
-                <h4 class="settings-sec-title">📈 NĂNG LỰC QUY TRÌNH (CPK) & CHUẨN SPC</h4>
+                <h4 class="settings-sec-title">📈 NĂNG LỰC QUY TRÌNH (CPK) &amp; CHUẨN SPC</h4>
 
                 <div class="setting-row">
                     <div class="setting-info">
@@ -305,8 +330,8 @@ function renderSettingsModalContent() {
             <div class="settings-pane-content">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
                     <div>
-                        <h4 class="settings-sec-title" style="margin:0;">🏷️ QUẢN LÝ TÊN GỌI LỖI (ERROR ALIASES & HIDING)</h4>
-                        <div style="font-size:11px; color:var(--text-muted);">Đổi mã kỹ thuật của máy thành tên tiếng Việt dễ hiểu. Hỗ trợ ký tự đặc biệt (/ & () Ω °C).</div>
+                        <h4 class="settings-sec-title" style="margin:0;">🏷️ QUẢN LÝ TÊN GỌI LỖI (ERROR ALIASES &amp; HIDING)</h4>
+                        <div style="font-size:11px; color:var(--text-muted);">Đổi mã kỹ thuật của máy thành tên tiếng Việt dễ hiểu. Hỗ trợ ký tự đặc biệt (/ &amp; () Ω °C).</div>
                     </div>
                     <div style="display:flex; gap:6px;">
                         <button class="btn btn-sm btn-outline" onclick="exportAliasesJSON()">📥 Xuất Alias JSON</button>
@@ -339,7 +364,7 @@ function renderSettingsModalContent() {
     } else if (currentSettingsSubTab === 'backup') {
         html = `
             <div class="settings-pane-content">
-                <h4 class="settings-sec-title">💾 SAO LƯU, KHÔI PHỤC & QUẢN TRỊ DỮ LIỆU</h4>
+                <h4 class="settings-sec-title">💾 SAO LƯU, KHÔI PHỤC &amp; QUẢN TRỊ DỮ LIỆU</h4>
 
                 <div class="setting-row">
                     <div class="setting-info">
@@ -484,21 +509,31 @@ function toggleHideError(rawErr, isHidden) {
 }
 
 function resetAllAliases() {
-    if (confirm('Khôi phục danh sách Alias về mặc định?')) {
-        errorAliases = {};
-        hiddenErrors = {};
-        localStorage.removeItem(LS.ALIASES);
-        localStorage.removeItem(LS.HIDDEN);
-        applyFileFiltersAndRecalculate();
-        renderSettingsModalContent();
-        showToast('✓ Đã khôi phục Alias mặc định', 'info');
-    }
+    openAppDialog({
+        title: '🔄 Khôi Phục Alias Mặc Định',
+        message: 'Bạn có chắc muốn xóa toàn bộ tên gọi tùy chỉnh (Aliases) và danh sách ẩn lỗi về mặc định?',
+        confirmText: 'Khôi Phục Mặc Định',
+        danger: true,
+        onConfirm: () => {
+            errorAliases = {};
+            hiddenErrors = {};
+            try {
+                localStorage.removeItem(LS.ALIASES);
+                localStorage.removeItem(LS.HIDDEN);
+            } catch(e) {}
+            applyFileFiltersAndRecalculate();
+            renderSettingsModalContent();
+            showToast('✓ Đã khôi phục Alias mặc định', 'info');
+        }
+    });
 }
 
 function updateGapThreshold(val) {
     const num = parseInt(val, 10);
     if (!isNaN(num) && num >= 0) {
         currentGapThreshold = num;
+        CFG.GAP_THRESHOLD_MIN = num;
+        saveCustomConfig();
         applyFileFiltersAndRecalculate();
         showToast(`✓ Đã cập nhật chu kỳ: ${num} phút`, 'success');
     }
@@ -590,19 +625,32 @@ function importFullConfigJSON(e) {
 }
 
 function clearScanHistoryData() {
-    if (confirm('Xóa toàn bộ lịch sử quét phiên hiện tại?')) {
-        scanHistory = [];
-        localStorage.removeItem(LS.HISTORY);
-        renderScanHistoryTable();
-        showToast('✓ Đã làm trống lịch sử quét', 'info');
-    }
+    openAppDialog({
+        title: '🗑️ Xóa Lịch Sử Quét Phiên',
+        message: 'Bạn có chắc muốn làm trống danh sách lịch sử các lượt quét trực tiếp trong phiên hiện tại?',
+        confirmText: 'Xóa Lịch Sử',
+        danger: true,
+        onConfirm: () => {
+            scanHistory = [];
+            resetLiveScanSessionStats();
+            try { localStorage.removeItem(LS.HISTORY); } catch(e) {}
+            renderScanHistoryTable();
+            showToast('✓ Đã làm trống lịch sử quét', 'info');
+        }
+    });
 }
 
 function factoryResetApp() {
-    if (confirm('⚠️ CẢNH BÁO: Khôi phục toàn bộ cài đặt gốc? Tất cả alias và tùy chỉnh sẽ bị xóa.')) {
-        localStorage.clear();
-        location.reload();
-    }
+    openAppDialog({
+        title: '⚠️ Khôi Phục Cài Đặt Gốc (Factory Reset)',
+        message: 'Tất cả cấu hình tùy chỉnh, tên gọi lỗi (Aliases) và lịch sử lưu trữ sẽ được đưa về mặc định ban đầu. Tiếp tục?',
+        confirmText: 'Khôi Phục Gốc',
+        danger: true,
+        onConfirm: () => {
+            try { localStorage.clear(); } catch(e) {}
+            location.reload();
+        }
+    });
 }
 
 function updateShiftHours(key, val) {
@@ -644,4 +692,3 @@ function onShiftModeChange(mode) {
         renderAnalysisDashboard();
     }
 }
-

@@ -1,11 +1,11 @@
 # ⚡ QIT SCANNER V2 — ADVANCED KLIPPEL QC LOG PARSER & QUALITY ANALYTICS
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.0.0-blue.svg?style=for-the-badge" alt="Version 2.0.0" />
-  <img src="https://img.shields.io/badge/architecture-100%25%20Offline%20Standalone-success.svg?style=for-the-badge" alt="100% Offline Standalone" />
+  <img src="https://img.shields.io/badge/version-2.1.0%20Pro-blue.svg?style=for-the-badge" alt="Version 2.1.0 Pro" />
+  <img src="https://img.shields.io/badge/architecture-100%25%20Offline%20Standalone%20(Base64%20Fonts)-success.svg?style=for-the-badge" alt="100% Offline Standalone" />
   <img src="https://img.shields.io/badge/standard-Klippel%20QC%20%7C%20dB--Lab-orange.svg?style=for-the-badge" alt="Klippel QC Standard" />
   <img src="https://img.shields.io/badge/analytics-Six%20Sigma%20(Cp%2FCpk)-purple.svg?style=for-the-badge" alt="Six Sigma Cpk" />
-  <img src="https://img.shields.io/badge/tests-passing%20(8%2F8%20suites)-brightgreen.svg?style=for-the-badge" alt="Tests Passing" />
+  <img src="https://img.shields.io/badge/tests-passing%20(9%2F9%20suites)-brightgreen.svg?style=for-the-badge" alt="Tests Passing" />
   <img src="https://img.shields.io/badge/languages-VI%20%7C%20EN%20%7C%20JA%20%7C%20ZH-informational.svg?style=for-the-badge" alt="i18n 4 Languages" />
 </p>
 
@@ -103,14 +103,17 @@ flowchart TD
 │  Tab 1: ⚡ QUÉT SẢN XUẤT (Live Scan & Match)                                           │
 │  - Hộp nhập liệu tự động bắt tiêu điểm (AutoFocus). Quét mã vạch trực tiếp bằng súng.   │
 │  - Banner phán định khổng lồ: XANH (PASS - ĐẠT CHUẨN) / ĐỎ (FAIL - LỖI SẢN PHẨM).      │
-│  - Hiển thị danh sách thông số lỗi chi tiết (Rub & Buzz, THD, Re...) kèm giá trị thực. │
+│  - Băng thông số tức thời (Parametric Snapshot Band): xem ngay Re, fs, Level và dung sai.│
 │  - Phát âm thanh cảnh báo Web Audio API + Đọc bằng giọng nói tiếng Việt (TTS).        │
-│  - Bảng FIFO lưu trữ lịch sử các lần quét gần nhất.                                    │
+│  - DUT Deep Inspector: Bấm vào sản phẩm để soi toàn bộ lịch sử các lần Retest qua các trạm.│
+│  - Bảng FIFO lưu trữ lịch sử các lần quét gần nhất kèm bộ lọc & tìm kiếm nhanh.        │
 │                                                                                        │
-│  Tab 2: 🎯 ĐỐI SOÁT DANH SÁCH (Audit Reconciliation)                                   │
-│  - Nạp danh sách mã vạch xuất kho hoặc danh sách cần kiểm kê (Copy/Paste nhiều dòng).   │
-│  - Quét kiểm tra thực tế: Hệ thống tự động đánh dấu ĐÃ QUÉT / CÒN THIẾU / MÃ LẠ.       │
-│  - Thanh tiến độ trực quan cập nhật thời gian thực theo tỷ lệ hoàn thành %.             │
+│  Tab 2: 🎯 ĐỐI SOÁT THEO NHÓM / PALLET (Multi-Group Audit - BẢN PRO)                   │
+│  - Hỗ trợ chia danh sách đối soát thành nhiều Nhóm / Pallet độc lập (Batch Splitter).  │
+│  - Khóa nhóm (Scope Lock) chống quét nhầm khi Pallet đã đóng gói đủ 100%.             │
+│  - Tự động chuyển nhóm thông minh (Auto-switch) khi phát hiện mã thuộc Pallet khác.   │
+│  - Lưu phiên làm việc tự động vào LocalStorage: Không lo mất dữ liệu khi F5 trình duyệt.│
+│  - Nút 1-click "Sao chép mã còn thiếu" (Copy Missing Targets) xuất danh sách tức thì.   │
 │  - Xuất báo cáo kết quả đối soát toàn diện ra tệp Excel (.xlsx).                       │
 │                                                                                        │
 │  Tab 3: 📊 PHÂN TÍCH CHẤT LƯỢNG (Quality & Pareto)                                     │
@@ -120,15 +123,16 @@ flowchart TD
 │  - Phân tích sản lượng & tỷ lệ lỗi theo khung giờ sản xuất và theo Ca làm việc.         │
 │                                                                                        │
 │  Tab 4: 📈 THÔNG SỐ ĐO & Cpk (Parametric & Process Capability)                         │
+│  - Bảng ma trận tổng hợp toàn bộ thông số (All-Metrics Matrix): Xem Cpk của tất cả bài đo.│
 │  - Chọn thông số kiểm tra: Re, fs, Qts, Độ nhạy SPL, Trở kháng ImpPt, Sai số RmseZ...  │
 │  - Bảng thống kê 6-Sigma: Mean (μ), Độ lệch chuẩn (σ), Min, Max, Giới hạn LSL & USL.    │
-│  - Tính toán năng lực quy trình: Chỉ số Cp và Chỉ số Cpk.                              │
 │  - Biểu đồ phân phối chuẩn Gauss kết hợp các cột tần suất thực tế (Histogram Bins).    │
-│  - Bảng Cảnh Báo Cận Biên (Near-Fail): Phát hiện các sản phẩm Pass nhưng sát dung sai.  │
+│  - Bảng Cảnh Báo Cận Biên (Near-Fail) kèm nút "Copy Near-Fail Serials" 1-click.        │
 │                                                                                        │
 │  Tab 5: 📁 QUẢN LÝ TỆP & TRẠM ĐO (Multi-Station Manager)                               │
 │  - Quản lý danh sách các file log đang nạp trong phiên làm việc.                       │
 │  - Nhận diện tên máy đo (SAS208-01, SFS203-01...), số lượng bản ghi và điện áp đo.    │
+│  - Nút "Tải Dữ Liệu Demo": Khởi tạo ngay log Klippel giả lập chuẩn Gauss để kiểm thử.  │
 │  - Bật/tắt Checkbox của từng tệp để lọc báo cáo cho riêng từng trạm hoặc gộp toàn xưởng.│
 │                                                                                        │
 └────────────────────────────────────────────────────────────────────────────────────────┘

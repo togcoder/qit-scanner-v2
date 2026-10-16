@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QIT Scanner v2 — Klippel Acoustic QC & Analytics Suite</title>
+    <title>QIT Scanner v2 Pro — Klippel Acoustic QC, SPC &amp; Multi-Group Audit Suite</title>
     <link rel="stylesheet" href="fonts.css">
     <link rel="stylesheet" href="scanner.css">
 </head>
@@ -39,23 +39,23 @@
     <div id="qit-splash" class="qit-splash">
         <div class="qit-splash-content">
             <div class="qit-logo-anim-box">
-                <svg viewBox="50 50 200 200" class="qit-logo-svg qit-logo-analyzing" aria-label="QIT">
-                    <line x1="175" y1="175" x2="230" y2="230" class="q-handle-stroke" stroke="url(#qGrad)" stroke-width="26" stroke-linecap="round"/>
-                    <circle cx="140" cy="140" r="65" class="q-circle-stroke" fill="none" stroke="url(#qGrad)" stroke-width="18"/>
+                <svg viewBox="50 50 200 200" class="qit-logo-svg" aria-label="QIT">
+                    <line x1="175" y1="175" x2="230" y2="230" stroke="url(#qGrad)" stroke-width="26" stroke-linecap="round"/>
+                    <circle cx="140" cy="140" r="65" fill="none" stroke="url(#qGrad)" stroke-width="18"/>
                     <g>
-                        <rect x="90" y="145" width="14" height="40" class="chart-bar bar-1 qit-bar-bounce-1" fill="url(#barGrad1)"/>
-                        <rect x="118" y="160" width="14" height="25" class="chart-bar bar-2 qit-bar-bounce-2" fill="url(#barGrad2)"/>
-                        <rect x="146" y="125" width="14" height="60" class="chart-bar bar-3 qit-bar-bounce-3" fill="url(#barGrad3)"/>
-                        <rect x="174" y="135" width="14" height="50" class="chart-bar bar-4 qit-bar-bounce-4" fill="url(#barGrad4)"/>
+                        <rect x="90" y="145" width="14" height="40" fill="url(#barGrad1)"/>
+                        <rect x="118" y="160" width="14" height="25" fill="url(#barGrad2)"/>
+                        <rect x="146" y="125" width="14" height="60" fill="url(#barGrad3)"/>
+                        <rect x="174" y="135" width="14" height="50" fill="url(#barGrad4)"/>
                     </g>
-                    <polyline points="97,125 125,140 153,105 181,115" class="chart-line" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="97" cy="125" r="5" class="node node-1 qit-node-pulse" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-                    <circle cx="125" cy="140" r="5" class="node node-2 qit-node-pulse" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-                    <circle cx="153" cy="105" r="5" class="node node-3 qit-node-pulse" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-                    <circle cx="181" cy="115" r="5" class="node node-4 qit-node-pulse" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                    <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                    <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                    <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                    <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
                 </svg>
             </div>
-            <div class="qit-splash-title">QIT SCANNER V2</div>
+            <div class="qit-splash-title">QIT SCANNER V2 PRO</div>
             <div class="qit-splash-sub" data-i18n="HỆ THỐNG KIỂM TRA MÃ VẠCH TỰ ĐỘNG">KLIPPEL ACOUSTIC QC · ANALYTICS SUITE</div>
             <div class="qit-splash-loader">
                 <div class="qit-splash-bar"></div>
@@ -66,46 +66,20 @@
     <!-- ════════════ MAIN APP CONTAINER ════════════ -->
     <div id="app-container" class="app-container">
 
-        <!-- ── HEADER TOOLBAR (UXUIREF PRECISION) ── -->
+        <!-- ── HEADER TOOLBAR (INDUSTRIAL HMI PRECISION) ── -->
         <header class="app-header">
             <div class="header-main-bar">
                 <div class="header-brand">
-                    <div class="qit-logo-small" id="mini-logo-trigger" title="Nhấp xem thống kê Lifetime">
+                    <div class="qit-logo-small" id="mini-logo-trigger" title="Nhấp xem thống kê Lifetime Robot">
                         <svg class="logo-svg" viewBox="50 50 200 200">
-                            <defs>
-                                <linearGradient id="qGradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#00f2fe"/>
-                                    <stop offset="100%" stop-color="#4facfe"/>
-                                </linearGradient>
-                                <linearGradient id="barGrad1H" x1="0%" y1="100%" x2="0%" y2="0%">
-                                    <stop offset="0%" stop-color="#0f2b5c"/>
-                                    <stop offset="100%" stop-color="#0ea5e9"/>
-                                </linearGradient>
-                                <linearGradient id="barGrad2H" x1="0%" y1="100%" x2="0%" y2="0%">
-                                    <stop offset="0%" stop-color="#2d1363"/>
-                                    <stop offset="100%" stop-color="#8b5cf6"/>
-                                </linearGradient>
-                                <linearGradient id="barGrad3H" x1="0%" y1="100%" x2="0%" y2="0%">
-                                    <stop offset="0%" stop-color="#093d5c"/>
-                                    <stop offset="100%" stop-color="#06b6d4"/>
-                                </linearGradient>
-                                <linearGradient id="barGrad4H" x1="0%" y1="100%" x2="0%" y2="0%">
-                                    <stop offset="0%" stop-color="#3b0764"/>
-                                    <stop offset="100%" stop-color="#a855f7"/>
-                                </linearGradient>
-                            </defs>
-                            <!-- Lens Handle -->
-                            <line x1="175" y1="175" x2="230" y2="230" stroke="url(#qGradHeader)" stroke-width="26" stroke-linecap="round"/>
-                            <!-- Lens Circle -->
-                            <circle cx="140" cy="140" r="65" fill="none" stroke="url(#qGradHeader)" stroke-width="18"/>
-                            <!-- 4 Bars Inside -->
+                            <line x1="175" y1="175" x2="230" y2="230" stroke="url(#qGrad)" stroke-width="26" stroke-linecap="round"/>
+                            <circle cx="140" cy="140" r="65" fill="none" stroke="url(#qGrad)" stroke-width="18"/>
                             <g>
-                                <rect x="90" y="145" width="14" height="40" fill="url(#barGrad1H)"/>
-                                <rect x="118" y="160" width="14" height="25" fill="url(#barGrad2H)"/>
-                                <rect x="146" y="125" width="14" height="60" fill="url(#barGrad3H)"/>
-                                <rect x="174" y="135" width="14" height="50" fill="url(#barGrad4H)"/>
+                                <rect x="90" y="145" width="14" height="40" fill="url(#barGrad1)"/>
+                                <rect x="118" y="160" width="14" height="25" fill="url(#barGrad2)"/>
+                                <rect x="146" y="125" width="14" height="60" fill="url(#barGrad3)"/>
+                                <rect x="174" y="135" width="14" height="50" fill="url(#barGrad4)"/>
                             </g>
-                            <!-- 4-point Line Chart Inside (Aligned with bar centers) -->
                             <g>
                                 <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
                                 <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
@@ -116,13 +90,34 @@
                         </svg>
                     </div>
                     <div class="brand-text">
-                        <h1>QIT SCANNER V2</h1>
-                        <span class="brand-sub" data-i18n="HỆ THỐNG KIỂM TRA MÃ VẠCH TỰ ĐỘNG">KLIPPEL ACOUSTIC QC · ANALYTICS SUITE</span>
+                        <h1>QIT SCANNER V2 PRO</h1>
+                        <span class="brand-sub" data-i18n="HỆ THỐNG KIỂM TRA MÃ VẠCH TỰ ĐỘNG">KLIPPEL ACOUSTIC QC · SPC &amp; MULTI-GROUP AUDIT</span>
                     </div>
                 </div>
 
+                <!-- Main Navigation (5 Core Workspaces) -->
+                <nav class="header-nav">
+                    <button class="nav-tab active" id="tab-btn-scan" onclick="switchTab('scan')">
+                        <span data-i18n="QUÉT SẢN XUẤT">⚡ QUÉT SẢN XUẤT</span>
+                    </button>
+                    <button class="nav-tab" id="tab-btn-audit" onclick="switchTab('audit')">
+                        <span data-i18n="KIỂM TRA DANH SÁCH">🎯 KIỂM TRA DANH SÁCH</span>
+                        <span id="nav-badge-audit" class="nav-count-badge"></span>
+                    </button>
+                    <button class="nav-tab" id="tab-btn-analysis" onclick="switchTab('analysis')">
+                        <span data-i18n="PHÂN TÍCH CHẤT LƯỢNG">📊 PHÂN TÍCH CHẤT LƯỢNG</span>
+                    </button>
+                    <button class="nav-tab" id="tab-btn-parametric" onclick="switchTab('parametric')">
+                        <span data-i18n="THÔNG SỐ ĐO & Cpk">📈 THÔNG SỐ &amp; Cpk</span>
+                    </button>
+                    <button class="nav-tab" id="tab-btn-files" onclick="switchTab('files')">
+                        <span data-i18n="QUẢN LÝ TỆP & TRẠM ĐO">📁 TỆP &amp; TRẠM ĐO</span>
+                        <span id="nav-badge-files" class="nav-count-badge"></span>
+                    </button>
+                </nav>
+
                 <div class="header-actions">
-                    <select id="lang-select" class="lang-select" onchange="QIT.i18n.setLang(this.value)">
+                    <select id="lang-select" class="lang-select" onchange="QIT.i18n.setLang(this.value)" title="Ngôn ngữ hiển thị">
                         <option value="vi">🇻🇳 VN</option>
                         <option value="en">🇬🇧 EN</option>
                         <option value="ja">🇯🇵 JP</option>
@@ -134,71 +129,56 @@
                         <span id="moon-icon" class="hidden">🌙</span>
                     </button>
                     <button class="btn-icon" onclick="openSettingsModal()" title="Cài đặt hệ thống (ESC)">⚙️</button>
-                    <button class="btn btn-outline btn-sm" onclick="exportFullExcelReport()" data-i18n="XUẤT BÁO CÁO EXCEL">📥 XUẤT EXCEL TỔNG</button>
+                    <button class="btn btn-outline btn-sm" onclick="loadBuiltInDemoKlippelLogs()" title="Nạp bộ dữ liệu mẫu 3 trạm đo Klippel QC &amp; 3 Group đối soát">🧪 DỮ LIỆU MẪU</button>
+                    <button class="btn btn-secondary btn-sm" onclick="exportFullExcelReport()" data-i18n="XUẤT BÁO CÁO EXCEL">📥 XUẤT EXCEL</button>
                     <button class="btn btn-primary btn-sm" onclick="resetApp()" data-i18n="NẠP TỆP MỚI">🔄 NẠP MỚI</button>
                 </div>
             </div>
-
-            <!-- Main Navigation (5 Core Workspaces) -->
-            <div class="header-nav-bar">
-                <nav class="header-nav">
-                    <button class="nav-tab active" id="tab-btn-scan" onclick="switchTab('scan')">
-                        <span data-i18n="QUÉT SẢN XUẤT">⚡ QUÉT SẢN XUẤT</span>
-                    </button>
-                    <button class="nav-tab" id="tab-btn-audit" onclick="switchTab('audit')">
-                        <span data-i18n="KIỂM TRA DANH SÁCH">🎯 KIỂM TRA DANH SÁCH</span>
-                    </button>
-                    <button class="nav-tab" id="tab-btn-analysis" onclick="switchTab('analysis')">
-                        <span data-i18n="PHÂN TÍCH CHẤT LƯỢNG">📊 PHÂN TÍCH CHẤT LƯỢNG</span>
-                    </button>
-                    <button class="nav-tab" id="tab-btn-parametric" onclick="switchTab('parametric')">
-                        <span data-i18n="THÔNG SỐ ĐO & Cpk">📈 THÔNG SỐ &amp; Cpk</span>
-                    </button>
-                    <button class="nav-tab" id="tab-btn-files" onclick="switchTab('files')">
-                        <span data-i18n="QUẢN LÝ TỆP & TRẠM ĐO">📁 TỆP &amp; TRẠM ĐO</span>
-                    </button>
-                </nav>
-            </div>
         </header>
 
-        <!-- ── REAL-TIME INDUSTRIAL STATUS BAR ── -->
+        <!-- ── REAL-TIME INDUSTRIAL TELEMETRY STATUS BAR ── -->
         <div class="app-statusbar">
-            <div class="sb-item"><span class="sb-dot-pulse"></span>SCANNER ONLINE · READY</div>
-            <div class="sb-item">TRẠM: <span class="sb-val" id="sb-stations">—</span></div>
-            <div class="sb-item">CHU KỲ: <span class="sb-val" id="sb-cycle">30 phút</span></div>
-            <div class="sb-item">BẢN GHI: <span class="sb-val" id="sb-records">0</span></div>
-            <div class="sb-item">LSL/USL: <span class="sb-val" id="sb-limits">BẬT</span></div>
-            <div class="sb-item sb-right">CẬP NHẬT <span class="sb-val" id="sb-clock">00:00:00</span></div>
+            <div class="sb-item"><span class="sb-dot-pulse"></span>ONLINE · 3-TIER O(1)</div>
+            <div class="sb-item">TRẠM ĐO: <span class="sb-val" id="sb-stations">Chưa nạp tệp</span></div>
+            <div class="sb-item">BẢN GHI: <span class="sb-val" id="sb-records">0 mẫu</span></div>
+            <div class="sb-item">FPY / FINAL: <span class="sb-val" id="sb-fpy" style="color:var(--status-pass);">—</span></div>
+            <div class="sb-item">ĐỐI SOÁT: <span class="sb-val" id="sb-audit" style="color:var(--accent-cyan);">0 mã</span></div>
+            <div class="sb-item">CHU KỲ GAP: <span class="sb-val" id="sb-cycle">30 phút</span></div>
+            <div class="sb-item">SPC: <span class="sb-val" id="sb-limits">Sẵn sàng</span></div>
+            <div class="sb-item sb-right">GIỜ HỆ THỐNG <span class="sb-val" id="sb-clock">00:00:00</span></div>
         </div>
 
         <!-- ── MÀN HÌNH NẠP TỆP BAN ĐẦU (SETUP SCREEN) ── -->
         <section id="setup-screen" class="setup-screen">
             <div class="setup-card">
                 <div class="setup-header">
-                    <h2>NẠP DỮ LIỆU NHẬT KÝ KIỂM TRA (KLIPPEL LOG FILES)</h2>
-                    <p>Hỗ trợ kéo thả đồng thời nhiều tệp hoặc nạp toàn bộ thư mục chứa các tệp Summary trong các thư mục con.</p>
+                    <h2>TRUNG TÂM NẠP DỮ LIỆU NHẬT KÝ KIỂM ÂM KLIPPEL QC</h2>
+                    <p>Hỗ trợ kéo thả nhiều tệp (.log, .txt, .csv), quét siêu tốc thư mục chứa file Summary, hoặc trải nghiệm ngay với bộ dữ liệu mẫu đa trạm.</p>
                 </div>
 
                 <div id="drop-zone" class="drop-zone">
                     <div class="drop-zone-icon">📁</div>
                     <div class="drop-zone-text" data-i18n="KÉO & THẢ CÁC TỆP LOG VÀO ĐÂY">KÉO &amp; THẢ CÁC TỆP LOG HOẶC THƯ MỤC VÀO ĐÂY</div>
-                    <div class="drop-zone-sub" data-i18n="hoặc bấm để chọn tệp từ máy tính">hoặc bấm chọn nguồn tệp:</div>
+                    <div class="drop-zone-sub" data-i18n="hoặc bấm để chọn tệp từ máy tính">hoặc chọn chế độ khởi động nhanh bên dưới:</div>
 
-                    <div style="display:flex; justify-content:center; gap:14px; margin-top:16px; flex-wrap:wrap;">
-                        <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); startFastDirectoryScan()" style="box-shadow:0 0 20px rgba(0,242,254,0.4); padding:10px 24px; font-weight:800; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                            <span>📁</span> <span>Chọn Thư Mục (Quét Siêu Tốc File Summary)</span>
+                    <div style="display:flex; justify-content:center; gap:12px; margin-top:18px; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); startFastDirectoryScan()" style="padding:10px 20px; font-weight:800; font-size:13px;">
+                            📁 Quét Nhanh Thư Mục Summary
                         </button>
-                        <button type="button" class="btn btn-outline" onclick="event.stopPropagation(); document.getElementById('file-input').click()" style="padding:10px 20px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                            <span>📄</span> <span>Chọn Tệp Riêng Lẻ</span>
+                        <button type="button" class="btn btn-outline" onclick="event.stopPropagation(); document.getElementById('file-input').click()" style="padding:10px 18px; font-size:13px;">
+                            📄 Chọn Tệp Log (.log, .txt, .csv)
                         </button>
-                        <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); switchTab('audit')" style="padding:10px 20px; font-size:13.5px; font-weight:700; display:inline-flex; align-items:center; gap:8px; border-color:var(--accent-blue); color:var(--text-main); background:rgba(0,242,254,0.08);">
-                            <span>🎯</span> <span>Chỉ Kiểm Tra Danh Sách (Không Cần File Log)</span>
+                        <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); loadBuiltInDemoKlippelLogs()" style="padding:10px 18px; font-size:13px; font-weight:800; border-color:var(--status-pass); color:#34d399; background:rgba(16,185,129,0.1);">
+                            🧪 Nạp Bộ Dữ Liệu Mẫu (3 Trạm · 3 Group)
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); switchTab('audit')" style="padding:10px 18px; font-size:13px; font-weight:700; border-color:var(--accent-blue); color:var(--accent-cyan);">
+                            🎯 Vào Kiểm Tra Danh Sách Đa Group
                         </button>
                     </div>
 
-                    <div style="margin-top:14px; display:inline-flex; align-items:center; gap:8px; background:rgba(0,0,0,0.15); padding:6px 14px; border-radius:20px; font-size:12px; color:var(--text-sub);" onclick="event.stopPropagation()">
+                    <div style="margin-top:16px; display:inline-flex; align-items:center; gap:8px; background:rgba(0,0,0,0.2); padding:6px 14px; border-radius:20px; font-size:11.5px; color:var(--text-muted);" onclick="event.stopPropagation()">
                         <input type="checkbox" id="chk-filter-summary" checked onchange="CFG.AUTO_FILTER_SUMMARY_ONLY = this.checked">
-                        <label for="chk-filter-summary" style="cursor:pointer; font-weight:600;">Tự động lọc chỉ nạp tệp chứa chữ "Summary" trong thư mục con (Bỏ qua file .kdbx &amp; file rác)</label>
+                        <label for="chk-filter-summary" style="cursor:pointer; font-weight:600;">Tự động lọc chỉ nạp tệp chứa chữ "Summary" trong thư mục con (Bỏ qua file .kdbx &amp; file sóng .wav)</label>
                     </div>
 
                     <input type="file" id="file-input" multiple accept=".txt,.csv,.log" class="file-input-hidden">
@@ -211,17 +191,18 @@
                     <button id="btn-process" class="btn btn-primary btn-lg btn-block" disabled onclick="processFiles()" data-i18n="TIẾN HÀNH XỬ LÝ DỮ LIỆU">
                         TIẾN HÀNH XỬ LÝ DỮ LIỆU
                     </button>
-                    <div style="display:flex; justify-content:center; gap:16px; margin-top:10px; font-size:12px;">
-                        <a href="javascript:void(0)" onclick="switchTab('audit')" style="color:var(--accent-blue); text-decoration:none; font-weight:700;">
-                            🎯 Tôi chỉ muốn Kiểm Tra Danh Sách (Bỏ qua nạp file log) &rarr;
+                    <div style="display:flex; justify-content:center; gap:16px; margin-top:12px; font-size:12px; flex-wrap:wrap;">
+                        <a href="javascript:void(0)" onclick="loadBuiltInDemoKlippelLogs()" style="color:#34d399; text-decoration:none; font-weight:700;">
+                            🧪 Nạp Dữ Liệu Mẫu Đa Trạm &rarr;
                         </a>
                         <span style="color:var(--border-color);">|</span>
-                        <a href="javascript:void(0)" onclick="switchTab('scan')" style="color:var(--text-sub); text-decoration:none;">
+                        <a href="javascript:void(0)" onclick="switchTab('audit')" style="color:var(--accent-cyan); text-decoration:none; font-weight:700;">
+                            🎯 Kiểm Tra Danh Sách Đa Group &rarr;
+                        </a>
+                        <span style="color:var(--border-color);">|</span>
+                        <a href="javascript:void(0)" onclick="switchTab('scan')" style="color:var(--text-muted); text-decoration:none;">
                             ⚡ Vào thẳng Quét Sản Xuất &rarr;
                         </a>
-                    </div>
-                    <div class="setup-hint" style="margin-top:10px;">
-                        💡 Hệ thống V2 tự động bóc tách 100% dữ liệu đo, giới hạn Min/Max, dung sai Cpk, Ma trận đa lượt và phân tách trạm đo thông minh.
                     </div>
                 </div>
             </div>
@@ -230,111 +211,179 @@
         <!-- ── MÀN HÌNH CHÍNH (MAIN APP SCREEN) ── -->
         <main id="main-app-screen" class="main-app-screen hidden">
 
-            <!-- ── TAB 1: QUÉT SẢN XUẤT ── -->
+            <!-- ════════════ TAB 1: QUÉT SẢN XUẤT (LIVE SCAN & MATCH) ════════════ -->
             <section id="pane-scan" class="tab-pane active">
                 <div class="scan-stage">
 
-                    <!-- BANNER HƯỚNG DẪN KHI CHƯA NẠP LOG -->
-                    <div id="scan-no-log-banner" class="card" style="padding:10px 16px; margin-bottom:14px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <!-- BANNER KHI CHƯA NẠP LOG -->
+                    <div id="scan-no-log-banner" class="card" style="padding:11px 16px; background:rgba(56,189,248,0.09); border:1px solid rgba(56,189,248,0.32); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
                         <div style="font-size:12px; color:var(--text-main); display:flex; align-items:center; gap:8px;">
                             <span style="font-size:16px;">💡</span>
-                            <span><strong>Chưa nạp tệp nhật ký Klippel:</strong> Bạn đang ở chế độ quét tự do. Nếu bạn muốn đối soát theo danh sách mã hàng / kiện hàng, vui lòng chuyển sang tab <strong>[🎯 KIỂM TRA DANH SÁCH]</strong>.</span>
+                            <span><strong>Chưa nạp tệp nhật ký Klippel:</strong> Bạn có thể nạp ngay <strong>Bộ Dữ Liệu Mẫu (3 Trạm · 160 mẫu)</strong> để kiểm thử tính năng Quét, Thông số dung sai và Hồ sơ DUT, hoặc chuyển sang tab <strong>[🎯 KIỂM TRA DANH SÁCH]</strong>.</span>
                         </div>
-                        <div style="display:flex; gap:8px;">
-                            <button class="btn btn-sm btn-primary" onclick="switchTab('audit')">🎯 Sang Kiểm Tra Danh Sách</button>
-                            <button class="btn btn-sm btn-outline" onclick="startFastDirectoryScan()">📁 Nạp Tệp Klippel</button>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-sm btn-primary" onclick="loadBuiltInDemoKlippelLogs()">🧪 Nạp Dữ Liệu Mẫu Klippel</button>
+                            <button class="btn btn-sm btn-outline" onclick="document.getElementById('file-input').click()">📄 Chọn Tệp Log</button>
+                            <button class="btn btn-sm btn-secondary" onclick="switchTab('audit')">🎯 Sang Kiểm Tra Danh Sách</button>
                         </div>
                     </div>
 
-                    <!-- HÀNG 1: Ô QUÉT MÃ VẠCH & THẺ PHÁN ĐỊNH CỰC LỚN -->
-                    <div style="display:grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px;">
+                    <!-- HÀNG 1: Ô QUÉT MÃ VẠCH & THẺ PHÁN ĐỊNH CÔNG NGHIỆP -->
+                    <div class="scan-top-grid">
                         <div class="card scan-input-card">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                                <label for="scanner-input" class="scan-label" data-i18n="MÁY QUÉT MÃ VẠCH SẴN SÀNG" style="margin:0;">Ô QUÉT MÃ VẠCH · LIVE MATCH</label>
-                                <span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);">AUTOFOCUS ON</span>
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                                    <label for="scanner-input" class="scan-label" data-i18n="MÁY QUÉT MÃ VẠCH SẴN SÀNG">⚡ TRẠM QUÉT MÃ VẠCH · LIVE MATCH O(1)</label>
+                                    <div style="display:flex; align-items:center; gap:6px;">
+                                        <select id="scan-station-filter" class="settings-select" style="padding:3px 8px; font-size:11px; font-weight:700;" onchange="setLiveScanStationFilter(this.value)" title="Giới hạn tra cứu theo trạm đo">
+                                            <option value="ALL">🏭 Tất cả trạm đo</option>
+                                        </select>
+                                        <select class="settings-select" style="padding:3px 8px; font-size:11px; font-weight:700;" onchange="setLiveScanMatchMode(this.value)" title="Chế độ thuật toán so khớp">
+                                            <option value="flex">🎯 Khớp 3-Tầng Linh Hoạt</option>
+                                            <option value="exact">🔒 Khớp Chính Xác 100%</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="input-glow-wrapper">
+                                    <input type="text" id="scanner-input" placeholder="QUÉT HOẶC NHẬP SERIAL DUT..." autocomplete="off" autofocus>
+                                    <span class="scan-icon-indicator">🔍</span>
+                                </div>
                             </div>
-                            <div class="input-glow-wrapper">
-                                <input type="text" id="scanner-input" placeholder="QUÉT HOẶC NHẬP SERIAL DUT..." autocomplete="off" autofocus>
-                                <span class="scan-icon-indicator">🔍</span>
-                            </div>
-                            <div style="display:flex; gap:9px; margin-top:12px;">
-                                <button class="btn btn-primary" style="flex:1;" onclick="onScanManualSubmit()">ĐỐI SOÁT NGAY</button>
-                                <button class="btn btn-secondary" onclick="document.getElementById('scanner-input').value=''; document.getElementById('scanner-input').focus();">XOÁ Ô</button>
+
+                            <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
+                                <div style="display:flex; gap:8px;">
+                                    <button class="btn btn-primary" style="flex:1;" onclick="onScanManualSubmit()">⚡ ĐỐI SOÁT NGAY (ENTER)</button>
+                                    <button class="btn btn-secondary" onclick="document.getElementById('scanner-input').value=''; document.getElementById('scanner-input').focus();">XOÁ Ô</button>
+                                </div>
+                                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; padding-top:6px; border-top:1px solid var(--border-color); font-size:11px; color:var(--text-muted);">
+                                    <span>🧪 Quét thử nhanh:</span>
+                                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                                        <button class="btn btn-sm btn-outline" style="padding:3px 8px; font-size:10.5px;" onclick="triggerQuickSampleScan('PASS')">✓ Mẫu Đạt (PASS)</button>
+                                        <button class="btn btn-sm btn-outline-danger" style="padding:3px 8px; font-size:10.5px;" onclick="triggerQuickSampleScan('FAIL')">✕ Mẫu Lỗi (FAIL)</button>
+                                        <button class="btn btn-sm btn-secondary" style="padding:3px 8px; font-size:10.5px;" onclick="triggerQuickSampleScan('PURE_SERIAL')">🏷️ Quét Serial Trần (Tầng 2)</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- THẺ KẾT LUẬN CỰC LỚN (VERDICT BAND) -->
+                        <!-- THẺ KẾT LUẬN CÔNG NGHIỆP (VERDICT BAND) -->
                         <div class="verdict-band verdict-idle" id="verdict-band">
                             <div class="verdict-idle-sweep" id="verdict-idle-sweep">
                                 <div class="verdict-idle-bar"></div>
                             </div>
                             <div class="vb-row">
                                 <div class="vb-mark" id="verdict-mark" style="display:none;"></div>
-                                <div class="vb-main">
+                                <div class="vb-main" style="min-width:0; flex:1;">
                                     <div class="vb-title" id="verdict-title">CHỜ QUÉT…</div>
-                                    <div class="vb-sub" id="verdict-sub">Thẻ phán định sẽ hiển thị ngay khi nhận được serial từ đầu đọc.</div>
+                                    <div class="vb-sub" id="verdict-sub">Thẻ phán định, Model/Serial tách rời và trạng thái từng Task sẽ hiển thị ngay khi nhận mã từ súng barcode.</div>
                                 </div>
                             </div>
                             <div id="verdict-details"></div>
                         </div>
                     </div>
 
-                    <!-- HÀNG 2: THÔNG SỐ ĐO NHANH (PARAMETRIC SNAPSHOT) -->
-                    <div id="parametric-snapshot-container" style="display:none;"></div>
+                    <!-- HÀNG 2: DẢI 6 THẺ THÔNG SỐ VẬT LÝ VỚI THANH DUNG SAI [LSL ───●─── USL] -->
+                    <div id="parametric-snapshot-container"></div>
 
-                    <!-- HÀNG 3: THỐNG KÊ NHANH & LỊCH SỬ QUÉT -->
-                    <div style="display:grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items:start;">
-                        <!-- Bảng lịch sử 20 lượt quét gần nhất -->
+                    <!-- HÀNG 3: BẢNG HỒ SƠ KỸ THUẬT CHI TIẾT DUT & LỊCH SỬ ĐO LẠI (RETEST TRACEABILITY) -->
+                    <div id="dut-inspector-container" style="display:none;"></div>
+
+                    <!-- HÀNG 4: LỊCH SỬ QUÉT THÔNG MINH & BẢNG THỐNG KÊ KÉP -->
+                    <div class="scan-bottom-grid">
+                        <!-- Bảng lịch sử các lượt quét gần nhất -->
                         <div class="card">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                                <h4 style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--text-muted); margin:0;">🕒 LỊCH SỬ 20 LƯỢT QUÉT GẦN NHẤT</h4>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-sub);">FIFO BUFFER</span>
-                                    <button class="btn btn-sm btn-secondary" onclick="exportScanHistoryExcel()">📥 Xuất Lịch Sử</button>
+                                    <h4 style="font-size:11.5px; font-weight:800; text-transform:uppercase; color:var(--text-main); margin:0;">🕒 LỊCH SỬ QUÉT TRỰC TIẾP (NHẤP DÒNG ĐỂ XEM HỒ SƠ)</h4>
+                                    <span id="scan-history-count-label" class="meta-chip">0 lượt</span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                    <select class="settings-select" style="padding:4px 8px; font-size:11px; font-weight:700;" onchange="setScanHistoryFilter(this.value)">
+                                        <option value="ALL">Tất cả kết quả</option>
+                                        <option value="PASS">✓ Chỉ PASS</option>
+                                        <option value="FAIL">✕ Chỉ FAIL (Lỗi)</option>
+                                        <option value="DUP">⚠️ Quét trùng lặp</option>
+                                        <option value="NOT_FOUND">❓ Không tìm thấy</option>
+                                    </select>
+                                    <input type="text" class="settings-input" style="padding:4px 9px; font-size:11px; width:145px;" placeholder="🔍 Tìm mã lịch sử..." oninput="onScanHistorySearch(this.value)">
+                                    <button class="btn btn-sm btn-secondary" onclick="exportScanHistoryExcel()">📥 Xuất CSV</button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="clearScanHistoryData()" title="Xóa lịch sử phiên">🗑️</button>
                                 </div>
                             </div>
-                            <div class="table-wrapper" style="max-height:330px; overflow-y:auto;">
+                            <div class="table-wrapper" style="max-height:360px; overflow-y:auto;">
                                 <table class="data-table">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Thời Gian</th>
-                                            <th>Serial Number</th>
+                                            <th style="width:42px; text-align:center;">#</th>
+                                            <th>Giờ Quét</th>
+                                            <th>Serial / Mã Quét</th>
                                             <th>Trạm Đo</th>
-                                            <th>Re (Ω)</th>
-                                            <th>fs (Hz)</th>
-                                            <th>SPL (dB)</th>
+                                            <th style="text-align:right;">Re (Ω)</th>
+                                            <th style="text-align:right;">fs (Hz)</th>
+                                            <th style="text-align:right;">SPL (dB)</th>
                                             <th>Phán Định</th>
+                                            <th>Chi Tiết Lỗi / Ghi Chú</th>
                                         </tr>
                                     </thead>
                                     <tbody id="scan-history-tbody">
-                                        <tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:20px;">Chưa có lượt quét nào</td></tr>
+                                        <tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:24px;">Chưa có lượt quét nào</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
 
-                        <!-- Thống kê nhanh phiên -->
+                        <!-- Cột Thống Kê Kép: Phiên Quét Trực Tiếp & Kho Dữ Liệu Log -->
                         <div style="display:flex; flex-direction:column; gap:12px;">
-                            <div class="kpi-card">
-                                <div class="kpi-label">Tổng Dữ Liệu</div>
-                                <div class="kpi-val" id="sc-total-count">0</div>
-                                <div style="font-size:10.5px; color:var(--text-sub);">Bản ghi đang kích hoạt</div>
+                            <div class="card" style="padding:14px 16px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <span style="font-size:10.5px; font-weight:800; color:var(--accent-cyan); letter-spacing:0.08em;">⚡ THỐNG KÊ PHIÊN QUÉT HIỆN TẠI</span>
+                                    <button class="btn btn-sm btn-secondary" style="padding:2px 7px; font-size:10px;" onclick="resetLiveScanSessionStats()">Đặt lại</button>
+                                </div>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                    <div style="background:var(--bg-surface-elevated); padding:8px 10px; border-radius:8px; border:1px solid var(--border-color);">
+                                        <div style="font-size:9.5px; color:var(--text-muted); font-weight:700;">LƯỢT QUÉT PHIÊN</div>
+                                        <div id="ses-total-count" style="font-family:var(--font-mono); font-size:18px; font-weight:900; margin-top:2px;">0</div>
+                                    </div>
+                                    <div style="background:var(--bg-surface-elevated); padding:8px 10px; border-radius:8px; border:1px solid var(--border-color);">
+                                        <div style="font-size:9.5px; color:var(--text-muted); font-weight:700;">NHỊP ĐỘ QUÉT</div>
+                                        <div id="ses-pace-val" style="font-family:var(--font-mono); font-size:18px; font-weight:900; color:var(--accent-cyan); margin-top:2px;">—</div>
+                                    </div>
+                                    <div style="background:var(--bg-surface-elevated); padding:8px 10px; border-radius:8px; border:1px solid var(--border-color);">
+                                        <div style="font-size:9.5px; color:var(--text-muted); font-weight:700;">ĐẠT / LỖI PHIÊN</div>
+                                        <div style="font-family:var(--font-mono); font-size:15px; font-weight:800; margin-top:2px;">
+                                            <span id="ses-pass-count" style="color:#10b981;">0</span> / <span id="ses-fail-count" style="color:#ef4444;">0</span>
+                                        </div>
+                                    </div>
+                                    <div style="background:var(--bg-surface-elevated); padding:8px 10px; border-radius:8px; border:1px solid var(--border-color);">
+                                        <div style="font-size:9.5px; color:var(--text-muted); font-weight:700;">LẶP / KHÔNG THẤY</div>
+                                        <div style="font-family:var(--font-mono); font-size:15px; font-weight:800; margin-top:2px;">
+                                            <span id="ses-dup-count" style="color:#f59e0b;">0</span> / <span id="ses-nf-count" style="color:var(--text-muted);">0</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="kpi-card">
-                                <div class="kpi-label">Sản Phẩm Đạt</div>
-                                <div class="kpi-val" id="sc-pass-count" style="color:#10b981;">0</div>
-                                <div style="font-size:10.5px; color:var(--text-sub);">Đạt tiêu chuẩn chất lượng</div>
-                            </div>
-                            <div class="kpi-card">
-                                <div class="kpi-label">Sản Phẩm Lỗi</div>
-                                <div class="kpi-val" id="sc-fail-count" style="color:#ef4444;">0</div>
-                                <div style="font-size:10.5px; color:var(--text-sub);">Phát hiện lỗi đo kiểm</div>
-                            </div>
-                            <div class="kpi-card">
-                                <div class="kpi-label">Tỷ Lệ Pass</div>
-                                <div class="kpi-val" id="sc-yield-rate" style="color:#38bdf8;">0%</div>
-                                <div style="font-size:10.5px; color:var(--text-sub);">Tỷ lệ đạt phiên hiện tại</div>
+
+                            <div class="card" style="padding:14px 16px;">
+                                <div style="font-size:10.5px; font-weight:800; color:var(--text-muted); letter-spacing:0.08em; margin-bottom:10px;">🗄️ TỔNG QUAN KHO LOG ĐANG KÍCH HOẠT</div>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                                    <div class="kpi-card" style="padding:10px 12px;">
+                                        <div class="kpi-label">Tổng Bản Ghi</div>
+                                        <div class="kpi-val" id="sc-total-count" style="font-size:20px;">0</div>
+                                    </div>
+                                    <div class="kpi-card" style="padding:10px 12px;">
+                                        <div class="kpi-label">Tỷ Lệ Final Pass</div>
+                                        <div class="kpi-val" id="sc-yield-rate" style="color:#38bdf8; font-size:20px;">0%</div>
+                                    </div>
+                                    <div class="kpi-card" style="padding:10px 12px;">
+                                        <div class="kpi-label">DUT Đạt (PASS)</div>
+                                        <div class="kpi-val" id="sc-pass-count" style="color:#10b981; font-size:20px;">0</div>
+                                    </div>
+                                    <div class="kpi-card" style="padding:10px 12px;">
+                                        <div class="kpi-label">DUT Lỗi (FAIL)</div>
+                                        <div class="kpi-val" id="sc-fail-count" style="color:#ef4444; font-size:20px;">0</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -342,114 +391,217 @@
                 </div>
             </section>
 
-            <!-- ── TAB 2: KIỂM TRA DANH SÁCH (AUDIT) ── -->
+            <!-- ════════════ TAB 2: KIỂM TRA DANH SÁCH ĐA GROUP (MULTI-GROUP AUDIT) ════════════ -->
             <section id="pane-audit" class="tab-pane hidden">
-                <div style="display:flex; flex-direction:column; gap:var(--space-md);">
-                    
-                    <div style="display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
-                        <div class="card">
-                            <div class="kpi-label">TỔNG SỐ MÃ MỤC TIÊU</div>
+                <div style="display:flex; flex-direction:column; gap:14px;">
+
+                    <!-- HÀNG 1: 6 THẺ KPI ĐỐI SOÁT TOÀN DIỆN -->
+                    <div class="audit-kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-label">TỔNG MÃ MỤC TIÊU</div>
                             <div class="kpi-val" id="audit-total-count" style="color:var(--text-main);">0</div>
+                            <div style="font-size:10px; color:var(--text-muted);">Trong phạm vi Group đang xem</div>
                         </div>
-                        <div class="card">
+                        <div class="kpi-card">
                             <div class="kpi-label">ĐÃ QUÉT ĐỐI SOÁT</div>
                             <div class="kpi-val" id="audit-scanned-count" style="color:#10b981;">0</div>
+                            <div style="font-size:10px; color:var(--text-muted);">Khớp thành công</div>
                         </div>
-                        <div class="card">
+                        <div class="kpi-card">
                             <div class="kpi-label">CÒN THIẾU CHƯA QUÉT</div>
                             <div class="kpi-val" id="audit-remaining-count" style="color:#f87171;">0</div>
+                            <div style="font-size:10px; color:var(--text-muted);">Cần tiếp tục quét</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">LƯỢT QUÉT LẶP (DUP)</div>
+                            <div class="kpi-val" id="audit-dup-count" style="color:#f59e0b;">0</div>
+                            <div style="font-size:10px; color:var(--text-muted);">Quét trùng &gt; 1 lần</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">MÃ LẠ NGOÀI DS</div>
+                            <div class="kpi-val" id="audit-stranger-count" style="color:#a855f7;">0</div>
+                            <div style="font-size:10px; color:var(--text-muted);">Không thuộc danh sách</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">CẢNH BÁO NG KLIPPEL</div>
+                            <div class="kpi-val" id="audit-qcfail-count" style="color:#ef4444;">0</div>
+                            <div style="font-size:10px; color:var(--text-muted);">Mã trong DS bị lỗi QC</div>
                         </div>
                     </div>
 
-                    <!-- Thanh tiến độ đối soát -->
-                    <div class="card" style="padding:18px 20px;">
-                        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;">
-                            <span style="font-size:11px; font-weight:800; color:var(--text-muted); letter-spacing:0.8px;">TIẾN ĐỘ ĐỐI SOÁT</span>
-                            <span id="audit-progress-pct" style="font-family:var(--font-mono); font-size:20px; font-weight:800; color:var(--accent-blue);">0%</span>
+                    <!-- HÀNG 2: THANH TIẾN ĐỘ THỜI GIAN THỰC & PHẠM VI GROUP -->
+                    <div class="card" style="padding:14px 18px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                            <div id="audit-active-scope-title" style="font-size:12px; font-weight:800; color:var(--text-main);">
+                                🌐 TỔNG HỢP TOÀN BỘ GROUP ĐỐI SOÁT
+                            </div>
+                            <span id="audit-progress-pct" style="font-family:var(--font-mono); font-size:20px; font-weight:900; color:var(--accent-cyan);">0.0%</span>
                         </div>
-                        <div style="background:rgba(255,255,255,0.06); height:12px; border-radius:12px; overflow:hidden;">
-                            <div id="audit-progress-bar" style="width:0%; height:100%; border-radius:12px; background:linear-gradient(90deg, #00f2fe, #38bdf8, #10b981); transition:width 0.35s ease;"></div>
+                        <div style="background:rgba(148,163,184,0.14); height:11px; border-radius:11px; overflow:hidden;">
+                            <div id="audit-progress-bar" style="width:0%; height:100%; border-radius:11px; background:linear-gradient(90deg, #00f2fe, #38bdf8, #10b981); transition:width 0.35s ease;"></div>
                         </div>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px;">
-                        <div class="card">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-                                <div style="font-size:11px; font-weight:800; color:var(--text-muted);">DANH SÁCH MÃ MỤC TIÊU (DÁN HOẶC NẠP TỆP)</div>
+                    <!-- HÀNG 3: BẢNG ĐIỀU KHIỂN CÁC GROUP ĐỘC LẬP (MULTI-GROUP CONTROL DECK) -->
+                    <div class="card" style="padding:16px 18px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+                            <div>
+                                <div style="font-size:12px; font-weight:900; color:var(--accent-cyan); text-transform:uppercase; letter-spacing:0.06em;">
+                                    📦 BẢNG ĐIỀU KHIỂN &amp; PHÂN TÁCH CÁC GROUP KIỂM SOÁT RIÊNG
+                                </div>
+                                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
+                                    Nhấp chọn bất kỳ Group/Kiện hàng nào để kiểm soát riêng, Khóa bảo vệ khi đóng đủ thùng, hoặc dùng công cụ Chia Tách Group Tự Động bên phải.
+                                </div>
+                            </div>
+
+                            <!-- Thanh công cụ tách Group tự động 1-Click -->
+                            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                <div style="display:inline-flex; align-items:center; gap:4px; background:var(--bg-surface-elevated); padding:3px 8px; border-radius:8px; border:1px solid var(--border-color);">
+                                    <span style="font-size:11px; color:var(--text-muted); font-weight:700;">Quy cách:</span>
+                                    <input type="number" id="audit-batch-size-input" min="1" max="500" value="6" class="settings-input" style="width:52px; padding:3px 6px; font-size:11.5px; font-weight:800; text-align:center;">
+                                    <button class="btn btn-sm btn-outline" style="padding:4px 9px; font-size:11px;" onclick="splitAuditIntoGroups('BATCH_SIZE')" title="Chia danh sách hiện tại thành các Thùng/Group theo số lượng PCS mỗi thùng">📦 Chia Theo Thùng</button>
+                                </div>
+                                <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('MODEL_PREFIX')" title="Tự động tách thành các Group riêng theo Mã Model hoặc Tiền tố">🏷️ Tách Theo Model</button>
+                                <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('KLIPPEL_STATUS')" title="Tách riêng Group Đạt (PASS), Group Lỗi (FAIL) và Group Chưa Đo">🔬 Tách Theo KQ Klippel</button>
+                                <button class="btn btn-sm btn-secondary" style="border-color:var(--status-pass); color:#34d399;" onclick="loadDemoMultiGroupAudit()" title="Nạp danh sách mẫu gồm 3 Kiện hàng độc lập để kiểm thử ngay">🧪 Nạp Mẫu 3 Group</button>
+                            </div>
+                        </div>
+
+                        <!-- Lưới hiển thị các thẻ Group -->
+                        <div id="audit-groups-deck"></div>
+                    </div>
+
+                    <!-- HÀNG 4: KHUNG NẠP / TẠO GROUP MỚI & KHUNG QUÉT ĐỐI SOÁT THỰC TẾ -->
+                    <div class="audit-io-grid">
+                        <!-- Cột Trái: Nạp Danh Sách / Tạo Group Mới -->
+                        <div class="card" style="display:flex; flex-direction:column; gap:10px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                                <div style="font-size:11.5px; font-weight:800; color:var(--text-main);">📋 NẠP DANH SÁCH MÃ HOẶC TẠO GROUP MỚI</div>
                                 <div style="display:flex; gap:6px;">
-                                    <button class="btn btn-sm btn-outline" onclick="document.getElementById('audit-file-input').click()" style="font-size:11.5px; padding:3px 10px;">📄 Nạp File (.xlsx, .csv, .txt)</button>
+                                    <button class="btn btn-sm btn-outline" onclick="document.getElementById('audit-file-input').click()" style="font-size:11px; padding:4px 10px;">📄 Nạp File (.xlsx, .csv, .txt)</button>
                                     <input type="file" id="audit-file-input" accept=".xlsx,.xls,.csv,.txt" style="display:none;" onchange="handleAuditFileUpload(this)">
                                 </div>
                             </div>
-                            <textarea id="audit-target-input" rows="7" style="width:100%; padding:12px; border-radius:var(--radius-sm); background:var(--bg-surface-elevated); color:var(--text-main); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:12px; line-height:1.7; outline:none;" placeholder="Dán danh sách mã Serial / DUT tại đây (mỗi mã 1 dòng), hoặc bấm 'Nạp File' ở trên để nạp từ file Excel/Text..."></textarea>
-                            <div style="display:flex; gap:9px; margin-top:10px;">
-                                <button class="btn btn-primary btn-sm" onclick="loadAuditTargetList()">✓ Nạp Danh Sách</button>
-                                <button class="btn btn-secondary btn-sm" onclick="resetAuditList()">Đặt Lại</button>
+
+                            <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:8px;">
+                                <input type="text" id="audit-group-name-input" class="settings-input" placeholder="📦 Tên Group (VD: Kiện #01 - Pallet A)...">
+                                <input type="text" id="audit-group-note-input" class="settings-input" placeholder="📝 Ghi chú (PO / Khách hàng / Ca)...">
+                            </div>
+
+                            <textarea id="audit-target-input" rows="5" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); background:var(--bg-surface-elevated); color:var(--text-main); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:12px; line-height:1.6; outline:none;" placeholder="Dán danh sách mã Serial / DUT tại đây (mỗi mã 1 dòng).&#10;💡 Mẹo tách nhiều Group cùng lúc: Gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!"></textarea>
+
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <button class="btn btn-primary btn-sm" style="flex:1;" onclick="loadAuditTargetList(false)">✓ Nạp Mới (Thay Thế)</button>
+                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="loadAuditTargetList(true)">➕ Thêm Thành Group Riêng</button>
+                                <button class="btn btn-outline-danger btn-sm" onclick="resetAuditList()">🗑️ Xóa Hết</button>
                             </div>
                         </div>
 
-                        <div class="card" style="display:flex; flex-direction:column;">
-                            <div style="font-size:11px; font-weight:800; color:var(--accent-blue); margin-bottom:10px;">QUÉT ĐỐI SOÁT THỰC TẾ</div>
-                            <div class="input-glow-wrapper">
-                                <input type="text" id="audit-scanner-input" placeholder="QUÉT MÃ THỰC TẾ..." autocomplete="off">
-                                <span class="scan-icon-indicator">🎯</span>
+                        <!-- Cột Phải: Quét Đối Soát Thực Tế Theo Phạm Vi Group -->
+                        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
+                            <div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                                    <span style="font-size:11.5px; font-weight:800; color:var(--accent-cyan);">🎯 QUÉT ĐỐI SOÁT THỰC TẾ THEO GROUP</span>
+                                    <div style="display:flex; gap:6px; align-items:center;">
+                                        <select class="settings-select" style="padding:3px 8px; font-size:11px; font-weight:700;" onchange="setAuditScanScope(this.value)" title="Chọn chế độ kiểm soát phạm vi Group khi quét">
+                                            <option value="GLOBAL">🌐 Tự Động Định Tuyến Mọi Group</option>
+                                            <option value="ACTIVE">🎯 Khóa Quét Trong Group Đang Chọn</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="input-glow-wrapper">
+                                    <input type="text" id="audit-scanner-input" placeholder="QUÉT MÃ THỰC TẾ ĐỂ KIỂM SOÁT GROUP..." autocomplete="off">
+                                    <span class="scan-icon-indicator">🎯</span>
+                                </div>
+
+                                <div style="display:flex; gap:8px; margin-top:8px;">
+                                    <button class="btn btn-primary btn-sm" style="flex:1;" onclick="onAuditManualSubmit()">⚡ Quét Khớp Ngay</button>
+                                    <label style="display:inline-flex; align-items:center; gap:5px; font-size:11px; color:var(--text-muted); cursor:pointer;">
+                                        <input type="checkbox" checked onchange="toggleAuditAutoSwitchGroup(this.checked)"> Tự chuyển sang Group vừa quét
+                                    </label>
+                                </div>
                             </div>
-                            <div style="margin-top:12px; flex:1; min-height:80px; max-height:140px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start;" id="audit-chips-container"></div>
-                            <div style="display:flex; gap:9px; margin-top:12px;">
-                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditHTML()">📤 Xuất HTML Đối Soát</button>
-                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditReport()">📥 Xuất Excel Đối Soát</button>
+
+                            <!-- Vùng hiển thị Chip các lượt quét đối soát -->
+                            <div style="min-height:76px; max-height:125px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start; padding:8px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-color);" id="audit-chips-container"></div>
+
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <button class="btn btn-secondary btn-sm" onclick="copyMissingAuditTargets()">📋 Copy Mã Còn Thiếu</button>
+                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditHTML()">📤 Xuất Báo Cáo HTML</button>
+                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditReport()">📥 Xuất Excel Đa Group</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Bảng chi tiết danh sách mục tiêu -->
+                    <!-- HÀNG 5: BẢNG CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU -->
                     <div class="card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
-                            <div style="font-size:11px; font-weight:800; color:var(--text-muted);">CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU</div>
-                            <div id="audit-log-reference-badge" style="font-size:11px; color:var(--text-sub);"></div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+                            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                                <div style="font-size:11.5px; font-weight:800; color:var(--text-main);">📋 CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU</div>
+                                <span id="audit-filtered-count-label" class="meta-chip">0 mã</span>
+                                <div id="audit-log-reference-badge"></div>
+                            </div>
+
+                            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                <select class="settings-select" style="padding:5px 10px; font-size:11.5px; font-weight:700;" onchange="setAuditFilterStatus(this.value)">
+                                    <option value="ALL">Tất cả trạng thái</option>
+                                    <option value="MISSING">⏳ Chỉ mã CÒN THIẾU (Chưa quét)</option>
+                                    <option value="SCANNED">✓ Chỉ mã ĐÃ QUÉT</option>
+                                    <option value="DUPLICATE">⚠️ Mã quét lặp (&gt;1 lần)</option>
+                                    <option value="KLIPPEL_FAIL">🚨 Mã bị LỖI Klippel QC (FAIL)</option>
+                                    <option value="NO_LOG">❓ Mã chưa có trong Klippel Log</option>
+                                </select>
+                                <input type="text" class="settings-input" style="padding:5px 10px; font-size:11.5px; width:190px;" placeholder="🔍 Tìm Serial / Group / Model..." oninput="onAuditTableSearch(this.value)">
+                            </div>
                         </div>
-                        <div class="table-wrapper" style="max-height:340px; overflow-y:auto;">
+
+                        <div class="table-wrapper" style="max-height:420px; overflow-y:auto;">
                             <table class="data-table">
                                 <thead>
                                     <tr>
-                                        <th style="width:50px; text-align:center;">#</th>
+                                        <th style="width:45px; text-align:center;">#</th>
+                                        <th>Group / Kiện</th>
                                         <th>Mã Mục Tiêu (Target ID)</th>
+                                        <th>Model · Serial Tách</th>
                                         <th style="text-align:center;">Trạng Thái Đối Soát</th>
-                                        <th style="text-align:center;">Số Lần Quét</th>
-                                        <th>Lần Quét Đầu</th>
-                                        <th>Lần Quét Cuối</th>
+                                        <th style="text-align:center;">Lượt Quét</th>
+                                        <th>Giờ Quét (Đầu → Cuối)</th>
                                         <th style="text-align:center;">Klippel QC</th>
+                                        <th>Thông Số Đo &amp; Cảnh Báo Lỗi</th>
+                                        <th style="text-align:center;">Thao Tác</th>
                                     </tr>
                                 </thead>
                                 <tbody id="audit-table-tbody">
-                                    <tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">Chưa nạp danh sách mục tiêu</td></tr>
+                                    <tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:24px;">Chưa nạp danh sách mục tiêu</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
+
                 </div>
             </section>
 
-            <!-- ── TAB 3: PHÂN TÍCH CHẤT LƯỢNG (3 UNIFIED WORKSPACES) ── -->
+            <!-- ════════════ TAB 3: PHÂN TÍCH CHẤT LƯỢNG (3 UNIFIED WORKSPACES) ════════════ -->
             <section id="pane-analysis" class="tab-pane hidden">
                 <div id="analysis-subnav-container" class="analysis-subnav-wrapper"></div>
                 <div id="analysis-workspace-content"></div>
             </section>
 
-            <!-- ── TAB 4: THÔNG SỐ ĐO & Cpk ── -->
+            <!-- ════════════ TAB 4: THÔNG SỐ ĐO & Cpk ════════════ -->
             <section id="pane-parametric" class="tab-pane hidden">
                 <div style="display:flex; flex-direction:column; gap:var(--space-md);">
-                    <div class="card" style="padding:16px;">
+                    <div class="card" style="padding:16px 18px;">
                         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                             <div>
-                                <h3 style="font-size:15px; font-weight:900; margin:0;">📈 PHÂN TÍCH THÔNG SỐ ĐO VẬT LÝ & NĂNG LỰC QUY TRÌNH (Cpk)</h3>
+                                <h3 style="font-size:15px; font-weight:900; margin:0;">📈 PHÂN TÍCH THÔNG SỐ ĐO VẬT LÝ &amp; NĂNG LỰC QUY TRÌNH SIX SIGMA (Cpk)</h3>
                                 <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                                    Khai thác 100% giá trị đo thực tế, giới hạn Min/Max dung sai và độ lệch chuẩn 6-Sigma
+                                    Khai thác 100% giá trị đo liên tục, giới hạn dung sai LSL/USL, độ lệch tâm k và phát hiện sớm sản phẩm cận biên lỗi (Near-Fail)
                                 </div>
                             </div>
                             <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                                <label style="font-size:12px; font-weight:700; color:var(--text-muted);">Chọn Thông Số:</label>
-                                <select id="parametric-metric-select" class="settings-select" style="font-weight:700; min-width:240px;" onchange="onParametricMetricChange(this.value)">
+                                <label style="font-size:12px; font-weight:700; color:var(--text-muted);">Thông Số Đang Vẽ Biểu Đồ:</label>
+                                <select id="parametric-metric-select" class="settings-select" style="font-weight:700; min-width:250px;" onchange="onParametricMetricChange(this.value)">
                                     <option value="">(Đang tải thông số...)</option>
                                 </select>
                                 <button class="btn btn-sm btn-outline" onclick="exportCpkHTML()">📤 Xuất HTML Cpk</button>
@@ -462,7 +614,7 @@
                 </div>
             </section>
 
-            <!-- ── TAB 5: QUẢN LÝ ĐA TỆP & TRẠM ĐO ── -->
+            <!-- ════════════ TAB 5: QUẢN LÝ ĐA TỆP & TRẠM ĐO ════════════ -->
             <section id="pane-files" class="tab-pane hidden">
                 <div id="files-manager-container"></div>
             </section>
@@ -476,17 +628,16 @@
         <div class="modal-card settings-modal-card">
             <div class="modal-header">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,var(--cyan),var(--blue)); display:grid; place-items:center; font-size:15px;">⚙️</div>
+                    <div style="width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue)); display:grid; place-items:center; font-size:15px;">⚙️</div>
                     <div>
-                        <h3 style="font-size:16px; font-weight:800; margin:0;">CÀI ĐẶT NHANH</h3>
-                        <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">QIT SCANNER V2 · SYSTEM CONFIGURATION</div>
+                        <h3 style="font-size:16px; font-weight:800; margin:0;">CÀI ĐẶT HỆ THỐNG</h3>
+                        <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">QIT SCANNER V2 PRO · SYSTEM CONFIGURATION</div>
                     </div>
                 </div>
                 <button class="btn-icon" onclick="closeSettingsModal()" title="Đóng (ESC)">✕</button>
             </div>
 
             <div class="settings-modal-layout">
-                <!-- Sidebar danh mục cài đặt -->
                 <nav class="settings-sidebar">
                     <button class="settings-nav-btn active" data-subtab="display" onclick="switchSettingsSubTab('display')">
                         <span>🎨</span> Hiển thị &amp; Thu phóng
@@ -495,7 +646,7 @@
                         <span>⏱️</span> Ca Sản Xuất
                     </button>
                     <button class="settings-nav-btn" data-subtab="matcher" onclick="switchSettingsSubTab('matcher')">
-                        <span>🔍</span> Quét mã &amp; Matcher
+                        <span>🔍</span> Quét mã &amp; Group Audit
                     </button>
                     <button class="settings-nav-btn" data-subtab="audio" onclick="switchSettingsSubTab('audio')">
                         <span>🔊</span> Âm thanh &amp; Giọng nói
@@ -510,11 +661,10 @@
                         <span>💾</span> Sao lưu &amp; Dữ liệu
                     </button>
                     <div style="margin-top:auto; padding:12px; border-radius:11px; background:var(--surface3); border:1px solid var(--border-color); font-size:10.5px; color:var(--text-sub); line-height:1.6;">
-                        Nhấn <span style="font-family:var(--font-mono); color:var(--accent-blue);">ESC</span> để mở/đóng cài đặt. Thay đổi được lưu tự động.
+                        Nhấn <span style="font-family:var(--font-mono); color:var(--accent-cyan);">ESC</span> để mở/đóng cài đặt. Thay đổi được lưu tự động.
                     </div>
                 </nav>
 
-                <!-- Vùng nội dung chi tiết cài đặt -->
                 <div class="settings-content-wrapper" id="settings-modal-body"></div>
             </div>
 
@@ -524,13 +674,13 @@
         </div>
     </div>
 
-    <!-- ── MODAL DRILLDOWN CHI TIẾT LỖI / MA TRẬN ── -->
+    <!-- ── MODAL DRILLDOWN CHI TIẾT LỖI / MA TRẬN / HỒ SƠ DUT ── -->
     <div id="drilldown-modal" class="modal hidden">
         <div class="modal-card">
             <div class="modal-header">
-                <div>
-                    <div style="font-size:10px; letter-spacing:0.16em; color:var(--text-muted); font-weight:700;">DRILLDOWN CHI TIẾT</div>
-                    <h3 id="drilldown-modal-title" style="font-size:17px; font-weight:800; margin-top:4px; color:#f87171;">Chi Tiết Lỗi</h3>
+                <div style="flex:1;">
+                    <div style="font-size:10px; letter-spacing:0.16em; color:var(--text-muted); font-weight:700;">TRUY VẾT CHI TIẾT HỒ SƠ ĐO</div>
+                    <h3 id="drilldown-modal-title" style="font-size:16px; font-weight:800; margin-top:4px; color:#f87171;">Chi Tiết Lỗi</h3>
                 </div>
                 <button class="btn-icon" onclick="closeDrilldownModal()">✕</button>
             </div>
@@ -551,7 +701,7 @@
                 </div>
             </div>
             <div class="modal-footer" style="display:flex; justify-content:space-between;">
-                <button class="btn btn-outline-danger btn-sm" onclick="copyAllDefectSNs()">📋 Copy Toàn Bộ Mã</button>
+                <button class="btn btn-outline-danger btn-sm" onclick="copyAllDefectSNs()">📋 Copy Toàn Bộ Mã Lỗi</button>
                 <button class="btn btn-secondary btn-sm" onclick="closeDrilldownModal()">Đóng</button>
             </div>
         </div>
@@ -567,7 +717,7 @@
             <div class="modal-body" style="padding:24px;">
                 <div style="font-size:48px; margin-bottom:12px;">🦾</div>
                 <div style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
-                    Tổng số lượt quét mã vạch hệ thống robot đã từng thực hiện:
+                    Tổng số lượt quét mã vạch hệ thống đã thực hiện tích lũy:
                 </div>
                 <div class="kpi-grid" style="grid-template-columns: repeat(2, 1fr);">
                     <div class="kpi-card">
@@ -589,10 +739,13 @@
                 </div>
             </div>
             <div class="modal-footer" style="justify-content:center;">
-                <button class="btn btn-primary btn-sm" onclick="closeRobotLifetimeModal()">Tuyệt Vời!</button>
+                <button class="btn btn-primary btn-sm" onclick="closeRobotLifetimeModal()">Đóng</button>
             </div>
         </div>
     </div>
+
+    <!-- CUSTOM SANDBOX-SAFE DIALOG MODAL -->
+    <div id="qit-custom-dialog-modal" class="modal hidden"></div>
 
     <!-- TOAST CONTAINER -->
     <div id="toast-container"></div>
@@ -602,7 +755,7 @@
     <script src="lib/exceljs.min.js"></script>
     <script src="lib/confetti.browser.min.js"></script>
 
-    <!-- SCANNER V2 MODULAR SCRIPTS -->
+    <!-- SCANNER V2 PRO MODULAR SCRIPTS -->
     <script src="src/00-i18n-dict.js"></script>
     <script src="src/01-config.js"></script>
     <script src="src/01b-i18n.js"></script>

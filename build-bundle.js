@@ -1,4 +1,4 @@
-/* ════════════ SCANNER V2 BUNDLER — CREATE STANDALONE OFFLINE HTML ════════════ */
+/* ════════════ SCANNER V2 PRO BUNDLER — CREATE STANDALONE OFFLINE HTML ════════════ */
 const fs = require('fs');
 const path = require('path');
 
@@ -6,12 +6,21 @@ const baseDir = __dirname;
 const srcDir = path.join(baseDir, 'src');
 const libDir = path.join(baseDir, 'lib');
 
-console.log('📦 Starting bundle build for Scanner v2...');
+console.log('📦 Starting bundle build for QIT Scanner v2 Pro...');
 
-// 1. Read CSS
+// 1. Read CSS and inline WOFF2 fonts as base64 data URIs so standalone HTML has zero external local dependencies
 let cssCombined = '';
 if (fs.existsSync(path.join(baseDir, 'fonts.css'))) {
-    cssCombined += fs.readFileSync(path.join(baseDir, 'fonts.css'), 'utf8') + '\n';
+    let fontsCss = fs.readFileSync(path.join(baseDir, 'fonts.css'), 'utf8');
+    fontsCss = fontsCss.replace(/url\(['"]?(?:\.\.\/)?lib\/fonts\/([^'")]+)['"]?\)/g, (match, fileName) => {
+        const fontPath = path.join(libDir, 'fonts', fileName);
+        if (fs.existsSync(fontPath)) {
+            const b64 = fs.readFileSync(fontPath).toString('base64');
+            return `url("data:font/woff2;base64,${b64}")`;
+        }
+        return match;
+    });
+    cssCombined += fontsCss + '\n';
 }
 if (fs.existsSync(path.join(baseDir, 'scanner.css'))) {
     cssCombined += fs.readFileSync(path.join(baseDir, 'scanner.css'), 'utf8') + '\n';
@@ -61,8 +70,8 @@ const indexHtmlPath = path.join(baseDir, 'index.html');
 let indexHtml = fs.readFileSync(indexHtmlPath, 'utf8');
 
 // Replace CSS links with inlined style
-indexHtml = indexHtml.replace(/<link rel="stylesheet" href="fonts.css">/gi, '');
-indexHtml = indexHtml.replace(/<link rel="stylesheet" href="scanner.css">/gi, `<style>\n${cssCombined}\n</style>`);
+indexHtml = indexHtml.replace(/<link rel="stylesheet" href="fonts\.css">/gi, '');
+indexHtml = indexHtml.replace(/<link rel="stylesheet" href="scanner\.css">/gi, `<style>\n${cssCombined}\n</style>`);
 
 // Remove external script tags and inject combined inlined scripts
 indexHtml = indexHtml.replace(/<script src="lib\/[^"]+"><\/script>\s*/gi, '');
@@ -71,7 +80,7 @@ indexHtml = indexHtml.replace(/<script src="src\/[^"]+"><\/script>\s*/gi, '');
 const inlineScriptBundle = `
 <script>
 ${vendorJS}
-${appJS}
+${appJS.replace(/<\/script>/gi, "<\\/script>")} 
 </script>
 `;
 

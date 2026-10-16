@@ -1,4 +1,4 @@
-/* ════════════ QUẢN LÝ TRẠNG THÁI TRUNG TÂM V2 ════════════ */
+/* ════════════ QUẢN LÝ TRẠNG THÁI TRUNG TÂM V2 PRO ════════════ */
 let filesToLoad = [];
 let loadedFilesMap = new Map(); // fileId -> { fileId, fileName, stationName, recordCount, active: true, schema, records }
 
@@ -17,16 +17,20 @@ let totalLinesParsed = 0;
 let parseWarnings = [];
 
 // Persisted user configurations
-let errorAliases = JSON.parse(localStorage.getItem(LS.ALIASES)) || {};
-let hiddenErrors = JSON.parse(localStorage.getItem(LS.HIDDEN)) || {};
-let scanHistory = JSON.parse(localStorage.getItem(LS.HISTORY)) || [];
-let comboErrorMode = JSON.parse(localStorage.getItem(LS.COMBO)) || false;
-let audioMuted = JSON.parse(localStorage.getItem(LS.MUTED)) || false;
+let errorAliases = (function() { try { return JSON.parse(localStorage.getItem(LS.ALIASES)) || {}; } catch(e) { return {}; } })();
+let hiddenErrors = (function() { try { return JSON.parse(localStorage.getItem(LS.HIDDEN)) || {}; } catch(e) { return {}; } })();
+let scanHistory = (function() { try { return JSON.parse(localStorage.getItem(LS.HISTORY)) || []; } catch(e) { return []; } })();
+let comboErrorMode = (function() { try { return JSON.parse(localStorage.getItem(LS.COMBO)) || false; } catch(e) { return false; } })();
+let audioMuted = (function() { try { return JSON.parse(localStorage.getItem(LS.MUTED)) || false; } catch(e) { return false; } })();
 let audioVolume = (function () {
-    const v = parseFloat(localStorage.getItem(LS.VOLUME));
-    return isNaN(v) ? 1.3 : v;
+    try {
+        const v = parseFloat(localStorage.getItem(LS.VOLUME));
+        return isNaN(v) ? 1.3 : v;
+    } catch(e) {
+        return 1.3;
+    }
 })();
-let flagZones = JSON.parse(localStorage.getItem(LS.FLAGS)) || [];
+let flagZones = (function() { try { return JSON.parse(localStorage.getItem(LS.FLAGS)) || []; } catch(e) { return []; } })();
 
 // Robot Lifetime persistence
 let robotLifetimeStats = (function() {
@@ -54,11 +58,33 @@ function recordRobotStats(totalInc, passInc, failInc, nodataInc) {
     } catch(e) {}
 }
 
-// Audit state
+// Live Scan Session Metrics (Tách biệt với KPI tĩnh của file log)
+let liveScanSession = {
+    totalScans: 0,
+    passScans: 0,
+    failScans: 0,
+    dupScans: 0,
+    notFoundScans: 0,
+    timestamps: [],
+    historyFilter: 'ALL', // 'ALL' | 'PASS' | 'FAIL' | 'DUP' | 'NOT_FOUND'
+    historySearch: '',
+    stationFilter: 'ALL'
+};
+
+// Multi-Group Audit State (Kiểm soát đối soát danh sách theo từng Group độc lập)
 let auditState = {
-    targetList: [], // Array of { index, rawId, cleanId, scanCount, firstScanTime, lastScanTime, scans: [] }
-    scannedCount: 0,
-    scanLog: []
+    groups: [],             // Array of { id, name, note, locked, createdAt, targetList, scannedCount, duplicateCount, strangerScans }
+    activeGroupId: 'ALL',   // 'ALL' (Xem tổng hợp mọi Group) hoặc group.id cụ thể
+    scanScope: CFG.AUDIT_SCAN_SCOPE || 'GLOBAL', // 'ACTIVE' (Chỉ quét trong Group đang mở) | 'GLOBAL' (Tự động định tuyến vào đúng Group)
+    autoSwitchGroup: CFG.AUDIT_AUTO_SWITCH_GROUP !== false,
+    warnOnKlippelFail: CFG.AUDIT_WARN_KLIPPEL_FAIL !== false,
+    filterStatus: 'ALL',    // 'ALL' | 'SCANNED' | 'MISSING' | 'DUPLICATE' | 'KLIPPEL_FAIL' | 'NO_LOG'
+    searchQuery: '',
+    targetList: [],         // Danh sách mục tiêu phẳng (đồng bộ tự động cho tương thích ngược & hiển thị)
+    scannedCount: 0,        // Số lượng mã mục tiêu đã quét khớp
+    duplicateCount: 0,      // Tổng số lượt quét lặp lại
+    strangerList: [],       // Danh sách mã lạ ngoài danh sách [{ time, rawScan, cleanScan, activeGroupName }]
+    scanLog: []             // Nhật ký các lượt quét đối soát
 };
 
 let currentGapThreshold = CFG.GAP_THRESHOLD_MIN;
@@ -162,9 +188,8 @@ function resetAllData() {
     };
 
     shiftData = {
-        shift1: { name: 'Ca 1 (06:00 - 14:00)', total: 0, pass: 0, fail: 0, fpy: 0, topErrors: [] },
-        shift2: { name: 'Ca 2 (14:00 - 22:00)', total: 0, pass: 0, fail: 0, fpy: 0, topErrors: [] },
-        shift3: { name: 'Ca 3 (22:00 - 06:00)', total: 0, pass: 0, fail: 0, fpy: 0, topErrors: [] }
+        shifts: [],
+        hourlyTimeline: []
     };
 
     benchmarkData = {
@@ -177,4 +202,5 @@ function resetAllData() {
     if (paretoChartInstance) { paretoChartInstance.destroy(); paretoChartInstance = null; }
     if (histogramChartInstance) { histogramChartInstance.destroy(); histogramChartInstance = null; }
     if (hourlyChartInstance) { hourlyChartInstance.destroy(); hourlyChartInstance = null; }
+    if (productionTimelineChartInstance) { productionTimelineChartInstance.destroy(); productionTimelineChartInstance = null; }
 }

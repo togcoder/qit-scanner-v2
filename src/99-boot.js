@@ -96,7 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
         logoMini.addEventListener('click', showRobotLifetimeStats);
     }
 
-    console.log('🚀 QIT Scanner v2 System initialized successfully!');
+    if (typeof loadAuditStateFromStorage === 'function') loadAuditStateFromStorage();
+    if (typeof updateStatusBar === 'function') updateStatusBar();
+    console.log('🚀 QIT Scanner v2 Pro System initialized successfully!');
 });
 
 /**
@@ -540,11 +542,7 @@ function closeNetworkShareGuideModal() {
 
 function copyPowerShellCommand() {
     const cmd = 'Get-ChildItem -Path "Z:\\Log" -Filter "*summary*.log" -Recurse | Copy-Item -Destination "C:\\QIT_Logs\\"';
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(cmd).then(() => {
-            showToast('✅ Đã sao chép lệnh PowerShell vào Clipboard!', 'success');
-        });
-    }
+    copyTextSafe(cmd, '✅ Đã sao chép lệnh PowerShell vào Clipboard!');
 }
 
 /**

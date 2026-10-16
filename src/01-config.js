@@ -1,4 +1,4 @@
-/* ════════════ CẤU HÌNH HỆ THỐNG SCANNER V2 (MỞ RỘNG) ════════════ */
+/* ════════════ CẤU HÌNH HỆ THỐNG SCANNER V2 PRO (MỞ RỘNG) ════════════ */
 var CFG = {
     // --- Matcher đối soát mã vạch ---
     MIN_SCAN_LEN: 3,           // Mã quét ngắn hơn ngưỡng này => từ chối
@@ -8,9 +8,16 @@ var CFG = {
     TRIM_SCAN_WHITESPACE: true,// Tự động cắt khoảng trắng đầu/cuối mã quét
     AUTO_TRIM_PREFIX: '',      // Tiền tố cần tự động lọc bỏ (nếu có)
     AUTO_TRIM_SUFFIX: '',      // Hậu tố cần tự động lọc bỏ (nếu có)
+    SCAN_MATCH_MODE: 'flex',   // 'flex' (3 tầng thông minh) | 'exact' (Chính xác 100%)
+
+    // --- Kiểm soát Đối Soát Đa Group (Multi-Group Audit Control) ---
+    AUDIT_SCAN_SCOPE: 'GLOBAL',     // 'ACTIVE' (Khóa riêng trong Group đang chọn) | 'GLOBAL' (Tự động định tuyến toàn bộ Group)
+    AUDIT_AUTO_SWITCH_GROUP: true,  // Tự động chuyển tiêu điểm sang Group chứa mã vừa quét
+    AUDIT_WARN_KLIPPEL_FAIL: true,  // Cảnh báo nghiêm trọng nếu mã xuất kho bị FAIL trong Klippel Log
+    AUDIT_DEFAULT_BATCH_SIZE: 10,   // Quy cách số lượng mặc định khi chia tách Thùng/Kiện tự động
 
     // --- Phân tích chu kỳ sản xuất & Gap thời gian ---
-    GAP_THRESHOLD_MIN: 14 * 24 * 60, // 2 tuần (phút) - ngưỡng tách cụm đo
+    GAP_THRESHOLD_MIN: 30,     // 30 phút (chuẩn tài liệu kỹ thuật) - ngưỡng tách chu kỳ sự kiện đo
     
     // --- Cấu hình Ca Sản Xuất (Shifts Configuration) ---
     SHIFT_MODE: '3_SHIFTS',    // '3_SHIFTS' (3 ca 8h) | '2_SHIFTS' (2 ca 12h) | 'CUSTOM'
@@ -78,6 +85,10 @@ var LS = {
         const saved = JSON.parse(localStorage.getItem(LS.CFG_CUSTOM));
         if (saved && typeof saved === 'object') {
             Object.assign(CFG, saved);
+            // Fix legacy 20160 min bug if user never explicitly set a normal gap
+            if (CFG.GAP_THRESHOLD_MIN === 20160) {
+                CFG.GAP_THRESHOLD_MIN = 30;
+            }
         }
     } catch(e) {}
 })();

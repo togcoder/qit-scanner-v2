@@ -1,4 +1,4 @@
-/* ════════════ QUẢN LÝ GIAO DIỆN CHUNG, THEME, ÂM THANH & XUẤT BÁO CÁO V2 ════════════ */
+/* ════════════ QUẢN LÝ GIAO DIỆN CHUNG, THEME, ÂM THANH & XUẤT BÁO CÁO V2 PRO ════════════ */
 
 let currentTab = 'scan'; // 'scan' | 'audit' | 'analysis' | 'parametric' | 'files'
 
@@ -40,8 +40,11 @@ function switchTab(tabId) {
 
     // Render nội dung tương ứng theo tab
     if (tabId === 'scan') {
+        renderScanStatsOverview();
+        renderScanHistoryTable();
         focusActiveScanInput();
     } else if (tabId === 'audit') {
+        renderAuditDashboard();
         focusActiveScanInput();
     } else if (tabId === 'analysis') {
         renderAnalysisDashboard();
@@ -56,6 +59,8 @@ function switchTab(tabId) {
 
 function renderAllViews() {
     renderScanStatsOverview();
+    renderScanHistoryTable();
+    if (typeof renderAuditDashboard === 'function') renderAuditDashboard();
     renderAnalysisDashboard();
     renderParametricDashboard();
     renderFilesManager();
@@ -66,7 +71,7 @@ function focusActiveScanInput() {
     const id = (currentTab === 'audit') ? 'audit-scanner-input' : 'scanner-input';
     const el = document.getElementById(id);
     if (el && el.offsetParent !== null) {
-        setTimeout(() => el.focus(), 120);
+        setTimeout(() => el.focus(), 100);
     }
 }
 
@@ -76,10 +81,18 @@ function updateStatusBar() {
     const cyEl = document.getElementById('sb-cycle');
     const recEl = document.getElementById('sb-records');
     const limEl = document.getElementById('sb-limits');
+    const fpyEl = document.getElementById('sb-fpy');
+    const audEl = document.getElementById('sb-audit');
+    const navFilesBadge = document.getElementById('nav-badge-files');
+    const navAuditBadge = document.getElementById('nav-badge-audit');
+
+    const activeFiles = Array.from(loadedFilesMap.values()).filter(f => f.active);
+    const activeStations = Array.from(new Set(activeFiles.map(f => f.stationName)));
 
     if (stEl) {
-        const activeStations = Array.from(loadedFilesMap.values()).filter(f => f.active).map(f => f.stationName);
-        stEl.textContent = activeStations.length > 0 ? Array.from(new Set(activeStations)).join(', ') : '—';
+        stEl.textContent = activeStations.length > 0
+            ? `${activeStations.join(' · ')} (${activeFiles.length}/${loadedFilesMap.size} tệp)`
+            : 'Chưa nạp tệp';
     }
 
     if (cyEl) {
@@ -87,11 +100,35 @@ function updateStatusBar() {
     }
 
     if (recEl) {
-        recEl.textContent = `${filteredTimelineData.length.toLocaleString()} bản ghi`;
+        recEl.textContent = `${filteredTimelineData.length.toLocaleString()} mẫu (${analysisData.uniqueUnitsCount.toLocaleString()} DUT)`;
+    }
+
+    if (fpyEl) {
+        fpyEl.textContent = filteredTimelineData.length > 0
+            ? `${(analysisData.fpy || 0).toFixed(1)}% / ${(analysisData.finalPassRate || 0).toFixed(1)}%`
+            : '—';
     }
 
     if (limEl) {
-        limEl.textContent = allKnownMetrics.size > 0 ? `${allKnownMetrics.size} thông số` : 'BẬT';
+        limEl.textContent = allKnownMetrics.size > 0 ? `${allKnownMetrics.size} thông số SPC` : 'Sẵn sàng';
+    }
+
+    if (audEl) {
+        const gCount = (auditState && auditState.groups) ? auditState.groups.length : 0;
+        const tot = (auditState && auditState.targetList) ? auditState.targetList.length : 0;
+        const sc = (auditState && auditState.scannedCount) ? auditState.scannedCount : 0;
+        audEl.textContent = tot > 0 ? `${sc}/${tot} mã (${gCount} Group)` : '0 mã';
+    }
+
+    if (navFilesBadge) {
+        navFilesBadge.textContent = loadedFilesMap.size;
+        navFilesBadge.style.display = loadedFilesMap.size > 0 ? 'inline-flex' : 'none';
+    }
+
+    if (navAuditBadge) {
+        const gCount = (auditState && auditState.groups) ? auditState.groups.length : 0;
+        navAuditBadge.textContent = gCount > 0 ? `${gCount}G` : '';
+        navAuditBadge.style.display = gCount > 0 ? 'inline-flex' : 'none';
     }
 }
 
@@ -150,7 +187,9 @@ function setTheme(theme) {
         if (sun) sun.classList.add('hidden');
         if (moon) moon.classList.remove('hidden');
     }
-    localStorage.setItem(LS.THEME, theme);
+    try { localStorage.setItem(LS.THEME, theme); } catch(e) {}
+    if (currentTab === 'analysis') renderAnalysisDashboard();
+    if (currentTab === 'parametric') renderParametricDashboard();
 }
 
 function toggleTheme() {
@@ -159,9 +198,14 @@ function toggleTheme() {
 }
 
 function applyUiZoom(zoomPct) {
-    const scale = (zoomPct || 100) / 100;
+    const cleanZoom = Math.min(150, Math.max(80, parseInt(zoomPct, 10) || 100));
+    const scale = cleanZoom / 100;
     document.documentElement.style.fontSize = `${16 * scale}px`;
-    CFG.UI_ZOOM = zoomPct;
+    const appContainer = document.getElementById('app-container');
+    if (appContainer && appContainer.style) {
+        appContainer.style.zoom = String(scale);
+    }
+    CFG.UI_ZOOM = cleanZoom;
     saveCustomConfig();
 }
 
@@ -176,6 +220,65 @@ function saveCustomConfig() {
     try {
         localStorage.setItem(LS.CFG_CUSTOM, JSON.stringify(CFG));
     } catch(e) {}
+}
+
+/* ════════════ HỘP THOẠI XÁC NHẬN & NHẬP LIỆU TRONG TRANG (SANDBOX-SAFE MODAL) ════════════ */
+let activeDialogCallback = null;
+
+function openAppDialog({ title, message, showInput = false, inputPlaceholder = '', inputDefault = '', confirmText = 'Xác Nhận', cancelText = 'Hủy Bỏ', danger = false, onConfirm }) {
+    // Fallback cho môi trường kiểm thử tự động Node.js không có DOM thật
+    let modal = document.getElementById('qit-custom-dialog-modal');
+    if (!modal && typeof document !== 'undefined' && document.body && typeof document.body.appendChild === 'function') {
+        modal = document.createElement('div');
+        modal.id = 'qit-custom-dialog-modal';
+        modal.className = 'modal hidden';
+        document.body.appendChild(modal);
+    }
+    if (!modal || !modal.classList || typeof window === 'undefined' || !window.requestAnimationFrame) {
+        if (typeof onConfirm === 'function') onConfirm(inputDefault || 'Sự kiện kỹ thuật');
+        return;
+    }
+
+    activeDialogCallback = onConfirm;
+
+    modal.innerHTML = `
+        <div class="modal-card" style="max-width:460px;">
+            <div class="modal-header">
+                <h3 style="font-size:15px; font-weight:800; margin:0; color:${danger ? 'var(--status-fail)' : 'var(--accent-cyan)'};">${escapeHtml(title || 'Xác Nhận Hệ Thống')}</h3>
+                <button class="btn-icon" onclick="closeAppDialog()">✕</button>
+            </div>
+            <div class="modal-body" style="display:flex; flex-direction:column; gap:12px;">
+                <div style="font-size:13px; color:var(--text-main); line-height:1.55;">${message}</div>
+                ${showInput ? `
+                    <input type="text" id="qit-dialog-input" class="settings-input" style="width:100%; font-size:13px; padding:10px 12px;" placeholder="${escapeHtml(inputPlaceholder)}" value="${escapeHtml(inputDefault)}">
+                ` : ''}
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:8px;">
+                <button class="btn btn-secondary btn-sm" onclick="closeAppDialog()">${escapeHtml(cancelText)}</button>
+                <button class="btn ${danger ? 'btn-danger' : 'btn-primary'} btn-sm" onclick="confirmAppDialog()">${escapeHtml(confirmText)}</button>
+            </div>
+        </div>
+    `;
+
+    modal.classList.remove('hidden');
+    const inp = document.getElementById('qit-dialog-input');
+    if (inp && typeof inp.focus === 'function') {
+        setTimeout(() => inp.focus(), 60);
+    }
+}
+
+function closeAppDialog() {
+    const modal = document.getElementById('qit-custom-dialog-modal');
+    if (modal) modal.classList.add('hidden');
+    activeDialogCallback = null;
+}
+
+function confirmAppDialog() {
+    const inp = document.getElementById('qit-dialog-input');
+    const val = inp ? inp.value : true;
+    const cb = activeDialogCallback;
+    closeAppDialog();
+    if (typeof cb === 'function') cb(val);
 }
 
 /* ════════════ HỆ THỐNG ÂM THANH & GIỌNG NÓI (WEB AUDIO & SPEECH) ════════════ */
@@ -193,7 +296,7 @@ function getAudioContext() {
 
 function toggleAudioMute() {
     audioMuted = !audioMuted;
-    localStorage.setItem(LS.MUTED, audioMuted);
+    try { localStorage.setItem(LS.MUTED, audioMuted); } catch(e) {}
     const btn = document.getElementById('audio-toggle-btn');
     if (btn) btn.innerText = audioMuted ? '🔇' : '🔊';
     showToast(audioMuted ? '🔇 Đã tắt âm thanh' : '🔊 Đã bật âm thanh', 'info');
@@ -202,9 +305,7 @@ function toggleAudioMute() {
 function onVolumeSliderInput(val) {
     const pct = parseInt(val, 10);
     audioVolume = pct / 100;
-    localStorage.setItem(LS.VOLUME, audioVolume);
-    const label = document.getElementById('volume-value');
-    if (label) label.textContent = pct + '%';
+    try { localStorage.setItem(LS.VOLUME, audioVolume); } catch(e) {}
     const modalLabel = document.getElementById('modal-volume-val');
     if (modalLabel) modalLabel.textContent = pct + '%';
 }
@@ -335,21 +436,56 @@ function setProcessingButtonState(isProcessing, text) {
 }
 
 function resetApp() {
-    if (confirm(_t('Bạn có chắc chắn muốn nạp lại tệp mới? Toàn bộ dữ liệu phiên hiện tại sẽ được làm mới.'))) {
-        resetAllData();
-        filesToLoad = [];
-        const prev = document.getElementById('file-list-preview');
-        if (prev) prev.innerHTML = '';
-        const finput = document.getElementById('file-input');
-        if (finput) finput.value = '';
-        setProcessingButtonState(false, _t('TIẾN HÀNH XỬ LÝ DỮ LIỆU'));
-        document.getElementById('main-app-screen').classList.add('hidden');
-        document.getElementById('setup-screen').classList.remove('hidden');
-        switchTab('scan');
+    openAppDialog({
+        title: '🔄 Nạp Mới & Quản Lý Nguồn Dữ Liệu',
+        message: 'Bạn muốn quay về màn hình nạp tệp nhật ký Klippel mới (và làm mới dữ liệu log hiện tại)? Dữ liệu các Group kiểm tra danh sách (Audit) vẫn được giữ an toàn.',
+        confirmText: '🔄 Về Màn Hình Nạp Tệp',
+        cancelText: 'Ở Lại',
+        onConfirm: () => {
+            resetAllData();
+            filesToLoad = [];
+            const prev = document.getElementById('file-list-preview');
+            if (prev) prev.innerHTML = '';
+            const finput = document.getElementById('file-input');
+            if (finput) finput.value = '';
+            setProcessingButtonState(false, _t('TIẾN HÀNH XỬ LÝ DỮ LIỆU'));
+            document.getElementById('main-app-screen').classList.add('hidden');
+            document.getElementById('setup-screen').classList.remove('hidden');
+            updateStatusBar();
+        }
+    });
+}
+
+/**
+ * Tiện ích sao chép văn bản an toàn trong mọi môi trường (kể cả Sandbox iframe)
+ */
+function copyTextSafe(text, successMsg) {
+    if (!text) return;
+    const done = () => showToast(successMsg || `✅ Đã sao chép vào Clipboard!`, 'success');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    } else {
+        fallbackCopy(text, done);
     }
 }
 
-/* ════════════ XUẤT DỮ LIỆU EXCEL TỔNG HỢP V2 ════════════ */
+function fallbackCopy(text, cb) {
+    try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        if (cb) cb();
+    } catch (e) {
+        showToast('⚠️ Không thể truy cập Clipboard tự động.', 'warning');
+    }
+}
+
+/* ════════════ XUẤT DỮ LIỆU EXCEL TỔNG HỢP V2 PRO ════════════ */
 async function exportFullExcelReport() {
     if (typeof ExcelJS === 'undefined') {
         showToast('⚠️ Thư viện ExcelJS chưa tải xong. Vui lòng thử lại sau giây lát.', 'warning');
@@ -357,19 +493,19 @@ async function exportFullExcelReport() {
     }
 
     if (filteredTimelineData.length === 0) {
-        showToast('⚠️ Không có dữ liệu để xuất báo cáo.', 'warning');
+        showToast('⚠️ Không có dữ liệu log để xuất báo cáo. Bạn có thể bấm "Nạp Dữ Liệu Mẫu" hoặc nạp file log.', 'warning');
         return;
     }
 
-    showToast('⏳ Đang tạo báo cáo Excel chi tiết...', 'info');
+    showToast('⏳ Đang tạo báo cáo Excel 5-Sheet chi tiết...', 'info');
 
     const workbook = new ExcelJS.Workbook();
-    workbook.creator = 'QIT Scanner v2';
+    workbook.creator = 'QIT Scanner v2 Pro';
     workbook.created = new Date();
 
     // SHEET 1: TỔNG QUAN CHẤT LƯỢNG & KPI
     const wsSummary = workbook.addWorksheet('Quality Summary');
-    wsSummary.addRow(['QIT SCANNER V2 — BÁO CÁO PHÂN TÍCH CHẤT LƯỢNG KLIPPEL QC']);
+    wsSummary.addRow(['QIT SCANNER V2 PRO — BÁO CÁO PHÂN TÍCH CHẤT LƯỢNG KLIPPEL QC']);
     wsSummary.addRow(['Thời gian xuất báo cáo:', new Date().toLocaleString()]);
     wsSummary.addRow(['Số tệp đã nạp:', loadedFilesMap.size]);
     wsSummary.addRow(['Bộ lọc hiện tại:', currentActiveFileFilter]);
@@ -419,7 +555,7 @@ async function exportFullExcelReport() {
 
     // SHEET 4: NĂNG LỰC QUY TRÌNH CPK (PARAMETRIC STATS)
     const wsCpk = workbook.addWorksheet('Parametric & Cpk');
-    wsCpk.addRow(['Thông Số Đo', 'Điều Kiện Kích Thích', 'Đơn Vị', 'LSL (Min Limit)', 'USL (Max Limit)', 'Số Mẫu (N)', 'Trung Bình (Mean)', 'Độ Lệch Chuẩn (StdDev)', 'Min', 'Max', 'Cp', 'Cpk', 'Đánh Giá Năng Lực']);
+    wsCpk.addRow(['Thông Số Đo', 'Điều Kiện Kích Thích', 'Đơn Vị', 'LSL (Min Limit)', 'USL (Max Limit)', 'Số Mẫu (N)', 'Trung Bình (Mean)', 'Độ Lệch Chuẩn (StdDev)', 'Min', 'Max', 'Cp', 'Cpk', 'Ppk', 'Đánh Giá Năng Lực']);
     parametricAnalysisMap.forEach(m => {
         let rating = 'N/A';
         if (m.cpk !== null) {
@@ -441,6 +577,7 @@ async function exportFullExcelReport() {
             m.max.toFixed(4),
             m.cp !== null ? m.cp.toFixed(3) : '—',
             m.cpk !== null ? m.cpk.toFixed(3) : '—',
+            m.ppk !== null ? m.ppk.toFixed(3) : '—',
             rating
         ]);
     });
@@ -479,11 +616,11 @@ async function exportFullExcelReport() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `QIT_Scanner_v2_Report_${toLocalDateStr(new Date())}.xlsx`;
+    a.download = `QIT_Scanner_v2_Pro_Report_${toLocalDateStr(new Date())}.xlsx`;
     a.click();
     window.URL.revokeObjectURL(url);
 
-    showToast('✅ Đã xuất báo cáo Excel tổng thể thành công!', 'success');
+    showToast('✅ Đã xuất báo cáo Excel 5-Sheet tổng thể thành công!', 'success');
 }
 
 /**

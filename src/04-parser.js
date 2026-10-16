@@ -1,4 +1,4 @@
-/* ════════════ BỘ BÓC TÁCH FILE LOG KLIPPEL QC (PARSER V2) ════════════ */
+/* ════════════ BỘ BÓC TÁCH FILE LOG KLIPPEL QC (PARSER V2 PRO) ════════════ */
 
 /**
  * Tự động phát hiện ký tự phân tách (Delimiter Auto-detection)
@@ -65,6 +65,12 @@ function extractHeaderAndMetadata(lines, delimiter) {
         if (upper.includes('STATION:') || upper.includes('STATION NAME:')) {
             const parts = line.split(/:\s*/);
             if (parts.length >= 2) metadata.stationName = parts[1].trim();
+        } else if (upper.includes('TEST STRUCTURE:')) {
+            const parts = line.split(/:\s*/);
+            if (parts.length >= 2) metadata.testStructure = parts[1].trim();
+        } else if (upper.includes('OPERATOR:')) {
+            const parts = line.split(/:\s*/);
+            if (parts.length >= 2) metadata.operator = parts[1].trim();
         }
 
         if (upper.includes('DATE') || upper.includes('SERIALNUMBER') || upper.includes('SERIAL NUMBER') || upper.includes('VERDICT-') || upper.includes('RESULT') || upper.includes('DUT')) {
@@ -106,11 +112,25 @@ function parseMetricHeader(cleanName) {
     const upper = metricName.toUpperCase();
     if (upper === 'RE' || upper.startsWith('RE ')) defaultUnit = 'Ω';
     else if (upper === 'FS' || upper.startsWith('FS ')) defaultUnit = 'Hz';
+    else if (upper.includes('SPL_DELAY') || upper.includes('DELAY')) defaultUnit = 'ms';
     else if (upper.includes('SPL') || upper.includes('LEVEL') || upper.includes('SENS')) defaultUnit = 'dB';
-    else if (upper.includes('THD') || upper.includes('RUB') || upper.includes('BUZZ') || upper.includes('RMSE')) defaultUnit = '%';
+    else if (upper.includes('THD') || upper.includes('RUB') || upper.includes('BUZZ') || upper.includes('RBZ') || upper.includes('RMSE')) defaultUnit = '%';
     else if (upper.includes('IMP') || upper.includes('ZMIN') || upper.includes('ZMAX')) defaultUnit = 'Ω';
+    else if (upper.includes('TEMP')) defaultUnit = '°C';
+    else if (upper.includes('HUMID')) defaultUnit = '%';
 
     return { metricName, condition, defaultUnit };
+}
+
+/**
+ * Làm sạch đơn vị đo thực tế từ cột Unit-<Task> của Klippel
+ */
+function normalizeKlippelUnit(rawUnit, fallbackUnit) {
+    if (!rawUnit || !String(rawUnit).trim()) return fallbackUnit || '';
+    const u = String(rawUnit).trim();
+    if (/^ohm$/i.test(u)) return 'Ω';
+    if (/^degc$/i.test(u) || /^c$/i.test(u)) return '°C';
+    return u;
 }
 
 /**
@@ -122,25 +142,6 @@ function extractStationFromFileName(fileName) {
     const match = base.match(/(SAS\d+-\d+|SFS\d+-\d+|LINE\d+|STATION\d+|CHECK\s*\d+%?)/i);
     if (match) return match[1].toUpperCase();
     return base;
-}
-
-/**
- * Hiển thị màn hình chờ Splash Screen với hoạt ảnh quét laser
- */
-function showSplash(title, sub) {
-    const splash = document.getElementById('qit-splash');
-    if (!splash) return;
-    const tEl = splash.querySelector('.qit-splash-title');
-    const sEl = splash.querySelector('.qit-splash-sub');
-    if (tEl && title) tEl.textContent = title;
-    if (sEl && sub) sEl.textContent = sub;
-    splash.setAttribute('data-qit-open', 'true');
-}
-
-function hideSplash() {
-    const splash = document.getElementById('qit-splash');
-    if (!splash) return;
-    splash.removeAttribute('data-qit-open');
 }
 
 /**
@@ -224,6 +225,7 @@ function processSingleLogFile(rawContent, fileName, fileId) {
 
     let stationName = metadata.stationName || 'Station_Unknown';
     const fileRecords = [];
+    const stimulusSet = new Set();
 
     // 4. Bóc tách từng bản ghi đo kiểm
     for (let rowIdx = headerRowIndex + 1; rowIdx < lines.length; rowIdx++) {
@@ -241,7 +243,7 @@ function processSingleLogFile(rawContent, fileName, fileId) {
 
         const rawSNCandidate = schema.snCol !== -1 ? cols[schema.snCol] : '';
         const rawDbPath = schema.dbCol !== -1 ? cols[schema.dbCol] : '';
-        const userName = schema.userCol !== -1 ? cols[schema.userCol] : '';
+        const userName = schema.userCol !== -1 ? cols[schema.userCol] : (metadata.operator || '');
 
         // Trích xuất tên trạm từ đường dẫn Database (VD: SAS208-01 hoặc SFS203-01)
         if (rawDbPath && stationName === 'Station_Unknown') {
@@ -276,6 +278,15 @@ function processSingleLogFile(rawContent, fileName, fileId) {
             }
         });
 
+        // Parse Task Grades (Grade-Task)
+        const taskGrades = {};
+        schema.gradeCols.forEach(gCol => {
+            const rawVal = (cols[gCol.index] || '').trim();
+            if (rawVal !== '') {
+                taskGrades[gCol.name] = rawVal;
+            }
+        });
+
         // 100% Khai thác Giá trị Đo Liên tục & Dung sai (Parametric Measurements)
         const metricsData = {};
         schema.metricCols.forEach(mCol => {
@@ -283,13 +294,22 @@ function processSingleLogFile(rawContent, fileName, fileId) {
             if (valStr !== undefined && valStr !== '' && valStr.toUpperCase() !== 'NAN') {
                 const numVal = parseFloat(valStr);
                 if (!isNaN(numVal)) {
+                    const actualUnit = (mCol.unitIndex !== -1 && cols[mCol.unitIndex])
+                        ? normalizeKlippelUnit(cols[mCol.unitIndex], mCol.unit)
+                        : mCol.unit;
+
+                    if (mCol.condition) stimulusSet.add(mCol.condition);
+
+                    const minLimVal = mCol.minLimitIndex !== -1 ? parseFloat(cols[mCol.minLimitIndex]) : null;
+                    const maxLimVal = mCol.maxLimitIndex !== -1 ? parseFloat(cols[mCol.maxLimitIndex]) : null;
+
                     metricsData[mCol.metricKey] = {
                         name: mCol.metricName,
                         condition: mCol.condition,
                         value: numVal,
-                        unit: mCol.unit,
-                        minLimit: mCol.minLimitIndex !== -1 ? parseFloat(cols[mCol.minLimitIndex]) : null,
-                        maxLimit: mCol.maxLimitIndex !== -1 ? parseFloat(cols[mCol.maxLimitIndex]) : null
+                        unit: actualUnit,
+                        minLimit: (minLimVal !== null && !isNaN(minLimVal)) ? minLimVal : null,
+                        maxLimit: (maxLimVal !== null && !isNaN(maxLimVal)) ? maxLimVal : null
                     };
 
                     // Đăng ký thông số vào danh mục toàn hệ thống
@@ -297,13 +317,15 @@ function processSingleLogFile(rawContent, fileName, fileId) {
                         allKnownMetrics.set(mCol.metricKey, {
                             metricName: mCol.metricName,
                             condition: mCol.condition,
-                            unit: mCol.unit,
+                            unit: actualUnit,
                             minLimit: metricsData[mCol.metricKey].minLimit,
                             maxLimit: metricsData[mCol.metricKey].maxLimit,
                             sampleCount: 0
                         });
                     }
-                    allKnownMetrics.get(mCol.metricKey).sampleCount++;
+                    const metaObj = allKnownMetrics.get(mCol.metricKey);
+                    if (!metaObj.unit && actualUnit) metaObj.unit = actualUnit;
+                    metaObj.sampleCount++;
                 }
             }
         });
@@ -338,6 +360,7 @@ function processSingleLogFile(rawContent, fileName, fileId) {
             errors: rawErrors,
             notTested: notTestedTasks,
             taskVerdicts,
+            taskGrades,
             metrics: metricsData
         };
 
@@ -370,6 +393,8 @@ function processSingleLogFile(rawContent, fileName, fileId) {
         fileId,
         fileName,
         stationName,
+        modelName: fileRecords[0] ? fileRecords[0].modelName : extractModelFromDbOrFile('', fileName),
+        stimulusInfo: Array.from(stimulusSet).slice(0, 3).join(' · ') || 'Standard QC',
         recordCount: fileRecords.length,
         active: true,
         schema,
@@ -465,7 +490,7 @@ function discoverFileSchema(headers) {
  * Thuật toán bóc tách Định danh chuẩn xác (Lossless ID, Model & Serial Decomposition)
  */
 function parseIdentifier(rawSN, dbPath, timestamp, lineIdx, fileName) {
-    let candidate = (rawSN || '').trim();
+    let candidate = sanitizeIdentifier(rawSN || '');
 
     // Fallback 1: Trích xuất từ đường dẫn cơ sở dữ liệu dB-Lab (.kdbx)
     if (!candidate || candidate.toUpperCase() === 'UNKNOWN' || candidate === '0') {
@@ -549,7 +574,6 @@ function extractModelFromDbOrFile(dbPath, fileName) {
     if (!fileName) return 'STANDARD_MODEL';
     const cleanFn = fileName.replace(/(\.log|\.txt|\.csv)+$/i, '').trim();
 
-    // 1. Nếu có chữ Summary ở đầu: lấy phần tên sau chữ Summary
     if (/^summary/i.test(cleanFn)) {
         const afterSum = cleanFn.replace(/^summary[\s_:-]*/i, '').trim();
         const match = afterSum.match(/^(.+?)(?:\s+\d{4}-\d{2}-\d{2}|\s+\d{2}-\d{2}-\d{4}|$)/);
@@ -559,8 +583,11 @@ function extractModelFromDbOrFile(dbPath, fileName) {
         return afterSum || cleanFn;
     }
 
-    // 2. Nếu không có chữ Summary (hoặc file bị đổi tên): lấy cả tên file (VD: '100%', '200%')
     return cleanFn;
+}
+
+function extractModelFromFileName(fileName) {
+    return extractModelFromDbOrFile('', fileName);
 }
 
 /**
@@ -590,12 +617,151 @@ function completeImport() {
 
     setProcessingButtonState(false, _t('TIẾN HÀNH XỬ LÝ DỮ LIỆU'));
 
-    // Chuyển màn hình và hiển thị toàn bộ phân tích
     const setupScr = document.getElementById('setup-screen');
     const mainScr = document.getElementById('main-app-screen');
     if (setupScr) setupScr.classList.add('hidden');
     if (mainScr) mainScr.classList.remove('hidden');
 
     applyFileFiltersAndRecalculate();
+    if (typeof syncAuditWithKlippelLogs === 'function') {
+        syncAuditWithKlippelLogs();
+    }
     showToast(`✅ Đã nạp thành công ${loadedFilesMap.size} tệp (${timelineData.length.toLocaleString()} bản ghi đo)!`, 'success');
+}
+
+/**
+ * 🧪 BỘ SINH DỮ LIỆU MẪU ĐA TRẠM CHUẨN KLIPPEL QC (3 TRẠM · 150 BẢN GHI THỰC TẾ)
+ * Giúp kỹ sư và người vận hành trải nghiệm tức thì toàn bộ 5 không gian làm việc.
+ */
+function loadBuiltInDemoKlippelLogs(silent = false) {
+    resetAllData();
+
+    const stations = [
+        { id: 'DEMO_ST1', fileName: 'Summary 659841_SAS208-01 2026-10-16 08-00-00.log', station: 'SAS208-01', model: 'P2001315-10-B', stim: '4V 1/12', count: 65, baseFailRate: 0.11 },
+        { id: 'DEMO_ST2', fileName: 'Summary 659841_SAS208-02 2026-10-16 14-00-00.log', station: 'SAS208-02', model: 'P2001315-10-B', stim: '16V 1/12', count: 55, baseFailRate: 0.15 },
+        { id: 'DEMO_ST3', fileName: 'Summary 655983_SFS203-01 2026-10-16 20-00-00.log', station: 'SFS203-01', model: '655983-WOOFER', stim: '32W 1/12', count: 40, baseFailRate: 0.08 }
+    ];
+
+    const headerCols = [
+        'Date', 'Time', 'UTC-Offset', 'SerialNumber', 'UserName', 'Database',
+        'Verdict-Overal',
+        'Verdict-resp - 4V 1/12', 'Verdict-thd - 4V 1/12', 'Verdict-rbz - 16V 1/12', 'Verdict-pol - 4V 1/12', 'Verdict-imp - 4V 1/12',
+        'Grade-level - 4V 1/12',
+        'level - 4V 1/12', 'MinLimit-level - 4V 1/12', 'MaxLimit-level - 4V 1/12', 'Unit-level - 4V 1/12',
+        're - 4V 1/12', 'MinLimit-re - 4V 1/12', 'MaxLimit-re - 4V 1/12', 'Unit-re - 4V 1/12',
+        'fs - 4V 1/12', 'MinLimit-fs - 4V 1/12', 'MaxLimit-fs - 4V 1/12', 'Unit-fs - 4V 1/12',
+        'qts - 4V 1/12', 'MinLimit-qts - 4V 1/12', 'MaxLimit-qts - 4V 1/12', 'Unit-qts - 4V 1/12',
+        'impPt - 4V 1/12', 'MinLimit-impPt - 4V 1/12', 'MaxLimit-impPt - 4V 1/12', 'Unit-impPt - 4V 1/12',
+        'rmseZ - 4V 1/12', 'MinLimit-rmseZ - 4V 1/12', 'MaxLimit-rmseZ - 4V 1/12', 'Unit-rmseZ - 4V 1/12'
+    ].join('\t');
+
+    // Deterministic pseudo-random helper
+    function prnd(seed) {
+        const x = Math.sin(seed * 9301 + 49297) * 233280;
+        return x - Math.floor(x);
+    }
+    function gaussRnd(seed) {
+        const u1 = Math.max(0.0001, prnd(seed));
+        const u2 = Math.max(0.0001, prnd(seed + 17.3));
+        return Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+    }
+
+    stations.forEach((st, stIdx) => {
+        const lines = [
+            `KLIPPEL QC - Summary Log File`,
+            `Station Name: ${st.station}`,
+            `Operator: OP_LINE_${stIdx + 1}`,
+            headerCols
+        ];
+
+        const baseHour = stIdx === 0 ? 7 : (stIdx === 1 ? 14 : 21);
+
+        for (let i = 1; i <= st.count; i++) {
+            const seed = (stIdx + 1) * 1000 + i * 13;
+            // Share some serials across stations to demonstrate Multi-Run Matrix & Retest!
+            const serialNum = (stIdx === 1 && i <= 25)
+                ? `SIEV261531B${String(1000 + i).padStart(4, '0')}`
+                : (stIdx === 0
+                    ? `SIEV261531B${String(1000 + i).padStart(4, '0')}`
+                    : `WFR261016C${String(2000 + i).padStart(4, '0')}`);
+
+            const fullSN = `${st.model}_${serialNum}`;
+            const minOffset = i * 4;
+            const hh = (baseHour + Math.floor(minOffset / 60)) % 24;
+            const mm = minOffset % 60;
+            const ss = (i * 7) % 60;
+            const timeStr = `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}:0`;
+
+            const rFail = prnd(seed + 3);
+            const isFail = rFail < st.baseFailRate;
+
+            let vResp = 1, vThd = 1, vRbz = 1, vPol = 1, vImp = 1;
+            if (isFail) {
+                const errType = i % 5;
+                if (errType === 0) { vRbz = 0; }
+                else if (errType === 1) { vResp = 0; vThd = 0; }
+                else if (errType === 2) { vThd = 0; }
+                else if (errType === 3) { vImp = 0; }
+                else { vPol = 0; }
+            }
+            const vOverall = (vResp && vThd && vRbz && vPol && vImp) ? 1 : 0;
+
+            const g = gaussRnd(seed + 9);
+            const spl = isFail && !vResp ? (103.10 - Math.abs(g) * 0.6) : (104.82 + g * 0.24);
+            const re  = isFail && !vImp  ? (18.65 + Math.abs(g) * 0.3)  : (16.62 + gaussRnd(seed + 21) * 0.36);
+            const fs  = 110.2 + gaussRnd(seed + 33) * 3.8;
+            const qts = 0.685 + gaussRnd(seed + 45) * 0.024;
+            const imp = 19.40 + gaussRnd(seed + 57) * 0.42;
+            const rmse= Math.abs(1.15 + gaussRnd(seed + 69) * 0.28);
+            const grade = vOverall === 1 ? (Math.abs(g) < 1.0 ? '1' : '2') : '3';
+
+            const dbPath = `D:\\${st.station}\\2026\\${st.model}\\${vOverall ? 'pass' : 'fail'}\\DUT ${fullSN}.kdbx`;
+
+            lines.push([
+                '2026-10-16', timeStr, 'UTC+07:00', fullSN, `OP_${stIdx + 1}`, dbPath,
+                vOverall, vResp, vThd, vRbz, vPol, vImp, grade,
+                spl.toFixed(3), '103.79', '105.79', 'dB',
+                re.toFixed(3),  '14.90',  '18.30',  'Ohm',
+                fs.toFixed(2),  '93.50',  '126.50', 'Hz',
+                qts.toFixed(3), '0.58',   '0.80',   '',
+                imp.toFixed(2), '17.50',  '21.50',  'Ohm',
+                rmse.toFixed(2),'0.00',   '2.50',   '%'
+            ].join('\t'));
+
+            // Add retest record for failed units on station 1
+            if (isFail && stIdx === 0 && (i % 2 === 0)) {
+                const rtTime = `${String(hh).padStart(2, '0')}:${String((mm + 2) % 60).padStart(2, '0')}:${String((ss + 15) % 60).padStart(2, '0')}:0`;
+                lines.push([
+                    '2026-10-16', rtTime, 'UTC+07:00', fullSN, `OP_${stIdx + 1}`, dbPath.replace('\\fail\\', '\\pass\\'),
+                    1, 1, 1, 1, 1, 1, '1',
+                    (104.78 + gaussRnd(seed + 99) * 0.18).toFixed(3), '103.79', '105.79', 'dB',
+                    (16.58 + gaussRnd(seed + 105) * 0.25).toFixed(3), '14.90',  '18.30',  'Ohm',
+                    (109.8 + gaussRnd(seed + 111) * 2.5).toFixed(2),  '93.50',  '126.50', 'Hz',
+                    (0.682 + gaussRnd(seed + 117) * 0.018).toFixed(3),'0.58',   '0.80',   '',
+                    (19.35 + gaussRnd(seed + 123) * 0.30).toFixed(2), '17.50',  '21.50',  'Ohm',
+                    '1.04', '0.00', '2.50', '%'
+                ].join('\t'));
+            }
+        }
+
+        processSingleLogFile(lines.join('\n'), st.fileName, st.id);
+    });
+
+    const setupScr = document.getElementById('setup-screen');
+    const mainScr = document.getElementById('main-app-screen');
+    if (setupScr) setupScr.classList.add('hidden');
+    if (mainScr) mainScr.classList.remove('hidden');
+
+    applyFileFiltersAndRecalculate();
+
+    // Seed sample Multi-Group Audit list if empty so user can test Multi-Group Audit immediately
+    if (typeof loadDemoMultiGroupAudit === 'function' && (!auditState.groups || auditState.groups.length === 0)) {
+        loadDemoMultiGroupAudit(true);
+    } else if (typeof syncAuditWithKlippelLogs === 'function') {
+        syncAuditWithKlippelLogs();
+    }
+
+    if (!silent) {
+        showToast('🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!', 'success');
+    }
 }

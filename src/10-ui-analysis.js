@@ -55,8 +55,11 @@ function renderAnalysisDashboard() {
                     Tính năng Phân Tích Chất Lượng (Pareto 80/20, Ma Trận Đa Lượt Đo, Diễn Biến Sản Xuất) cần dữ liệu từ các tệp nhật ký đo Klippel (Summary .txt / .log).
                 </p>
                 <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
-                    <button class="btn btn-primary" onclick="startFastDirectoryScan()" style="padding:10px 22px; font-weight:800; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                        <span>📁</span> <span>Chọn Thư Mục (Quét Siêu Tốc File Summary)</span>
+                    <button class="btn btn-primary" onclick="loadBuiltInDemoKlippelLogs()" style="padding:10px 22px; font-weight:800; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
+                        <span>🧪</span> <span>Nạp Bộ Dữ Liệu Mẫu Klippel (3 Trạm · 3 Ca)</span>
+                    </button>
+                    <button class="btn btn-outline" onclick="startFastDirectoryScan()" style="padding:10px 20px; font-weight:700; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
+                        <span>📁</span> <span>Quét Thư Mục Summary</span>
                     </button>
                     <button class="btn btn-outline" onclick="document.getElementById('file-input').click()" style="padding:10px 20px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
                         <span>📄</span> <span>Chọn Tệp Riêng Lẻ</span>
@@ -222,14 +225,22 @@ function renderFlagZoneChips() {
 }
 
 function promptAddNewFlagZone() {
-    const label = prompt('Nhập nội dung sự kiện kỹ thuật (VD: Đổi cuộn dây, Thay Jig, Hiệu chuẩn Mic):');
-    if (!label || !label.trim()) return;
-
-    const timeStr = new Date().toLocaleTimeString('vi-VN', { hour12: false });
-    flagZones.push({ time: timeStr, label: label.trim() });
-    try { localStorage.setItem(LS.FLAGS, JSON.stringify(flagZones)); } catch(e) {}
-    renderAnalysisDashboard();
-    showToast('✓ Đã ghi nhận mốc sự kiện mới: ' + label.trim(), 'success');
+    openAppDialog({
+        title: '🚩 Ghi Nhận Cột Mốc Sự Kiện Kỹ Thuật',
+        message: 'Nhập nội dung can thiệp kỹ thuật trong ca sản xuất (VD: Đổi lô cuộn dây, Thay Jig gá, Hiệu chuẩn Mic đo):',
+        showInput: true,
+        inputPlaceholder: 'VD: Thay Jig trạm SAS208-01 / Đổi lô màng loa...',
+        inputDefault: '',
+        confirmText: 'Lưu Mốc Sự Kiện',
+        onConfirm: (label) => {
+            if (!label || !String(label).trim()) return;
+            const timeStr = new Date().toLocaleTimeString('vi-VN', { hour12: false });
+            flagZones.push({ time: timeStr, label: String(label).trim() });
+            try { localStorage.setItem(LS.FLAGS, JSON.stringify(flagZones)); } catch(e) {}
+            renderAnalysisDashboard();
+            showToast('✓ Đã ghi nhận mốc sự kiện mới: ' + String(label).trim(), 'success');
+        }
+    });
 }
 
 function removeFlagZone(idx) {
@@ -703,10 +714,18 @@ function renderWorkspace3_Timeline(container) {
                     </div>
                 </div>
             </div>
+            <!-- PHẦN 7: BẢN ĐỒ NHIỆT TỶ LỆ ĐẠT THEO 24 KHUNG GIỜ TRONG NGÀY -->
+            <div class="card" style="padding:18px;">
+                <h3 style="font-size:15px; font-weight:900; margin:0 0 10px; display:flex; align-items:center; gap:8px;">
+                    <span>🔥</span> BẢN ĐỒ NHIỆT HIỆU SUẤT THEO KHUNG GIỜ TRONG NGÀY (24H YIELD HEATMAP)
+                </h3>
+                <div id="hourly-yield-container"></div>
+            </div>
         </div>
     `;
 
     renderProductionTimelineChart();
+    renderHourlyYieldHeatmap();
 }
 
 /**
@@ -967,6 +986,53 @@ function openBucketDrilldown(bucketKey) {
         return;
     }
     openCustomRecordsModal(`${_t('Chi Tiết Bản Ghi')} · ${bucket.label} (${bucket.dateStr})`, bucket.records);
+}
+
+function openCustomRecordsModal(title, recordsList) {
+    const modal = document.getElementById('drilldown-modal');
+    if (!modal) return;
+    const titleEl = document.getElementById('drilldown-modal-title');
+    const tbody = document.getElementById('drilldown-modal-tbody');
+    const thead = modal.querySelector('.modal-body thead');
+
+    if (titleEl) {
+        titleEl.innerHTML = `🔍 <strong style="color:var(--accent-cyan);">${escapeHtml(title)}</strong> (${recordsList.length} mẫu)`;
+    }
+    if (thead) {
+        thead.innerHTML = `
+            <tr>
+                <th style="width:40px; text-align:center;">#</th>
+                <th>Serial Number / DUT</th>
+                <th>Thời Gian Đo</th>
+                <th>Trạm Đo &amp; Model</th>
+                <th>Phán Định &amp; Chi Tiết Lỗi</th>
+            </tr>
+        `;
+    }
+    if (tbody) {
+        tbody.innerHTML = recordsList.map((rec, idx) => {
+            const pass = isRecordPass(rec);
+            const errs = activeErrors(rec.errors).map(getMappedName).join(', ');
+            return `
+                <tr>
+                    <td style="text-align:center; font-weight:700; color:var(--text-muted);">${idx + 1}</td>
+                    <td style="font-family:var(--font-mono); font-weight:700;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                            <span>${escapeHtml(rec.displayID || rec.rawSN)}</span>
+                            <button class="btn btn-sm btn-secondary" onclick="copySingleSN('${escapeHtml(rec.displayID || rec.rawSN)}')">📋</button>
+                        </div>
+                    </td>
+                    <td style="font-family:var(--font-mono); font-size:12px;">${rec.timestamp ? rec.timestamp.toLocaleString('vi-VN', { hour12: false }) : '—'}</td>
+                    <td><strong style="color:var(--accent-blue);">${escapeHtml(rec.stationName)}</strong> · <span style="font-size:11px; color:var(--text-muted);">${escapeHtml(rec.modelName || '')}</span></td>
+                    <td>
+                        <span class="badge-pill ${pass ? 'badge-pass' : 'badge-fail'}">${pass ? 'PASS' : 'FAIL'}</span>
+                        ${!pass && errs ? `<span style="font-size:11px; color:#fca5a5; margin-left:6px; font-weight:700;">${escapeHtml(errs)}</span>` : ''}
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+    modal.classList.remove('hidden');
 }
 
 /**
@@ -1494,11 +1560,7 @@ function closeDrilldownModal() {
 
 function copySingleSN(sn) {
     if (!sn) return;
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(sn).then(() => {
-            showToast(`✅ ${_t('Đã sao chép:')} ${sn}`, 'success');
-        });
-    }
+    copyTextSafe(sn, `✅ ${_t('Đã sao chép:')} ${sn}`);
 }
 
 function copyAllDefectSNs() {
@@ -1514,11 +1576,7 @@ function copyAllDefectSNs() {
         return;
     }
 
-    if (navigator.clipboard) {
-        navigator.clipboard.writeText(failed.join('\n')).then(() => {
-            showToast(`✅ ${_t('Đã sao chép tất cả')} ${failed.length} ${_t('mã lỗi vào Clipboard!')}`, 'success');
-        });
-    }
+    copyTextSafe(failed.join('\n'), `✅ ${_t('Đã sao chép tất cả')} ${failed.length} ${_t('mã lỗi vào Clipboard!')}`);
 }
 
 /* ════════════ CÁC BỘ XUẤT BÁO CÁO ĐỘC LẬP TỪNG PHẦN (SPECIALIZED EXPORTS) ════════════ */
@@ -1679,7 +1737,7 @@ function exportMatrixStandaloneHTML() {
     </div>
     <div class="header-actions">
       <button class="theme-toggle-btn" id="theme-btn" onclick="toggleReportTheme()" title="Chuyển đổi giao diện Sáng / Tối">
-        <span id="theme-icon">☀️</span>
+        <span class="rpt-theme-icon">☀️</span>
       </button>
       <div class="meta">
         <div>Thời gian xuất: <strong>${new Date().toLocaleString()}</strong></div>
@@ -1722,7 +1780,7 @@ function exportMatrixStandaloneHTML() {
   function initReportTheme() {
     const saved = localStorage.getItem('qit_report_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
-    document.getElementById('theme-icon').innerText = saved === 'light' ? '🌙' : '☀️';
+    document.querySelector('.rpt-theme-icon').innerText = saved === 'light' ? '🌙' : '☀️';
   }
 
   function toggleReportTheme() {
@@ -1730,7 +1788,7 @@ function exportMatrixStandaloneHTML() {
     const next = cur === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('qit_report_theme', next);
-    document.getElementById('theme-icon').innerText = next === 'light' ? '🌙' : '☀️';
+    document.querySelector('.rpt-theme-icon').innerText = next === 'light' ? '🌙' : '☀️';
   }
 
   function applyFilters() {
@@ -1779,7 +1837,7 @@ function exportMatrixStandaloneHTML() {
 
   initReportTheme();
   applyFilters();
-</script>
+<\/script>
 </body>
 </html>`;
 
@@ -1963,7 +2021,7 @@ function exportKPIStandaloneHTML() {
     </div>
     <div class="header-actions">
       <button class="theme-toggle-btn" onclick="toggleReportTheme()" title="Chuyển đổi giao diện Sáng / Tối">
-        <span id="theme-icon">☀️</span>
+        <span class="rpt-theme-icon">☀️</span>
       </button>
       <div class="meta">
         <div>Thời gian xuất: <strong>${new Date().toLocaleString()}</strong></div>
@@ -2006,17 +2064,17 @@ function exportKPIStandaloneHTML() {
   function initReportTheme() {
     const saved = localStorage.getItem('qit_report_theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
-    document.getElementById('theme-icon').innerText = saved === 'light' ? '🌙' : '☀️';
+    document.querySelector('.rpt-theme-icon').innerText = saved === 'light' ? '🌙' : '☀️';
   }
   function toggleReportTheme() {
     const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
     const next = cur === 'light' ? 'dark' : 'light';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('qit_report_theme', next);
-    document.getElementById('theme-icon').innerText = next === 'light' ? '🌙' : '☀️';
+    document.querySelector('.rpt-theme-icon').innerText = next === 'light' ? '🌙' : '☀️';
   }
   initReportTheme();
-</script>
+<\/script>
 </body>
 </html>`;
 
