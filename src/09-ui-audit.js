@@ -165,7 +165,7 @@ function syncAuditWithKlippelLogs() {
 function parseRawTextIntoGroupSpecs(rawText, defaultGroupName) {
     const lines = String(rawText || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     const groupMap = new Map(); // groupName -> Array<{ rawId, note }>
-    let currentGroup = (defaultGroupName || '').trim() || 'Group #01 · Danh Sách Chính';
+    let currentGroup = (defaultGroupName || '').trim() || _t('Group #01 · Danh Sách Chính');
 
     lines.forEach(line => {
         // Bỏ qua dòng tiêu đề bảng
@@ -233,7 +233,7 @@ function loadAuditTargetList(appendAsNewGroup = false) {
 
     const rawText = textarea.value.trim();
     if (!rawText) {
-        showToast('⚠️ Vui lòng dán danh sách mã cần kiểm tra vào ô nhập liệu.', 'warning');
+        showToast(_t('⚠️ Vui lòng dán danh sách mã cần kiểm tra vào ô nhập liệu.'), 'warning');
         return;
     }
 
@@ -274,7 +274,7 @@ function loadAuditTargetList(appendAsNewGroup = false) {
 
     syncAuditFlatState();
     renderAuditDashboard();
-    showToast(`✅ Đã nạp ${addedItemsCount} mã mục tiêu vào ${specs.length} Group kiểm soát!`, 'success');
+    showToast(_t('✅ Đã nạp {0} mã mục tiêu vào {1} Group kiểm soát!', addedItemsCount, specs.length), 'success');
 }
 
 /**
@@ -288,12 +288,12 @@ async function handleAuditFileUpload(fileInput) {
     const ext = fileName.slice(fileName.lastIndexOf('.')).toLowerCase();
 
     try {
-        showToast(`⏳ Đang nạp tệp danh sách: ${fileName}...`, 'info');
+        showToast(_t('⏳ Đang nạp tệp danh sách: {0}...', fileName), 'info');
         let structuredLines = [];
 
         if (ext === '.xlsx' || ext === '.xls') {
             if (typeof ExcelJS === 'undefined') {
-                showToast('⚠️ Thư viện ExcelJS chưa tải xong. Vui lòng thử lại sau giây lát.', 'warning');
+                showToast(_t('⚠️ Thư viện ExcelJS chưa tải xong. Vui lòng thử lại sau giây lát.'), 'warning');
                 return;
             }
             const arrayBuffer = await file.arrayBuffer();
@@ -334,7 +334,7 @@ async function handleAuditFileUpload(fileInput) {
         }
 
         if (structuredLines.length === 0) {
-            showToast('⚠️ Không tìm thấy mã hợp lệ trong tệp đã chọn.', 'warning');
+            showToast(_t('⚠️ Không tìm thấy mã hợp lệ trong tệp đã chọn.'), 'warning');
             return;
         }
 
@@ -350,7 +350,7 @@ async function handleAuditFileUpload(fileInput) {
         loadAuditTargetList(auditState.groups.length > 0);
     } catch (err) {
         console.error('Lỗi khi nạp tệp danh sách:', err);
-        showToast(`❌ Lỗi khi đọc tệp: ${err.message}`, 'error');
+        showToast(_t('❌ Lỗi khi đọc tệp: {0}', err.message), 'error');
     } finally {
         fileInput.value = '';
     }
@@ -364,7 +364,7 @@ async function handleAuditFileUpload(fileInput) {
  */
 function splitAuditIntoGroups(mode) {
     if (!auditState.targetList || auditState.targetList.length === 0) {
-        showToast('⚠️ Chưa có danh sách mục tiêu để tách Group. Hãy nạp danh sách hoặc bấm [Nạp Mẫu 4 Group].', 'warning');
+        showToast(_t('⚠️ Chưa có danh sách mục tiêu để tách Group. Hãy nạp danh sách hoặc bấm [Nạp Mẫu 4 Group].'), 'warning');
         return;
     }
 
@@ -382,15 +382,15 @@ function splitAuditIntoGroups(mode) {
             const slice = allItems.slice(b * batchSize, (b + 1) * batchSize);
             const startNum = b * batchSize + 1;
             const endNum = b * batchSize + slice.length;
-            const gName = `Thùng #${String(b + 1).padStart(2, '0')} (${startNum}–${endNum})`;
-            newGroups.push(createAuditGroupObject(gName, null, `Quy cách ${batchSize} PCS/thùng`, slice));
+            const gName = _t('Thùng #{0} ({1}–{2})', String(b + 1).padStart(2, '0'), startNum, endNum);
+            newGroups.push(createAuditGroupObject(gName, null, _t('Quy cách {0} PCS/thùng', batchSize), slice));
         }
 
         auditState.groups = newGroups;
         auditState.activeGroupId = 'ALL';
         syncAuditFlatState();
         renderAuditDashboard();
-        showToast(`📦 Đã chia tách ${allItems.length} mã thành ${newGroups.length} Thùng/Group (${batchSize} PCS/Group)!`, 'success');
+        showToast(_t('📦 Đã chia tách {0} mã thành {1} Thùng/Group ({2} PCS/Group)!', allItems.length, newGroups.length, batchSize), 'success');
     } else if (mode === 'MODEL_PREFIX') {
         const map = new Map();
         allItems.forEach(item => {
@@ -403,7 +403,7 @@ function splitAuditIntoGroups(mode) {
             }
             if (!groupKey) {
                 if (item.rawId.includes('_')) groupKey = 'Model ' + item.rawId.split('_')[0];
-                else if (item.rawId.includes('-')) groupKey = 'Lô ' + item.rawId.split('-').slice(0, 2).join('-');
+                else if (item.rawId.includes('-')) groupKey = _t('Lô ') + item.rawId.split('-').slice(0, 2).join('-');
                 else groupKey = 'Prefix ' + item.rawId.slice(0, 6).toUpperCase();
             }
             if (!map.has(groupKey)) map.set(groupKey, []);
@@ -412,14 +412,14 @@ function splitAuditIntoGroups(mode) {
 
         const newGroups = [];
         map.forEach((list, key) => {
-            newGroups.push(createAuditGroupObject(key, null, `${list.length} sản phẩm`, list));
+            newGroups.push(createAuditGroupObject(key, null, _t('{0} sản phẩm', list.length), list));
         });
 
         auditState.groups = newGroups;
         auditState.activeGroupId = 'ALL';
         syncAuditFlatState();
         renderAuditDashboard();
-        showToast(`🏷️ Đã tự động phân loại thành ${newGroups.length} Group theo Model / Tiền tố!`, 'success');
+        showToast(_t('🏷️ Đã tự động phân loại thành {0} Group theo Model / Tiền tố!', newGroups.length), 'success');
     } else if (mode === 'KLIPPEL_STATUS') {
         const passList = [];
         const failList = [];
@@ -437,15 +437,15 @@ function splitAuditIntoGroups(mode) {
         });
 
         const newGroups = [];
-        if (passList.length > 0) newGroups.push(createAuditGroupObject('✓ Group Đạt Chuẩn Klippel (PASS)', null, 'Đủ điều kiện đóng gói xuất kho', passList));
-        if (failList.length > 0) newGroups.push(createAuditGroupObject('✕ Group Hàng Lỗi Klippel (FAIL/NG)', null, 'Cần cách ly / Không được xuất kho', failList));
-        if (noLogList.length > 0) newGroups.push(createAuditGroupObject('❓ Group Chưa Có Log Đo', null, 'Cần kiểm tra lại trên trạm Klippel', noLogList));
+        if (passList.length > 0) newGroups.push(createAuditGroupObject(_t('✓ Group Đạt Chuẩn Klippel (PASS)'), null, _t('Đủ điều kiện đóng gói xuất kho'), passList));
+        if (failList.length > 0) newGroups.push(createAuditGroupObject(_t('✕ Group Hàng Lỗi Klippel (FAIL/NG)'), null, _t('Cần cách ly / Không được xuất kho'), failList));
+        if (noLogList.length > 0) newGroups.push(createAuditGroupObject(_t('❓ Group Chưa Có Log Đo'), null, _t('Cần kiểm tra lại trên trạm Klippel'), noLogList));
 
         auditState.groups = newGroups;
         auditState.activeGroupId = 'ALL';
         syncAuditFlatState();
         renderAuditDashboard();
-        showToast(`🔬 Đã tách thành ${newGroups.length} Group theo phán định chất lượng Klippel QC!`, 'success');
+        showToast(_t('🔬 Đã tách thành {0} Group theo phán định chất lượng Klippel QC!', newGroups.length), 'success');
     }
 }
 
@@ -454,21 +454,21 @@ function splitAuditIntoGroups(mode) {
  */
 function loadDemoMultiGroupAudit(silent = false) {
     const demoText = [
-        '# Kiện #01 · Pallet A (Chuyền SAS208-01)',
+        _t('# Kiện #01 · Pallet A (Chuyền SAS208-01)'),
         'P2001315-10-B_SIEV261531B1001',
         'P2001315-10-B_SIEV261531B1002',
         'P2001315-10-B_SIEV261531B1003',
         'P2001315-10-B_SIEV261531B1004',
         'P2001315-10-B_SIEV261531B1005',
         'P2001315-10-B_SIEV261531B1006',
-        '# Kiện #02 · Pallet B (Chuyền SAS208-02)',
+        _t('# Kiện #02 · Pallet B (Chuyền SAS208-02)'),
         'P2001315-10-B_SIEV261531B1007',
         'P2001315-10-B_SIEV261531B1008',
         'P2001315-10-B_SIEV261531B1009',
         'P2001315-10-B_SIEV261531B1010',
         'P2001315-10-B_SIEV261531B1011',
         'P2001315-10-B_SIEV261531B1012',
-        '# Kiện #03 · Lô Loa Woofer (Chuyền SFS203-01)',
+        _t('# Kiện #03 · Lô Loa Woofer (Chuyền SFS203-01)'),
         '655983-WOOFER_WFR261016C2001',
         '655983-WOOFER_WFR261016C2002',
         '655983-WOOFER_WFR261016C2003',
@@ -480,7 +480,7 @@ function loadDemoMultiGroupAudit(silent = false) {
     if (textarea) textarea.value = demoText;
 
     const specs = parseRawTextIntoGroupSpecs(demoText, 'Kiện #01');
-    auditState.groups = specs.map((sp, i) => createAuditGroupObject(sp.name, sp.items, `Lô xuất kho #0${i + 1}`));
+    auditState.groups = specs.map((sp, i) => createAuditGroupObject(sp.name, sp.items, _t('Lô xuất kho #0{0}', i + 1)));
     auditState.activeGroupId = 'ALL';
     auditState.scanLog = [];
     auditState.strangerList = [];
@@ -499,7 +499,7 @@ function loadDemoMultiGroupAudit(silent = false) {
     syncAuditFlatState();
     renderAuditDashboard();
     if (!silent) {
-        showToast('🎯 Đã khởi tạo 3 Group Kiểm Soát Kiện Hàng Mẫu!', 'success');
+        showToast(_t('🎯 Đã khởi tạo 3 Group Kiểm Soát Kiện Hàng Mẫu!'), 'success');
     }
 }
 
@@ -524,8 +524,8 @@ function setAuditScanScope(scope) {
     renderAuditDashboard();
     showToast(
         auditState.scanScope === 'ACTIVE'
-            ? '🎯 Đã bật [Khóa Phạm Vi Group]: Chỉ cho phép quét mã thuộc Group đang chọn (Chống đóng nhầm thùng)!'
-            : '🌐 Đã bật [Quét Tự Động Toàn Cục]: Tự động nhận diện và phân bổ mã quét vào đúng Group!',
+            ? _t('🎯 Đã bật [Khóa Phạm Vi Group]: Chỉ cho phép quét mã thuộc Group đang chọn (Chống đóng nhầm thùng)!')
+            : _t('🌐 Đã bật [Quét Tự Động Toàn Cục]: Tự động nhận diện và phân bổ mã quét vào đúng Group!'),
         'info'
     );
     focusActiveScanInput();
@@ -548,7 +548,7 @@ function toggleLockAuditGroup(groupId, evt) {
     grp.locked = !grp.locked;
     saveAuditStateToStorage();
     renderAuditDashboard();
-    showToast(grp.locked ? `🔒 Đã khóa bảo vệ [${grp.name}]` : `🔓 Đã mở khóa [${grp.name}]`, 'info');
+    showToast(grp.locked ? _t('🔒 Đã khóa bảo vệ [{0}]', grp.name) : _t('🔓 Đã mở khóa [{0}]', grp.name), 'info');
 }
 
 /**
@@ -560,18 +560,18 @@ function renameAuditGroup(groupId, evt) {
     if (!grp) return;
 
     openAppDialog({
-        title: '✏️ Đổi Tên Group Kiểm Soát',
-        message: `Nhập tên mới cho Group <strong>${escapeHtml(grp.name)}</strong> (${grp.targetList.length} mã):`,
+        title: _t('✏️ Đổi Tên Group Kiểm Soát'),
+        message: _t('Nhập tên mới cho Group <strong>{0}</strong> ({1} mã):', escapeHtml(grp.name), grp.targetList.length),
         showInput: true,
-        inputPlaceholder: 'VD: Thùng #01 - Pallet A',
+        inputPlaceholder: _t('VD: Thùng #01 - Pallet A'),
         inputDefault: grp.name,
-        confirmText: 'Lưu Tên Mới',
+        confirmText: _t('Lưu Tên Mới'),
         onConfirm: (newName) => {
             if (newName && String(newName).trim()) {
                 grp.name = String(newName).trim();
                 syncAuditFlatState();
                 renderAuditDashboard();
-                showToast(`✓ Đã đổi tên Group thành: ${grp.name}`, 'success');
+                showToast(_t('✓ Đã đổi tên Group thành: {0}', grp.name), 'success');
             }
         }
     });
@@ -586,9 +586,9 @@ function resetSingleAuditGroup(groupId, evt) {
     if (!grp) return;
 
     openAppDialog({
-        title: '🔄 Đặt Lại Tiến Độ Riêng Group Này',
-        message: `Bạn có chắc muốn đặt lại số lần quét của riêng <strong>${escapeHtml(grp.name)}</strong> về 0? Các Group khác vẫn giữ nguyên 100% dữ liệu.`,
-        confirmText: 'Đặt Lại Group Này',
+        title: _t('🔄 Đặt Lại Tiến Độ Riêng Group Này'),
+        message: _t('Bạn có chắc muốn đặt lại số lần quét của riêng <strong>{0}</strong> về 0? Các Group khác vẫn giữ nguyên 100% dữ liệu.', escapeHtml(grp.name)),
+        confirmText: _t('Đặt Lại Group Này'),
         danger: true,
         onConfirm: () => {
             grp.targetList.forEach(it => {
@@ -599,7 +599,7 @@ function resetSingleAuditGroup(groupId, evt) {
             grp.locked = false;
             syncAuditFlatState();
             renderAuditDashboard();
-            showToast(`✓ Đã đặt lại tiến độ của [${grp.name}]`, 'info');
+            showToast(_t('✓ Đã đặt lại tiến độ của [{0}]', grp.name), 'info');
         }
     });
 }
@@ -614,9 +614,9 @@ function deleteSingleAuditGroup(groupId, evt) {
     const grp = auditState.groups[idx];
 
     openAppDialog({
-        title: '🗑️ Xóa Group Kiểm Soát',
-        message: `Xóa <strong>${escapeHtml(grp.name)}</strong> (${grp.targetList.length} mã) khỏi danh sách đối soát?`,
-        confirmText: 'Xóa Group',
+        title: _t('🗑️ Xóa Group Kiểm Soát'),
+        message: _t('Xóa <strong>{0}</strong> ({1} mã) khỏi danh sách đối soát?', escapeHtml(grp.name), grp.targetList.length),
+        confirmText: _t('Xóa Group'),
         danger: true,
         onConfirm: () => {
             auditState.groups.splice(idx, 1);
@@ -625,7 +625,7 @@ function deleteSingleAuditGroup(groupId, evt) {
             }
             syncAuditFlatState();
             renderAuditDashboard();
-            showToast(`🗑️ Đã xóa [${grp.name}]`, 'info');
+            showToast(_t('🗑️ Đã xóa [{0}]', grp.name), 'info');
         }
     });
 }
@@ -663,13 +663,13 @@ function onAuditManualSubmit() {
  */
 function handleAuditScan(rawBarcode) {
     if (!auditState.targetList || auditState.targetList.length === 0) {
-        showToast('⚠️ Chưa có danh sách mục tiêu. Vui lòng nạp danh sách trước.', 'warning');
+        showToast(_t('⚠️ Chưa có danh sách mục tiêu. Vui lòng nạp danh sách trước.'), 'warning');
         return;
     }
 
     // Nếu người dùng truyền trực tiếp auditState.targetList mà chưa có auditState.groups (tương thích ngược)
     if (!auditState.groups || auditState.groups.length === 0) {
-        const fallbackGrp = createAuditGroupObject('Group #01 · Mặc Định', null, '', auditState.targetList);
+        const fallbackGrp = createAuditGroupObject(_t('Group #01 · Mặc Định'), null, '', auditState.targetList);
         auditState.groups = [fallbackGrp];
         syncAuditFlatState();
     }
@@ -688,7 +688,7 @@ function handleAuditScan(rawBarcode) {
         time: nowStr,
         rawScan: rawBarcode,
         result: matchRes.result,
-        groupName: activeGrp ? activeGrp.name : 'Toàn bộ',
+        groupName: activeGrp ? activeGrp.name : _t('Toàn bộ'),
         targetItem: null,
         klippelVerdict: null
     };
@@ -705,7 +705,7 @@ function handleAuditScan(rawBarcode) {
             logEntry.targetItem = item;
             auditState.scanLog.unshift(logEntry);
             renderAuditDashboard();
-            showToast(`🔒 TỪ CHỐI: [${owningGroup.name}] đã khóa hoàn tất, không nhận thêm mã quét!`, 'error');
+            showToast(_t('🔒 TỪ CHỐI: [{0}] đã khóa hoàn tất, không nhận thêm mã quét!', owningGroup.name), 'error');
             return;
         }
 
@@ -738,24 +738,24 @@ function handleAuditScan(rawBarcode) {
 
         if (isKlippelFail && auditState.warnOnKlippelFail) {
             playScanSound('FAIL');
-            showToast(`🚨 CẢNH BÁO NG: Mã [${item.rawId}] khớp tại [${logEntry.groupName}] nhưng bị LỖI (FAIL) trong Klippel QC!`, 'error');
+            showToast(_t('🚨 CẢNH BÁO NG: Mã [{0}] khớp tại [{1}] nhưng bị LỖI (FAIL) trong Klippel QC!', item.rawId, logEntry.groupName), 'error');
         } else if (isFirstScan) {
             playScanSound('PASS');
             // Kiểm tra nếu Group vừa hoàn thành 100%
             if (owningGroup && owningGroup.scannedCount === owningGroup.targetList.length) {
                 if (typeof triggerConfetti === 'function') triggerConfetti();
-                showToast(`🎉 HOÀN TẤT 100% [${owningGroup.name}] (${owningGroup.scannedCount}/${owningGroup.targetList.length} mã)!`, 'success');
+                showToast(_t('🎉 HOÀN TẤT 100% [{0}] ({1}/{2} mã)!', owningGroup.name, owningGroup.scannedCount, owningGroup.targetList.length), 'success');
             } else {
-                showToast(`✓ Khớp [${logEntry.groupName}]: ${item.rawId} (#${item.index})`, 'success');
+                showToast(_t('✓ Khớp [{0}]: {1} (#{2})', logEntry.groupName, item.rawId, item.index), 'success');
             }
         } else {
             playScanSound('DUPLICATE');
             logEntry.result = 'DUPLICATE';
-            showToast(`⚠️ Quét lặp lần ${item.scanCount} tại [${logEntry.groupName}]: ${item.rawId}`, 'warning');
+            showToast(_t('⚠️ Quét lặp lần {0} tại [{1}]: {2}', item.scanCount, logEntry.groupName, item.rawId), 'warning');
         }
     } else if (matchRes.result === 'AMBIGUOUS') {
         playScanSound('NOT_FOUND');
-        showToast(`⚠️ Nhập nhằng (${matchRes.candidates.length} mã trùng độ khớp)`, 'warning');
+        showToast(_t('⚠️ Nhập nhằng ({0} mã trùng độ khớp)', matchRes.candidates.length), 'warning');
     } else {
         // Nếu đang khóa trong Group hiện tại (ACTIVE), kiểm tra xem mã này có nằm ở Group KHÁC không!
         if (isStrictActiveScope) {
@@ -765,12 +765,12 @@ function handleAuditScan(rawBarcode) {
                 const otherGroup = auditState.groups.find(g => g.id === otherItem.groupId);
                 playScanSound('FAIL');
                 logEntry.result = 'WRONG_GROUP';
-                logEntry.groupName = otherGroup ? otherGroup.name : 'Group khác';
+                logEntry.groupName = otherGroup ? otherGroup.name : _t('Group khác');
                 logEntry.targetItem = otherItem;
                 auditState.scanLog.unshift(logEntry);
                 saveAuditStateToStorage();
                 renderAuditDashboard();
-                showToast(`🚨 NHẦM KIỆN HÀNG: Mã [${otherItem.rawId}] thuộc [${logEntry.groupName}], KHÔNG thuộc [${activeGrp.name}]!`, 'error');
+                showToast(_t('🚨 NHẦM KIỆN HÀNG: Mã [{0}] thuộc [{1}], KHÔNG thuộc [{2}]!', otherItem.rawId, logEntry.groupName, activeGrp.name), 'error');
                 return;
             }
         }
@@ -780,9 +780,9 @@ function handleAuditScan(rawBarcode) {
             time: nowStr,
             rawScan: rawBarcode,
             cleanScan: getAlphaNum(rawBarcode),
-            activeGroupName: activeGrp ? activeGrp.name : 'Toàn bộ'
+            activeGroupName: activeGrp ? activeGrp.name : _t('Toàn bộ')
         });
-        showToast(`✕ MÃ LẠ: [${rawBarcode}] không có trong danh sách mục tiêu!`, 'error');
+        showToast(_t('✕ MÃ LẠ: [{0}] không có trong danh sách mục tiêu!', rawBarcode), 'error');
     }
 
     auditState.scanLog.unshift(logEntry);
@@ -799,7 +799,7 @@ function toggleManualAuditItemScan(groupId, itemIndex) {
     const grp = auditState.groups.find(g => g.id === groupId);
     if (!grp) return;
     if (grp.locked) {
-        showToast(`🔒 [${grp.name}] đang khóa. Hãy mở khóa trước khi chỉnh sửa.`, 'warning');
+        showToast(_t('🔒 [{0}] đang khóa. Hãy mở khóa trước khi chỉnh sửa.', grp.name), 'warning');
         return;
     }
     const item = grp.targetList.find(it => it.index === itemIndex);
@@ -826,10 +826,10 @@ function copyMissingAuditTargets() {
     const pool = getActiveAuditViewItems();
     const missing = pool.filter(it => (it.scanCount || 0) === 0).map(it => it.rawId);
     if (missing.length === 0) {
-        showToast('🎉 Đã quét đủ 100%, không còn mã nào bị thiếu!', 'success');
+        showToast(_t('🎉 Đã quét đủ 100%, không còn mã nào bị thiếu!'), 'success');
         return;
     }
-    copyTextSafe(missing.join('\n'), `📋 Đã sao chép ${missing.length} mã còn thiếu vào Clipboard!`);
+    copyTextSafe(missing.join('\n'), _t('📋 Đã sao chép {0} mã còn thiếu vào Clipboard!', missing.length));
 }
 
 function getActiveAuditViewItems() {
@@ -848,7 +848,7 @@ function renderAuditDashboard() {
     if ((!auditState.groups || auditState.groups.length === 0) && (!auditState.targetList || auditState.targetList.length === 0)) {
         loadAuditStateFromStorage();
     } else if (auditState.targetList.length > 0 && (!auditState.groups || auditState.groups.length === 0)) {
-        auditState.groups = [createAuditGroupObject('Group #01 · Danh Sách Chính', null, '', auditState.targetList)];
+        auditState.groups = [createAuditGroupObject(_t('Group #01 · Danh Sách Chính'), null, '', auditState.targetList)];
         syncAuditFlatState();
     }
 
@@ -893,9 +893,9 @@ function renderAuditDashboard() {
 
     if (scopeLabelEl) {
         if (activeGrp) {
-            scopeLabelEl.innerHTML = `📦 ĐANG KIỂM SOÁT GROUP: <strong style="color:var(--accent-cyan);">${escapeHtml(activeGrp.name)}</strong> (${scanned}/${total} mã · ${activeGrp.locked ? '🔒 Đã Khóa' : '🔓 Đang Mở'})`;
+            scopeLabelEl.innerHTML = _t('📦 ĐANG KIỂM SOÁT GROUP: {0} ({1}/{2} mã · {3})', `<strong style="color:var(--accent-cyan);">${escapeHtml(activeGrp.name)}</strong>`, scanned, total, activeGrp.locked ? _t('🔒 Đã Khóa') : _t('🔓 Đang Mở'));
         } else {
-            scopeLabelEl.innerHTML = `🌐 TỔNG HỢP TOÀN BỘ <strong>${auditState.groups.length} GROUP</strong> (${auditState.scannedCount}/${auditState.targetList.length} mã đã đối soát)`;
+            scopeLabelEl.innerHTML = _t('🌐 TỔNG HỢP TOÀN BỘ <strong>{0} GROUP</strong> ({1}/{2} mã đã đối soát)', auditState.groups.length, auditState.scannedCount, auditState.targetList.length);
         }
     }
 
@@ -906,7 +906,7 @@ function renderAuditDashboard() {
     const chipsContainer = document.getElementById('audit-chips-container');
     if (chipsContainer) {
         if (auditState.scanLog.length === 0) {
-            chipsContainer.innerHTML = `<span style="font-size:11.5px; color:var(--text-muted); padding:6px 0;">(Chưa có lượt quét nào — Kết quả quét từng mã &amp; Group tương ứng sẽ hiển thị tức thì tại đây)</span>`;
+            chipsContainer.innerHTML = `<span style="font-size:11.5px; color:var(--text-muted); padding:6px 0;">(${_t('Chưa có lượt quét nào — Kết quả quét từng mã & Group tương ứng sẽ hiển thị tức thì tại đây')})</span>`;
         } else {
             chipsContainer.innerHTML = auditState.scanLog.slice(0, 18).map(log => {
                 let badgeStyle = 'background:rgba(16,185,129,0.14); border:1px solid rgba(16,185,129,0.38); color:#34d399;';
@@ -920,24 +920,24 @@ function renderAuditDashboard() {
                         icon = '🚨 QC FAIL:';
                     } else if (log.result === 'DUPLICATE' || (log.targetItem && log.targetItem.scanCount > 1)) {
                         badgeStyle = 'background:rgba(245,158,11,0.16); border:1px solid rgba(245,158,11,0.42); color:#fbbf24;';
-                        icon = `⚠️ Lặp ×${log.targetItem ? log.targetItem.scanCount : 2}:`;
+                        icon = _t('⚠️ Lặp ×{0}:', log.targetItem ? log.targetItem.scanCount : 2);
                     }
                 } else if (log.result === 'WRONG_GROUP') {
                     badgeStyle = 'background:rgba(239,68,68,0.22); border:1px solid rgba(239,68,68,0.6); color:#fca5a5;';
-                    icon = `🚨 Sai Group (Thuộc ${log.groupName}):`;
+                    icon = _t('🚨 Sai Group (Thuộc {0}):', log.groupName);
                     subTag = '';
                 } else if (log.result === 'GROUP_LOCKED') {
                     badgeStyle = 'background:rgba(245,158,11,0.2); border:1px solid rgba(245,158,11,0.5); color:#fbbf24;';
-                    icon = `🔒 Đã khóa:`;
+                    icon = _t('🔒 Đã khóa:');
                 } else if (log.result === 'AMBIGUOUS') {
                     badgeStyle = 'background:rgba(245,158,11,0.16); border:1px solid rgba(245,158,11,0.4); color:#fbbf24;';
-                    icon = '⚠️ Nhập nhằng:';
+                    icon = _t('⚠️ Nhập nhằng:');
                 } else {
                     badgeStyle = 'background:rgba(239,68,68,0.16); border:1px solid rgba(239,68,68,0.4); color:#f87171;';
-                    icon = '✕ Mã lạ:';
+                    icon = _t('✕ Mã lạ:');
                     subTag = '';
                 }
-                return `<span class="badge-pill" style="${badgeStyle} font-size:11px; padding:4px 9px; font-family:var(--font-mono);" title="Quét lúc ${log.time}">
+                return `<span class="badge-pill" style="${badgeStyle} font-size:11px; padding:4px 9px; font-family:var(--font-mono);" title="${_t('Quét lúc {0}', log.time)}">
                     ${icon} <strong>${escapeHtml(label)}</strong> ${subTag ? `<span style="color:var(--accent-cyan);">${escapeHtml(subTag)}</span>` : ''} <span style="font-size:9.5px; opacity:0.75;">(${log.time})</span>
                 </span>`;
             }).join('');
@@ -948,9 +948,9 @@ function renderAuditDashboard() {
     const badgeEl = document.getElementById('audit-log-reference-badge');
     if (badgeEl) {
         if (loadedFilesMap.size > 0) {
-            badgeEl.innerHTML = `<span class="badge-pill badge-pass" style="font-size:11px;">🔗 Đang liên kết Chốt Chặn Chất Lượng với ${loadedFilesMap.size} tệp Klippel Log (${dictLookupClean.size.toLocaleString()} DUT)</span>`;
+            badgeEl.innerHTML = `<span class="badge-pill badge-pass" style="font-size:11px;">🔗 ${_t('Đang liên kết Chốt Chặn Chất Lượng với {0} tệp Klippel Log ({1} DUT)', loadedFilesMap.size, dictLookupClean.size.toLocaleString())}</span>`;
         } else {
-            badgeEl.innerHTML = `<span class="meta-chip">ℹ️ Chế độ Kiểm Tra Danh Sách Độc Lập (Zero-Log Mode)</span>`;
+            badgeEl.innerHTML = `<span class="meta-chip">${_t('ℹ️ Chế độ Kiểm Tra Danh Sách Độc Lập (Zero-Log Mode)')}</span>`;
         }
     }
 
@@ -968,7 +968,7 @@ function renderAuditGroupsPanel() {
     if (groups.length === 0) {
         container.innerHTML = `
             <div style="text-align:center; padding:18px; color:var(--text-muted); border:1px dashed var(--border-color); border-radius:12px;">
-                Chưa có Group kiểm soát nào. Hãy dán danh sách mã bên dưới hoặc bấm <strong>[🧪 Nạp Mẫu 3 Group Kiện Hàng]</strong> để bắt đầu.
+                ${_t('Chưa có Group kiểm soát nào. Hãy dán danh sách mã bên dưới hoặc bấm [🧪 Nạp Mẫu 3 Group Kiện Hàng] để bắt đầu.')}
             </div>
         `;
         return;
@@ -985,8 +985,8 @@ function renderAuditGroupsPanel() {
             <div class="audit-group-card ${isAllActive ? 'active-group-card' : ''}" onclick="selectAuditGroup('ALL')">
                 <div class="agc-header">
                     <div>
-                        <div class="agc-title">🌐 TẤT CẢ CÁC GROUP (${groups.length})</div>
-                        <div class="agc-sub">Xem tổng hợp toàn bộ lô đối soát</div>
+                        <div class="agc-title">${_t('🌐 TẤT CẢ CÁC GROUP ({0})', groups.length)}</div>
+                        <div class="agc-sub">${_t('Xem tổng hợp toàn bộ lô đối soát')}</div>
                     </div>
                     <span class="agc-pct" style="color:var(--accent-cyan);">${pctAll}%</span>
                 </div>
@@ -994,9 +994,9 @@ function renderAuditGroupsPanel() {
                     <div class="agc-progress-fill" style="width:${pctAll}%;"></div>
                 </div>
                 <div class="agc-stats-row">
-                    <span>Tổng: <strong>${totalAll}</strong></span>
-                    <span style="color:#10b981;">Đã quét: <strong>${scannedAll}</strong></span>
-                    <span style="color:#f87171;">Thiếu: <strong>${Math.max(0, totalAll - scannedAll)}</strong></span>
+                    <span>${_t('Tổng:')} <strong>${totalAll}</strong></span>
+                    <span style="color:#10b981;">${_t('Đã quét:')} <strong>${scannedAll}</strong></span>
+                    <span style="color:#f87171;">${_t('Thiếu:')} <strong>${Math.max(0, totalAll - scannedAll)}</strong></span>
                 </div>
             </div>
     `;
@@ -1024,7 +1024,7 @@ function renderAuditGroupsPanel() {
                         <div class="agc-title" title="${escapeHtml(g.name)}">
                             ${g.locked ? '🔒' : (isDone ? '✅' : '📦')} ${escapeHtml(g.name)}
                         </div>
-                        <div class="agc-sub">${escapeHtml(g.note || `Group #${idx + 1} · Tạo lúc ${g.createdAt}`)}</div>
+                        <div class="agc-sub">${escapeHtml(g.note || _t('Group #{0} · Tạo lúc {1}', idx + 1, g.createdAt))}</div>
                     </div>
                     <span class="agc-pct" style="color:${isDone ? '#10b981' : 'var(--accent-blue)'};">${gPct.toFixed(0)}%</span>
                 </div>
@@ -1032,19 +1032,19 @@ function renderAuditGroupsPanel() {
                     <div class="agc-progress-fill ${isDone ? 'fill-done' : ''}" style="width:${gPct.toFixed(1)}%;"></div>
                 </div>
                 <div class="agc-stats-row">
-                    <span>Mục tiêu: <strong>${gTotal}</strong></span>
-                    <span style="color:#10b981;">Đạt: <strong>${gScanned}</strong></span>
-                    <span style="color:${gRem > 0 ? '#f87171' : 'var(--text-muted)'};">Thiếu: <strong>${gRem}</strong></span>
-                    ${qcNgCount > 0 ? `<span style="color:#ef4444; font-weight:800;" title="Có ${qcNgCount} sản phẩm trong Group này bị FAIL trong Klippel Log">🚨 ${qcNgCount} NG</span>` : ''}
+                    <span>${_t('Mục tiêu:')} <strong>${gTotal}</strong></span>
+                    <span style="color:#10b981;">${_t('Đạt:')} <strong>${gScanned}</strong></span>
+                    <span style="color:${gRem > 0 ? '#f87171' : 'var(--text-muted)'};">${_t('Thiếu:')} <strong>${gRem}</strong></span>
+                    ${qcNgCount > 0 ? `<span style="color:#ef4444; font-weight:800;" title="${_t('Có {0} sản phẩm trong Group này bị FAIL trong Klippel Log', qcNgCount)}">🚨 ${qcNgCount} NG</span>` : ''}
                 </div>
                 <div class="agc-actions" onclick="event.stopPropagation();">
-                    <button class="agc-btn" onclick="toggleLockAuditGroup('${escapeHtml(g.id)}', event)" title="${g.locked ? 'Mở khóa Group này' : 'Khóa bảo vệ Group này'}">
-                        ${g.locked ? '🔓 Mở' : '🔒 Khóa'}
+                    <button class="agc-btn" onclick="toggleLockAuditGroup('${escapeHtml(g.id)}', event)" title="${g.locked ? _t('Mở khóa Group này') : _t('Khóa bảo vệ Group này')}">
+                        ${g.locked ? _t('🔓 Mở') : _t('🔒 Khóa')}
                     </button>
-                    <button class="agc-btn" onclick="renameAuditGroup('${escapeHtml(g.id)}', event)" title="Đổi tên Group">✏️ Tên</button>
-                    <button class="agc-btn" onclick="exportAuditReport('${escapeHtml(g.id)}')" title="Xuất Excel riêng Group này">📥 Excel</button>
-                    <button class="agc-btn" onclick="resetSingleAuditGroup('${escapeHtml(g.id)}', event)" title="Đặt lại riêng tiến độ của Group này">🔄 Reset</button>
-                    <button class="agc-btn agc-btn-danger" onclick="deleteSingleAuditGroup('${escapeHtml(g.id)}', event)" title="Xóa Group này">✕</button>
+                    <button class="agc-btn" onclick="renameAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đổi tên Group')}">✏️ ${_t('Tên')}</button>
+                    <button class="agc-btn" onclick="exportAuditReport('${escapeHtml(g.id)}')" title="${_t('Xuất Excel riêng Group này')}">📥 Excel</button>
+                    <button class="agc-btn" onclick="resetSingleAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đặt lại riêng tiến độ của Group này')}">🔄 Reset</button>
+                    <button class="agc-btn agc-btn-danger" onclick="deleteSingleAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Xóa Group này')}">✕</button>
                 </div>
             </div>
         `;
@@ -1064,8 +1064,8 @@ function renderAuditTable() {
 
     const viewItems = getActiveAuditViewItems();
     if (viewItems.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:28px;">Chưa nạp danh sách mục tiêu. Hãy dán danh sách mã vạch, nạp tệp Excel/CSV hoặc bấm <strong>[🧪 Nạp Mẫu 3 Group Kiện Hàng]</strong>.</td></tr>`;
-        if (countBadge) countBadge.textContent = '0 mã';
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:28px;">${_t('Chưa nạp danh sách mục tiêu. Hãy dán danh sách mã vạch, nạp tệp Excel/CSV hoặc bấm [🧪 Nạp Mẫu 3 Group Kiện Hàng].')}</td></tr>`;
+        if (countBadge) countBadge.textContent = _t('0 mã');
         return;
     }
 
@@ -1094,11 +1094,11 @@ function renderAuditTable() {
     });
 
     if (countBadge) {
-        countBadge.textContent = `Hiển thị ${filtered.length} / ${viewItems.length} mã`;
+        countBadge.textContent = _t('Hiển thị {0} / {1} mã', filtered.length, viewItems.length);
     }
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:24px;">Không có mã mục tiêu nào khớp với bộ lọc hiện tại.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:24px;">${_t('Không có mã mục tiêu nào khớp với bộ lọc hiện tại.')}</td></tr>`;
         return;
     }
 
@@ -1107,8 +1107,8 @@ function renderAuditTable() {
         const isDone = (item.scanCount || 0) > 0;
         const isDup = (item.scanCount || 0) > 1;
         const statusBadge = isDone
-            ? `<span class="badge-pill badge-pass">✓ ĐÃ QUÉT ${isDup ? `(×${item.scanCount})` : ''}</span>`
-            : `<span class="badge-pill badge-notfound">⏳ CHƯA QUÉT</span>`;
+            ? `<span class="badge-pill badge-pass">${_t('✓ ĐÃ QUÉT')} ${isDup ? `(×${item.scanCount})` : ''}</span>`
+            : `<span class="badge-pill badge-notfound">${_t('⏳ CHƯA QUÉT')}</span>`;
 
         let klippelCol = `<td style="text-align:center; color:var(--text-muted); font-size:11px;">—</td>`;
         let metricsCol = `<td style="font-size:11px; color:var(--text-muted);">—</td>`;
@@ -1140,12 +1140,12 @@ function renderAuditTable() {
                     <td style="font-family:var(--font-mono); font-size:11px;">
                         <span style="color:var(--accent-blue); font-weight:700;">${escapeHtml(rec.stationName)}</span>
                         ${reStr || fsStr || splStr ? ` · <span>${[reStr, fsStr, splStr].filter(Boolean).join(' · ')}</span>` : ''}
-                        ${errs ? `<div style="color:#f87171; font-size:10px; font-weight:700;">⚠️ Lỗi: ${escapeHtml(errs)}</div>` : ''}
+                        ${errs ? `<div style="color:#f87171; font-size:10px; font-weight:700;">⚠️ ${_t('Lỗi:')} ${escapeHtml(errs)}</div>` : ''}
                     </td>
                 `;
             } else {
-                klippelCol = `<td style="text-align:center;"><span class="badge-pill badge-warn" style="font-size:10px;">❓ Chưa đo</span></td>`;
-                metricsCol = `<td style="font-size:11px; color:var(--text-muted);">Chưa có bản ghi trong Log</td>`;
+                klippelCol = `<td style="text-align:center;"><span class="badge-pill badge-warn" style="font-size:10px;">${_t('❓ Chưa đo')}</span></td>`;
+                metricsCol = `<td style="font-size:11px; color:var(--text-muted);">${_t('Chưa có bản ghi trong Log')}</td>`;
             }
         }
 
@@ -1171,8 +1171,8 @@ function renderAuditTable() {
                 ${klippelCol}
                 ${metricsCol}
                 <td style="text-align:center;">
-                    <button class="btn btn-sm ${isDone ? 'btn-secondary' : 'btn-outline'}" style="padding:3px 8px; font-size:10.5px;" onclick="toggleManualAuditItemScan('${escapeHtml(item.groupId)}', ${item.index})" title="Đánh dấu hoặc hoàn tác trạng thái quét của mã này">
-                        ${isDone ? '↩ Hoàn tác' : '✓ Đánh dấu'}
+                    <button class="btn btn-sm ${isDone ? 'btn-secondary' : 'btn-outline'}" style="padding:3px 8px; font-size:10.5px;" onclick="toggleManualAuditItemScan('${escapeHtml(item.groupId)}', ${item.index})" title="${_t('Đánh dấu hoặc hoàn tác trạng thái quét của mã này')}">
+                        ${isDone ? _t('↩ Hoàn tác') : _t('✓ Đánh dấu')}
                     </button>
                 </td>
             </tr>
@@ -1183,9 +1183,9 @@ function renderAuditTable() {
 
 function resetAuditList() {
     openAppDialog({
-        title: '🗑️ Xóa Toàn Bộ Các Group Đối Soát',
-        message: 'Bạn có chắc muốn xóa toàn bộ các Group và danh sách đối soát hiện tại? (Nếu chỉ muốn đặt lại 1 Group, hãy bấm nút [🔄 Reset] trên thẻ Group đó).',
-        confirmText: 'Xóa Tất Cả Group',
+        title: _t('🗑️ Xóa Toàn Bộ Các Group Đối Soát'),
+        message: _t('Bạn có chắc muốn xóa toàn bộ các Group và danh sách đối soát hiện tại? (Nếu chỉ muốn đặt lại 1 Group, hãy bấm nút [🔄 Reset] trên thẻ Group đó).'),
+        confirmText: _t('Xóa Tất Cả Group'),
         danger: true,
         onConfirm: () => {
             auditState.groups = [];
@@ -1199,7 +1199,7 @@ function resetAuditList() {
             const textarea = document.getElementById('audit-target-input');
             if (textarea) textarea.value = '';
             renderAuditDashboard();
-            showToast('Đã làm mới toàn bộ danh sách đối soát', 'info');
+            showToast(_t('Đã làm mới toàn bộ danh sách đối soát'), 'info');
         }
     });
 }
@@ -1209,11 +1209,11 @@ function resetAuditList() {
  */
 async function exportAuditReport(targetGroupId = null) {
     if (typeof ExcelJS === 'undefined') {
-        showToast('⚠️ Thư viện ExcelJS chưa sẵn sàng', 'warning');
+        showToast(_t('⚠️ Thư viện ExcelJS chưa sẵn sàng'), 'warning');
         return;
     }
     if (!auditState.targetList || auditState.targetList.length === 0) {
-        showToast('⚠️ Không có dữ liệu đối soát để xuất', 'warning');
+        showToast(_t('⚠️ Không có dữ liệu đối soát để xuất'), 'warning');
         return;
     }
 
@@ -1226,25 +1226,25 @@ async function exportAuditReport(targetGroupId = null) {
 
     // Sheet 1: Tổng hợp tất cả Group
     const wsSummary = workbook.addWorksheet('Audit Summary');
-    wsSummary.addRow(['QIT SCANNER V2 PRO — BÁO CÁO ĐỐI SOÁT DANH SÁCH MÃ VẠCH THEO GROUP']);
-    wsSummary.addRow(['Thời gian xuất:', new Date().toLocaleString()]);
-    wsSummary.addRow(['Tổng số Group:', groupsToExport.length]);
-    wsSummary.addRow(['Tổng số mã mục tiêu:', auditState.targetList.length]);
-    wsSummary.addRow(['Đã quét khớp:', auditState.scannedCount]);
-    wsSummary.addRow(['Còn thiếu:', Math.max(0, auditState.targetList.length - auditState.scannedCount)]);
-    wsSummary.addRow(['Mã lạ ngoài danh sách:', auditState.strangerList ? auditState.strangerList.length : 0]);
+    wsSummary.addRow([_t('QIT SCANNER V2 PRO — BÁO CÁO ĐỐI SOÁT DANH SÁCH MÃ VẠCH THEO GROUP')]);
+    wsSummary.addRow([_t('Thời gian xuất:'), new Date().toLocaleString()]);
+    wsSummary.addRow([_t('Tổng số Group:'), groupsToExport.length]);
+    wsSummary.addRow([_t('Tổng số mã mục tiêu:'), auditState.targetList.length]);
+    wsSummary.addRow([_t('Đã quét khớp:'), auditState.scannedCount]);
+    wsSummary.addRow([_t('Còn thiếu:'), Math.max(0, auditState.targetList.length - auditState.scannedCount)]);
+    wsSummary.addRow([_t('Mã lạ ngoài danh sách:'), auditState.strangerList ? auditState.strangerList.length : 0]);
     wsSummary.addRow([]);
-    wsSummary.addRow(['STT Group', 'Tên Group / Kiện Hàng', 'Ghi Chú', 'Tổng Số Mã', 'Đã Quét', 'Còn Thiếu', 'Tiến Độ (%)', 'Trạng Thái Khóa']);
+    wsSummary.addRow([_t('STT Group'), _t('Tên Group / Kiện Hàng'), _t('Ghi Chú'), _t('Tổng Số Mã'), _t('Đã Quét'), _t('Còn Thiếu'), _t('Tiến Độ (%)'), _t('Trạng Thái Khóa')]);
 
     groupsToExport.forEach((g, idx) => {
         const gTot = g.targetList.length;
         const gSc = g.scannedCount || 0;
         const gPct = gTot > 0 ? ((gSc / gTot) * 100).toFixed(1) + '%' : '0%';
-        wsSummary.addRow([idx + 1, g.name, g.note || '', gTot, gSc, Math.max(0, gTot - gSc), gPct, g.locked ? 'ĐÃ KHÓA' : 'ĐANG MỞ']);
+        wsSummary.addRow([idx + 1, g.name, g.note || '', gTot, gSc, Math.max(0, gTot - gSc), gPct, g.locked ? _t('ĐÃ KHÓA') : _t('ĐANG MỞ')]);
     });
 
     wsSummary.addRow([]);
-    wsSummary.addRow(['STT', 'Group / Kiện Hàng', 'Mã Mục Tiêu (Target ID)', 'Model', 'Serial Tách', 'Trạng Thái Đối Soát', 'Số Lần Quét', 'Lần Quét Đầu', 'Lần Quét Cuối', 'Klippel QC', 'Trạm Đo', 'Lỗi Klippel']);
+    wsSummary.addRow([_t('STT'), _t('Group / Kiện Hàng'), _t('Mã Mục Tiêu (Target ID)'), 'Model', _t('Serial Tách'), _t('Trạng Thái Đối Soát'), _t('Số Lần Quét'), _t('Lần Quét Đầu'), _t('Lần Quét Cuối'), 'Klippel QC', _t('Trạm Đo'), _t('Lỗi Klippel')]);
 
     const itemsPool = targetGroupId && groupsToExport[0] ? groupsToExport[0].targetList : auditState.targetList;
     itemsPool.forEach((item, idx) => {
@@ -1256,7 +1256,7 @@ async function exportAuditReport(targetGroupId = null) {
                 stName = m.record.stationName || '—';
                 klErrs = activeErrors(m.record.errors).map(getMappedName).join('; ');
             } else {
-                klStatus = 'Chưa đo';
+                klStatus = _t('Chưa đo');
             }
         }
         wsSummary.addRow([
@@ -1265,7 +1265,7 @@ async function exportAuditReport(targetGroupId = null) {
             item.rawId,
             item.modelHint || '',
             item.serialOnly || item.cleanId,
-            item.scanCount > 0 ? 'ĐÃ QUÉT' : 'CHƯA QUÉT',
+            item.scanCount > 0 ? _t('ĐÃ QUÉT') : _t('CHƯA QUÉT'),
             item.scanCount || 0,
             item.firstScanTime || '',
             item.lastScanTime || '',
@@ -1283,7 +1283,7 @@ async function exportAuditReport(targetGroupId = null) {
     a.download = `QIT_MultiGroup_Audit_Report_${toLocalDateStr(new Date())}.xlsx`;
     a.click();
     window.URL.revokeObjectURL(url);
-    showToast('✅ Đã xuất báo cáo Excel Đối Soát Đa Group thành công!', 'success');
+    showToast(_t('✅ Đã xuất báo cáo Excel Đối Soát Đa Group thành công!'), 'success');
 }
 
 /**
@@ -1291,7 +1291,7 @@ async function exportAuditReport(targetGroupId = null) {
  */
 function exportAuditHTML() {
     if (!auditState.targetList || auditState.targetList.length === 0) {
-        showToast('⚠️ Không có dữ liệu đối soát để xuất.', 'warning');
+        showToast(_t('⚠️ Không có dữ liệu đối soát để xuất.'), 'warning');
         return;
     }
 
@@ -1314,7 +1314,7 @@ function exportAuditHTML() {
                 kl = isRecordPass(m.record) ? 'PASS' : 'FAIL';
                 st = m.record.stationName || '—';
             } else {
-                kl = 'Chưa đo';
+                kl = _t('Chưa đo');
             }
         }
         return {
@@ -1337,7 +1337,7 @@ function exportAuditHTML() {
 <html lang="vi" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<title>QIT Scanner v2 Pro - Báo Cáo Đối Soát Danh Sách Đa Group</title>
+<title>${_t('QIT Scanner v2 Pro - Báo Cáo Đối Soát Danh Sách Đa Group')}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root {
@@ -1369,29 +1369,29 @@ function exportAuditHTML() {
 <div class="container">
   <div class="header">
     <div>
-      <h1 style="font-size:19px; font-weight:900; color:var(--cyan);">🎯 BÁO CÁO ĐỐI SOÁT DANH SÁCH MÃ VẠCH ĐA GROUP</h1>
+      <h1 style="font-size:19px; font-weight:900; color:var(--cyan);">${_t('🎯 BÁO CÁO ĐỐI SOÁT DANH SÁCH MÃ VẠCH ĐA GROUP')}</h1>
       <p style="font-size:11px; color:var(--txt-sub); font-family:monospace; margin-top:3px;">QIT SCANNER V2 PRO · MULTI-GROUP AUDIT RECONCILIATION</p>
     </div>
-    <div style="font-size:11.5px; color:var(--txt-sub); font-family:monospace;">Xuất lúc: <strong>${new Date().toLocaleString()}</strong></div>
+    <div style="font-size:11.5px; color:var(--txt-sub); font-family:monospace;">${_t('Thời gian xuất:')} <strong>${new Date().toLocaleString()}</strong></div>
   </div>
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-label">TỔNG SỐ GROUP</div><div class="kpi-val" style="color:var(--blue);">${groupsMeta.length}</div></div>
-    <div class="kpi-card"><div class="kpi-label">TỔNG MÃ MỤC TIÊU</div><div class="kpi-val">${total}</div></div>
-    <div class="kpi-card"><div class="kpi-label">ĐÃ QUÉT ĐỐI SOÁT</div><div class="kpi-val" style="color:var(--pass);">${scanned}</div></div>
-    <div class="kpi-card"><div class="kpi-label">CÒN THIẾU</div><div class="kpi-val" style="color:var(--fail);">${missing}</div></div>
-    <div class="kpi-card"><div class="kpi-label">TIẾN ĐỘ HOÀN THÀNH</div><div class="kpi-val" style="color:var(--cyan);">${pct}%</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('TỔNG SỐ GROUP')}</div><div class="kpi-val" style="color:var(--blue);">${groupsMeta.length}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('TỔNG MÃ MỤC TIÊU')}</div><div class="kpi-val">${total}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('ĐÃ QUÉT ĐỐI SOÁT')}</div><div class="kpi-val" style="color:var(--pass);">${scanned}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('CÒN THIẾU')}</div><div class="kpi-val" style="color:var(--fail);">${missing}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('TIẾN ĐỘ HOÀN THÀNH')}</div><div class="kpi-val" style="color:var(--cyan);">${pct}%</div></div>
   </div>
   <div class="controls">
     <select id="groupSelect" onchange="applyFilters()">
-      <option value="ALL">🌐 Tất cả các Group (${groupsMeta.length})</option>
+      <option value="ALL">${_t('🌐 Tất cả các Group ({0})', groupsMeta.length)}</option>
       ${groupOptsHtml}
     </select>
     <select id="auditRptFilterSelect" onchange="applyFilters()">
-      <option value="ALL">Tất cả trạng thái (${total})</option>
-      <option value="SCANNED">Chỉ mã ĐÃ QUÉT (${scanned})</option>
-      <option value="MISSING">Chỉ mã CÒN THIẾU (${missing})</option>
+      <option value="ALL">${_t('Tất cả trạng thái ({0})', total)}</option>
+      <option value="SCANNED">${_t('Chỉ mã ĐÃ QUÉT ({0})', scanned)}</option>
+      <option value="MISSING">${_t('Chỉ mã CÒN THIẾU ({0})', missing)}</option>
     </select>
-    <input type="text" id="auditRptSearchInput" placeholder="🔍 Tìm kiếm mã mục tiêu..." oninput="applyFilters()" style="min-width:240px;">
+    <input type="text" id="auditRptSearchInput" placeholder="${_t('🔍 Tìm kiếm mã mục tiêu...')}" oninput="applyFilters()" style="min-width:240px;">
     <span id="auditRptMatchCount" style="font-size:12px; color:var(--txt-sub); margin-left:auto; font-weight:700;"></span>
   </div>
   <div class="card">
@@ -1400,14 +1400,14 @@ function exportAuditHTML() {
         <thead>
           <tr>
             <th>#</th>
-            <th style="text-align:left;">Group / Kiện</th>
-            <th style="text-align:left;">Mã Mục Tiêu (Target ID)</th>
-            <th>Trạng Thái</th>
-            <th>Số Lần Quét</th>
-            <th>Lần Quét Đầu</th>
-            <th>Lần Quét Cuối</th>
+            <th style="text-align:left;">${_t('Group / Kiện')}</th>
+            <th style="text-align:left;">${_t('Mã Mục Tiêu (Target ID)')}</th>
+            <th>${_t('Trạng Thái')}</th>
+            <th>${_t('Số Lần Quét')}</th>
+            <th>${_t('Lần Quét Đầu')}</th>
+            <th>${_t('Lần Quét Cuối')}</th>
             <th>Klippel QC</th>
-            <th>Trạm Đo</th>
+            <th>${_t('Trạm Đo')}</th>
           </tr>
         </thead>
         <tbody id="auditTbody"></tbody>
@@ -1428,12 +1428,12 @@ function exportAuditHTML() {
       if (filter === 'MISSING' && item.scanned) return;
       if (q && !item.rawId.toUpperCase().includes(q) && !item.groupName.toUpperCase().includes(q)) return;
       matches++;
-      const statusBadge = item.scanned ? '<span class="badge badge-pass">✓ ĐÃ QUÉT</span>' : '<span class="badge badge-fail">✕ CHƯA QUÉT</span>';
+      const statusBadge = item.scanned ? ('<span class="badge badge-pass">' + '${_t('✓ ĐÃ QUÉT')}' + '</span>') : ('<span class="badge badge-fail">' + '${_t('✕ CHƯA QUÉT')}' + '</span>');
       const klBadge = item.klippelQC === 'PASS' ? '<span class="badge badge-pass">✓ PASS</span>' : (item.klippelQC === 'FAIL' ? '<span class="badge badge-fail">✕ FAIL</span>' : item.klippelQC);
       html += '<tr><td>' + item.index + '</td><td style="text-align:left;color:var(--cyan);font-weight:700;">' + item.groupName + '</td><td style="text-align:left;font-family:monospace;font-weight:700;">' + item.rawId + '</td><td>' + statusBadge + '</td><td>' + item.scanCount + '</td><td>' + item.firstScanTime + '</td><td>' + item.lastScanTime + '</td><td>' + klBadge + '</td><td>' + item.station + '</td></tr>';
     });
-    document.getElementById('auditTbody').innerHTML = html || '<tr><td colspan="9" style="padding:24px;color:var(--txt-sub);">Không có mã phù hợp.</td></tr>';
-    document.getElementById('auditRptMatchCount').innerHTML = 'Hiển thị: <strong style="color:var(--cyan);">' + matches + '</strong> mã';
+    document.getElementById('auditTbody').innerHTML = html || ('<tr><td colspan="9" style="padding:24px;color:var(--txt-sub);">' + '${_t('Không có mã phù hợp.')}' + '</td></tr>');
+    document.getElementById('auditRptMatchCount').innerHTML = '${_t('Hiển thị')}: <strong style="color:var(--cyan);">' + matches + '</strong> ${_t('mã')}';
   }
   applyFilters();
 <\/script>
@@ -1441,5 +1441,5 @@ function exportAuditHTML() {
 </html>`;
 
     downloadBlobFile(htmlContent, `QIT_MultiGroup_Audit_Report_${toLocalDateStr(new Date())}.html`, 'text/html;charset=utf-8');
-    showToast('✅ Đã xuất Báo Cáo Đối Soát Đa Group HTML thành công!', 'success');
+    showToast(_t('✅ Đã xuất Báo Cáo Đối Soát Đa Group HTML thành công!'), 'success');
 }

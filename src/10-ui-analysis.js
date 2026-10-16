@@ -50,22 +50,22 @@ function renderAnalysisDashboard() {
         contentContainer.innerHTML = `
             <div class="card" style="padding:48px 24px; text-align:center; max-width:680px; margin:20px auto;">
                 <div style="font-size:48px; margin-bottom:14px;">📊</div>
-                <h3 style="font-size:17px; font-weight:900; margin:0 0 8px; color:var(--text-main);">CHƯA CÓ DỮ LIỆU PHÂN TÍCH CHẤT LƯỢNG</h3>
+                <h3 style="font-size:17px; font-weight:900; margin:0 0 8px; color:var(--text-main);">${_t('CHƯA CÓ DỮ LIỆU PHÂN TÍCH CHẤT LƯỢNG')}</h3>
                 <p style="font-size:12.5px; color:var(--text-muted); line-height:1.6; margin:0 auto 24px;">
-                    Tính năng Phân Tích Chất Lượng (Pareto 80/20, Ma Trận Đa Lượt Đo, Diễn Biến Sản Xuất) cần dữ liệu từ các tệp nhật ký đo Klippel (Summary .txt / .log).
+                    ${_t('Tính năng Phân Tích Chất Lượng (Pareto 80/20, Ma Trận Đa Lượt Đo, Diễn Biến Sản Xuất) cần dữ liệu từ các tệp nhật ký đo Klippel (Summary .txt / .log).')}
                 </p>
                 <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap;">
                     <button class="btn btn-primary" onclick="loadBuiltInDemoKlippelLogs()" style="padding:10px 22px; font-weight:800; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                        <span>🧪</span> <span>Nạp Bộ Dữ Liệu Mẫu Klippel (3 Trạm · 3 Ca)</span>
+                        <span>🧪</span> <span>${_t('Nạp Bộ Dữ Liệu Mẫu Klippel (3 Trạm · 3 Ca)')}</span>
                     </button>
                     <button class="btn btn-outline" onclick="startFastDirectoryScan()" style="padding:10px 20px; font-weight:700; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                        <span>📁</span> <span>Quét Thư Mục Summary</span>
+                        <span>📁</span> <span>${_t('Quét Thư Mục Summary')}</span>
                     </button>
                     <button class="btn btn-outline" onclick="document.getElementById('file-input').click()" style="padding:10px 20px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                        <span>📄</span> <span>Chọn Tệp Riêng Lẻ</span>
+                        <span>📄</span> <span>${_t('Chọn Tệp Riêng Lẻ')}</span>
                     </button>
                     <button class="btn btn-secondary" onclick="switchTab('audit')" style="padding:10px 20px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
-                        <span>🎯</span> <span>Sang Kiểm Tra Danh Sách (Không cần log)</span>
+                        <span>🎯</span> <span>${_t('Sang Kiểm Tra Danh Sách (Không cần log)')}</span>
                     </button>
                 </div>
             </div>
@@ -127,34 +127,34 @@ function renderWorkspace1_Pareto(container) {
             <!-- 6 Thẻ KPI Vàng -->
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
                 <div class="kpi-card">
-                    <div class="kpi-label">FIRST PASS YIELD</div>
+                    <div class="kpi-label">${_t('FIRST PASS YIELD (FPY)')}</div>
                     <div class="kpi-val" style="color:#10b981;">${analysisData.noTimestamp ? '—' : analysisData.fpy.toFixed(1) + '%'}</div>
-                    <div style="font-size:10px; color:var(--text-muted);">Tỷ lệ đạt lần đo đầu</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${_t('Tỷ lệ đạt lần đo đầu')}</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">FINAL PASS YIELD</div>
+                    <div class="kpi-label">${_t('TỶ LỆ PASS THỰC TẾ')}</div>
                     <div class="kpi-val" style="color:#38bdf8;">${analysisData.finalPassRate.toFixed(1)}%</div>
-                    <div style="font-size:10px; color:var(--text-muted);">Tỷ lệ đạt cuối cùng</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${_t('Tỷ lệ đạt cuối cùng')}</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">SẢN PHẨM (DUT)</div>
+                    <div class="kpi-label">${_t('TỔNG SỐ SẢN PHẨM')}</div>
                     <div class="kpi-val">${analysisData.uniqueUnitsCount.toLocaleString()}</div>
-                    <div style="font-size:10px; color:var(--text-muted);">Số đơn vị độc lập</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${_t('Số đơn vị độc lập')}</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">ĐO LẠI (RETEST)</div>
+                    <div class="kpi-label">${_t('SỐ LẦN ĐO LẠI')}</div>
                     <div class="kpi-val" style="color:#f59e0b;">${analysisData.noTimestamp ? '—' : analysisData.retestCount.toLocaleString()}</div>
-                    <div style="font-size:10px; color:var(--text-muted);">Sản phẩm đo > 1 lần</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${_t('Sản phẩm đo > 1 lần')}</div>
                 </div>
-                <div class="kpi-card" style="cursor:pointer;" onclick="openDrilldownModal('ALL_FAIL')" title="Nhấp để xem toàn bộ danh sách PCS lỗi">
-                    <div class="kpi-label">SẢN PHẨM LỖI (NG) 🔍</div>
+                <div class="kpi-card" style="cursor:pointer;" onclick="openDrilldownModal('ALL_FAIL')" title="${_t('Nhấp để xem toàn bộ danh sách PCS lỗi')}">
+                    <div class="kpi-label">${_t('SẢN PHẨM LỖI (NG) 🔍')}</div>
                     <div class="kpi-val" style="color:#ef4444;">${analysisData.failCount.toLocaleString()}</div>
-                    <div style="font-size:10px; color:var(--text-muted);">Click xem danh sách</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${_t('Click xem danh sách')}</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">TỔNG BẢN GHI ĐO</div>
+                    <div class="kpi-label">${_t('TỔNG BẢN GHI ĐO')}</div>
                     <div class="kpi-val">${analysisData.rawRecordsCount.toLocaleString()}</div>
-                    <div style="font-size:10px; color:var(--text-muted);">Tổng các lượt đo thô</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${_t('Tổng các lượt đo thô')}</div>
                 </div>
             </div>
 
@@ -166,10 +166,10 @@ function renderWorkspace1_Pareto(container) {
                 <div class="card" style="padding:18px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                         <h4 style="font-size:11.5px; font-weight:800; text-transform:uppercase; color:var(--text-muted); margin:0;">
-                            📈 BIỂU ĐỒ PARETO LỖI 80/20 · DUAL AXIS
+                            ${_t('📈 BIỂU ĐỒ PARETO LỖI 80/20 · DUAL AXIS')}
                         </h4>
                         <div style="display:flex; gap:12px; font-size:10px; color:var(--text-sub); font-family:var(--font-mono);">
-                            <span>■ SỐ LỖI</span><span style="color:#38bdf8;">— % LUỸ KẾ</span><span style="color:#ef4444;">-- 80%</span>
+                            <span>${_t('■ SỐ LỖI')}</span><span style="color:#38bdf8;">${_t('— % LUỸ KẾ')}</span><span style="color:#ef4444;">-- 80%</span>
                         </div>
                     </div>
                     <div style="position:relative; height:300px; width:100%;">
@@ -180,19 +180,19 @@ function renderWorkspace1_Pareto(container) {
                 <div class="card" style="padding:18px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                         <h4 style="font-size:11.5px; font-weight:800; text-transform:uppercase; color:var(--text-muted); margin:0;">
-                            📋 BẢNG LỖI · DRILLDOWN CHI TIẾT
+                            ${_t('📋 BẢNG LỖI · DRILLDOWN CHI TIẾT')}
                         </h4>
-                        <span style="font-size:11px; color:var(--text-muted);">${analysisData.errorPareto.length} danh mục</span>
+                        <span style="font-size:11px; color:var(--text-muted);">${_t('{0} danh mục', analysisData.errorPareto.length)}</span>
                     </div>
                     <div class="table-wrapper" style="max-height:300px; overflow-y:auto;">
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th style="width:36px; text-align:center;">#</th>
-                                    <th>Thông Số Lỗi</th>
-                                    <th style="text-align:center;">Số Lượng</th>
+                                    <th>${_t('Thông Số Lỗi')}</th>
+                                    <th style="text-align:center;">${_t('Số Lượng')}</th>
                                     <th style="text-align:center;">%</th>
-                                    <th>% Tích Lũy</th>
+                                    <th>${_t('% Tích Lũy')}</th>
                                 </tr>
                             </thead>
                             <tbody id="pareto-tbody"></tbody>
@@ -208,7 +208,7 @@ function renderWorkspace1_Pareto(container) {
 
 function renderFlagZoneChips() {
     if (!flagZones || flagZones.length === 0) {
-        return `<div style="font-size:11.5px; color:var(--text-muted); font-style:italic;">Chưa có mốc sự kiện nào được ghi nhận trong ca. Bấm "+ Thêm Mốc Sự Kiện" để đánh dấu.</div>`;
+        return `<div style="font-size:11.5px; color:var(--text-muted); font-style:italic;">${_t('Chưa có mốc sự kiện nào được ghi nhận trong ca. Bấm + Thêm Mốc Sự Kiện để đánh dấu.')}</div>`;
     }
 
     let html = '';
@@ -217,7 +217,7 @@ function renderFlagZoneChips() {
             <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.3); border-radius:8px; padding:6px 12px; font-size:12px; display:flex; align-items:center; gap:8px;">
                 <span style="font-family:var(--font-mono); font-weight:700; color:var(--accent-blue);">⏰ ${escapeHtml(fz.time)}</span>
                 <span style="font-weight:600; color:var(--text-main);">${escapeHtml(fz.label)}</span>
-                <button onclick="removeFlagZone(${idx})" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:13px;" title="Xóa mốc">✕</button>
+                <button onclick="removeFlagZone(${idx})" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:13px;" title="${_t('Xóa mốc')}">✕</button>
             </div>
         `;
     });
@@ -226,19 +226,19 @@ function renderFlagZoneChips() {
 
 function promptAddNewFlagZone() {
     openAppDialog({
-        title: '🚩 Ghi Nhận Cột Mốc Sự Kiện Kỹ Thuật',
-        message: 'Nhập nội dung can thiệp kỹ thuật trong ca sản xuất (VD: Đổi lô cuộn dây, Thay Jig gá, Hiệu chuẩn Mic đo):',
+        title: _t('🚩 Ghi Nhận Cột Mốc Sự Kiện Kỹ Thuật'),
+        message: _t('Nhập nội dung can thiệp kỹ thuật trong ca sản xuất (VD: Đổi lô cuộn dây, Thay Jig gá, Hiệu chuẩn Mic đo):'),
         showInput: true,
-        inputPlaceholder: 'VD: Thay Jig trạm SAS208-01 / Đổi lô màng loa...',
+        inputPlaceholder: _t('VD: Thay Jig trạm SAS208-01 / Đổi lô màng loa...'),
         inputDefault: '',
-        confirmText: 'Lưu Mốc Sự Kiện',
+        confirmText: _t('Lưu Mốc Sự Kiện'),
         onConfirm: (label) => {
             if (!label || !String(label).trim()) return;
             const timeStr = new Date().toLocaleTimeString('vi-VN', { hour12: false });
             flagZones.push({ time: timeStr, label: String(label).trim() });
             try { localStorage.setItem(LS.FLAGS, JSON.stringify(flagZones)); } catch(e) {}
             renderAnalysisDashboard();
-            showToast('✓ Đã ghi nhận mốc sự kiện mới: ' + String(label).trim(), 'success');
+            showToast(_t('✓ Đã ghi nhận mốc sự kiện mới: {0}', String(label).trim()), 'success');
         }
     });
 }
@@ -282,23 +282,23 @@ function renderWorkspace2_Matrix(container) {
         `;
         runs.forEach(r => {
             matrixTableHtml += `
-                <th style="text-align:center; min-width:140px;" title="${escapeHtml(r.fileName)} (Trạm: ${escapeHtml(r.stationName)})">
+                <th style="text-align:center; min-width:140px;" title="${escapeHtml(r.fileName)} (${_t('Trạm')}: ${escapeHtml(r.stationName)})">
                     <div style="font-weight:800; color:var(--accent-blue); font-size:12.5px;">${escapeHtml(r.shortLabel)}</div>
                     <div style="font-size:10px; color:var(--text-muted); font-weight:normal; margin-top:2px;">
-                        Trạm ${escapeHtml(r.stationName)} · <strong style="color:var(--text-main); font-family:var(--font-mono);">${r.recordCount}</strong> mẫu
+                        ${_t('Trạm {0} · {1} mẫu', escapeHtml(r.stationName), `<strong style="color:var(--text-main); font-family:var(--font-mono);">${r.recordCount}</strong>`)}
                     </div>
                 </th>
             `;
         });
         matrixTableHtml += `
-                            <th style="width:120px; text-align:center;">Phán Định (${matrixEvalMode === 'FIRST' ? 'Đầu' : 'Cuối'})</th>
-                            <th style="width:90px; text-align:center;">Tổng Lần Đo</th>
+                            <th style="width:120px; text-align:center;">${_t('Phán Định ({0})', matrixEvalMode === 'FIRST' ? _t('Đầu') : _t('Cuối'))}</th>
+                            <th style="width:90px; text-align:center;">${_t('Tổng Lần Đo')}</th>
                         </tr>
                     </thead>
                     <tbody>
         `;
         if (filteredRows.length === 0) {
-            matrixTableHtml += `<tr><td colspan="${runs.length + 4}" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy sản phẩm nào phù hợp bộ lọc.</td></tr>`;
+            matrixTableHtml += `<tr><td colspan="${runs.length + 4}" style="text-align:center; color:var(--text-muted); padding:30px;">${_t('Không tìm thấy sản phẩm nào phù hợp bộ lọc.')}</td></tr>`;
         } else {
             filteredRows.forEach((row, idx) => {
                 const finalBadge = row.finalVerdict ? `<span class="badge-pill badge-pass">PASS</span>` : `<span class="badge-pill badge-fail">FAIL</span>`;
@@ -314,7 +314,7 @@ function renderWorkspace2_Matrix(container) {
                     } else if (result.pass) {
                         const countTag = result.count > 1 ? `<span style="font-size:10px; opacity:0.8;"> (${result.count}x)</span>` : '';
                         matrixTableHtml += `
-                            <td style="text-align:center; cursor:pointer;" onclick="openMatrixDetailModal('${escapeHtml(row.sn)}', '${escapeHtml(r.id)}')" title="${_t('Nhấp xem chi tiết')} (${result.count} lần đo trong lượt này) | Giờ: ${result.timestamp}">
+                            <td style="text-align:center; cursor:pointer;" onclick="openMatrixDetailModal('${escapeHtml(row.sn)}', '${escapeHtml(r.id)}')" title="${_t('Nhấp xem chi tiết')} (${result.count} ${_t('lần đo trong lượt này')}) | ${_t('Giờ')}: ${result.timestamp}">
                                 <span class="badge-pill badge-pass">PASS${countTag} 🔍</span>
                             </td>
                         `;
@@ -322,7 +322,7 @@ function renderWorkspace2_Matrix(container) {
                         const errName = result.errors.length > 0 ? result.errors.join(', ') : 'FAIL';
                         const countTag = result.count > 1 ? `<span style="font-size:10px; opacity:0.8;"> (${result.count}x)</span>` : '';
                         matrixTableHtml += `
-                            <td style="text-align:center; cursor:pointer;" onclick="openMatrixDetailModal('${escapeHtml(row.sn)}', '${escapeHtml(r.id)}')" title="${_t('Nhấp xem chi tiết')} (${result.count} lần đo trong lượt này) | Lỗi: ${escapeHtml(errName)}">
+                            <td style="text-align:center; cursor:pointer;" onclick="openMatrixDetailModal('${escapeHtml(row.sn)}', '${escapeHtml(r.id)}')" title="${_t('Nhấp xem chi tiết')} (${result.count} ${_t('lần đo trong lượt này')}) | ${_t('Lỗi')}: ${escapeHtml(errName)}">
                                 <span class="badge-pill badge-fail" style="max-width:140px; overflow:hidden; text-overflow:ellipsis; display:inline-block; vertical-align:middle;">❌ ${escapeHtml(errName)}${countTag} 🔍</span>
                             </td>
                         `;
@@ -330,7 +330,7 @@ function renderWorkspace2_Matrix(container) {
                 });
                 matrixTableHtml += `
                         <td style="text-align:center;">${finalBadge}</td>
-                        <td style="text-align:center; font-family:var(--font-mono);">${row.totalScans} lần</td>
+                        <td style="text-align:center; font-family:var(--font-mono);">${_t('{0} lần', row.totalScans)}</td>
                     </tr>
                 `;
             });
@@ -345,49 +345,49 @@ function renderWorkspace2_Matrix(container) {
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px;">
                     <div>
                         <h3 style="font-size:15px; font-weight:900; margin:0; display:flex; align-items:center; gap:8px;">
-                            <span>🧩</span> MA TRẬN ĐA LƯỢT ĐO & BIẾN ĐỔI CHẤT LƯỢNG (MULTI-RUN MATRIX)
+                            <span>🧩</span> ${_t('MA TRẬN ĐA LƯỢT ĐO & BIẾN ĐỔI CHẤT LƯỢNG (MULTI-RUN MATRIX)')}
                         </h3>
                         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                            Theo dõi sự thay đổi phán định của từng PCS qua các trạm/lượt đo. Click vào ô bất kỳ để xem chi tiết riêng lượt đó.
+                            ${_t('Theo dõi sự thay đổi phán định của từng PCS qua các trạm/lượt đo. Click vào ô bất kỳ để xem chi tiết riêng lượt đó.')}
                         </div>
                     </div>
                     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                        <select class="settings-select" style="font-weight:700; font-size:12px;" onchange="onMatrixEvalModeChange(this.value)" title="Chọn quy tắc lấy kết quả phán định">
-                            <option value="LAST" ${matrixEvalMode === 'LAST' ? 'selected' : ''}>🏁 Lấy KQ Lần Cuối (Final)</option>
-                            <option value="FIRST" ${matrixEvalMode === 'FIRST' ? 'selected' : ''}>⚡ Lấy KQ Lần Đầu (FPY)</option>
+                        <select class="settings-select" style="font-weight:700; font-size:12px;" onchange="onMatrixEvalModeChange(this.value)" title="${_t('Chọn quy tắc lấy kết quả phán định')}">
+                            <option value="LAST" ${matrixEvalMode === 'LAST' ? 'selected' : ''}>${_t('🏁 Lấy KQ Lần Cuối (Final)')}</option>
+                            <option value="FIRST" ${matrixEvalMode === 'FIRST' ? 'selected' : ''}>${_t('⚡ Lấy KQ Lần Đầu (FPY)')}</option>
                         </select>
                         <select class="settings-select" style="font-weight:700; font-size:12px;" onchange="onMatrixFilterChange(this.value)">
-                            <option value="ALL" ${matrixFilterStatus === 'ALL' ? 'selected' : ''}>Tất cả trạng thái</option>
-                            <option value="FAIL" ${matrixFilterStatus === 'FAIL' ? 'selected' : ''}>Chỉ PCS dính lỗi (FAIL)</option>
-                            <option value="CHANGED" ${matrixFilterStatus === 'CHANGED' ? 'selected' : ''}>PCS bị đổi kết quả (PASS ↔ FAIL)</option>
-                            <option value="RETEST" ${matrixFilterStatus === 'RETEST' ? 'selected' : ''}>PCS đo lại nhiều lần (Retest)</option>
+                            <option value="ALL" ${matrixFilterStatus === 'ALL' ? 'selected' : ''}>${_t('Tất cả trạng thái')}</option>
+                            <option value="FAIL" ${matrixFilterStatus === 'FAIL' ? 'selected' : ''}>${_t('Chỉ PCS dính lỗi (FAIL)')}</option>
+                            <option value="CHANGED" ${matrixFilterStatus === 'CHANGED' ? 'selected' : ''}>${_t('PCS bị đổi kết quả (PASS ↔ FAIL)')}</option>
+                            <option value="RETEST" ${matrixFilterStatus === 'RETEST' ? 'selected' : ''}>${_t('PCS đo lại nhiều lần (Retest)')}</option>
                         </select>
-                        <input type="text" placeholder="🔍 Tìm Serial Number..." value="${escapeHtml(matrixSearchKeyword)}" class="settings-input" style="width:180px; font-size:12px;" oninput="onMatrixSearchInput(this.value)">
-                        <button class="btn btn-sm btn-outline" onclick="exportMatrixStandaloneHTML()">📤 Xuất Ma Trận HTML</button>
-                        <button class="btn btn-sm btn-secondary" onclick="exportMatrixExcel()">📥 Xuất Excel Ma Trận</button>
+                        <input type="text" placeholder="${_t('🔍 Tìm Serial Number...')}" value="${escapeHtml(matrixSearchKeyword)}" class="settings-input" style="width:180px; font-size:12px;" oninput="onMatrixSearchInput(this.value)">
+                        <button class="btn btn-sm btn-outline" onclick="exportMatrixStandaloneHTML()">📤 ${_t('Xuất Ma Trận HTML')}</button>
+                        <button class="btn btn-sm btn-secondary" onclick="exportMatrixExcel()">📥 ${_t('Xuất Excel Ma Trận')}</button>
                     </div>
                 </div>
 
                 <!-- 5 Thẻ Tóm Tắt Ma Trận -->
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:14px;">
                     <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">TỔNG SỐ LƯỢT ĐO</div>
-                        <div style="font-size:17px; font-weight:900; color:#38bdf8; font-family:var(--font-mono); margin-top:2px;">${totalRuns} Lượt</div>
+                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">${_t('TỔNG SỐ LƯỢT ĐO')}</div>
+                        <div style="font-size:17px; font-weight:900; color:#38bdf8; font-family:var(--font-mono); margin-top:2px;">${totalRuns} ${_t('Lượt')}</div>
                     </div>
                     <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">TỔNG SỐ PCS</div>
+                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">${_t('TỔNG SỐ PCS')}</div>
                         <div style="font-size:17px; font-weight:900; color:#34d399; font-family:var(--font-mono); margin-top:2px;">${totalUnits} PCS</div>
                     </div>
                     <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">SẢN PHẨM LỖI</div>
+                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">${_t('SẢN PHẨM LỖI')}</div>
                         <div style="font-size:17px; font-weight:900; color:#f87171; font-family:var(--font-mono); margin-top:2px;">${failUnits} (${totalUnits > 0 ? ((failUnits/totalUnits)*100).toFixed(1) : 0}%)</div>
                     </div>
                     <div style="background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">ĐỔI KẾT QUẢ</div>
+                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">${_t('ĐỔI KẾT QUẢ')}</div>
                         <div style="font-size:17px; font-weight:900; color:#f59e0b; font-family:var(--font-mono); margin-top:2px;">${changedUnits} PCS</div>
                     </div>
                     <div style="background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">ĐO LẠI (RETEST)</div>
+                        <div style="font-size:10px; font-weight:800; color:var(--text-muted);">${_t('ĐO LẠI (RETEST)')}</div>
                         <div style="font-size:17px; font-weight:900; color:#c084fc; font-family:var(--font-mono); margin-top:2px;">${retestUnits} PCS</div>
                     </div>
                 </div>
@@ -400,10 +400,10 @@ function renderWorkspace2_Matrix(container) {
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
                     <div>
                         <h3 style="font-size:15px; font-weight:900; margin:0; display:flex; align-items:center; gap:8px;">
-                            <span>🔗</span> MA TRẬN TƯƠNG QUAN LỖI CHÉO (DEFECT CO-OCCURRENCE MATRIX)
+                            <span>🔗</span> ${_t('MA TRẬN TƯƠNG QUAN LỖI CHÉO (DEFECT CO-OCCURRENCE MATRIX)')}
                         </h3>
                         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                            Phân tích xác suất các lỗi xảy ra đồng thời trên cùng 1 con hàng (Giúp phân biệt nguyên nhân Cơ khí vs Điện tử).
+                            ${_t('Phân tích xác suất các lỗi xảy ra đồng thời trên cùng 1 con hàng (Giúp phân biệt nguyên nhân Cơ khí vs Điện tử).')}
                         </div>
                     </div>
                 </div>
@@ -417,7 +417,7 @@ function renderWorkspace2_Matrix(container) {
                     <!-- Danh Sách Top Combo Lỗi -->
                     <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:10px; padding:14px;">
                         <div style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:10px;">
-                            ⚡ TOP TỔ HỢP LỖI KÉP PHỔ BIẾN NHẤT
+                            ⚡ ${_t('TOP TỔ HỢP LỖI KÉP PHỔ BIẾN NHẤT')}
                         </div>
                         <div style="display:flex; flex-direction:column; gap:8px;">
                             ${renderTopCombosList()}
@@ -432,7 +432,7 @@ function renderWorkspace2_Matrix(container) {
 function renderCorrelationMatrixTable() {
     const { tasks, matrix } = correlationData;
     if (!tasks || tasks.length === 0) {
-        return `<div style="text-align:center; padding:30px; color:var(--text-muted);">Chưa ghi nhận đủ dữ liệu lỗi để lập ma trận tương quan</div>`;
+        return `<div style="text-align:center; padding:30px; color:var(--text-muted);">${_t('Chưa ghi nhận đủ dữ liệu lỗi để lập ma trận tương quan')}</div>`;
     }
 
     let html = `<table class="data-table" style="font-size:11px; text-align:center; white-space:nowrap;"><thead><tr><th></th>`;
@@ -470,7 +470,7 @@ function renderCorrelationMatrixTable() {
 function renderTopCombosList() {
     const { combos } = correlationData;
     if (!combos || combos.length === 0) {
-        return `<div style="font-size:11.5px; color:var(--text-muted); font-style:italic;">Không có sản phẩm nào dính đồng thời nhiều lỗi.</div>`;
+        return `<div style="font-size:11.5px; color:var(--text-muted); font-style:italic;">${_t('Không có sản phẩm nào dính đồng thời nhiều lỗi.')}</div>`;
     }
 
     let html = '';
@@ -507,7 +507,7 @@ function setProductionTimelineDefectFilter(defectKey) {
 
 function filterTimelineBySpecificError(rawName) {
     setProductionTimelineDefectFilter(rawName);
-    showToast(`🔍 Đang lọc diễn biến theo lỗi: ${getMappedName(rawName)}`, 'info');
+    showToast(_t('🔍 Đang lọc diễn biến theo lỗi: {0}', getMappedName(rawName)), 'info');
 }
 
 function renderWorkspace3_Timeline(container) {
@@ -516,22 +516,22 @@ function renderWorkspace3_Timeline(container) {
     const activeDefectName = isFilteringDefect ? getMappedName(currentProductionDefectFilter) : '';
 
     // Tạo danh sách tùy chọn lỗi từ Pareto
-    let defectOptionsHtml = `<option value="ALL" ${!isFilteringDefect ? 'selected' : ''}>🔍 Tất Cả Các Lỗi (Tổng Hợp NG Toàn Diện)</option>`;
+    let defectOptionsHtml = `<option value="ALL" ${!isFilteringDefect ? 'selected' : ''}>${_t('🔍 Tất Cả Các Lỗi (Tổng Hợp NG Toàn Diện)')}</option>`;
     (analysisData.errorPareto || []).forEach(err => {
         const isSel = currentProductionDefectFilter === err.rawName ? 'selected' : '';
-        defectOptionsHtml += `<option value="${escapeHtml(err.rawName)}" ${isSel}>⚠️ [${err.count} Lỗi] ${escapeHtml(err.mappedName)} (${escapeHtml(err.rawName)})</option>`;
+        defectOptionsHtml += `<option value="${escapeHtml(err.rawName)}" ${isSel}>⚠️ [${err.count} ${_t('Lỗi')}] ${escapeHtml(err.mappedName)} (${escapeHtml(err.rawName)})</option>`;
     });
 
     // 8 Mốc Khung Thời Gian
     const intervals = [
-        { id: '15_MIN', label: '15 Phút' },
-        { id: '30_MIN', label: '30 Phút' },
-        { id: '45_MIN', label: '45 Phút' },
-        { id: '60_MIN', label: '60 Phút (1h)' },
-        { id: '2_HOUR', label: '2 Giờ' },
-        { id: '5_HOUR', label: '5 Giờ' },
-        { id: '1_DAY',  label: '1 Ngày (24h)' },
-        { id: 'SHIFT',  label: 'Theo Ca Kíp' }
+        { id: '15_MIN', label: _t('15 Phút') },
+        { id: '30_MIN', label: _t('30 Phút') },
+        { id: '45_MIN', label: _t('45 Phút') },
+        { id: '60_MIN', label: _t('60 Phút (1h)') },
+        { id: '2_HOUR', label: _t('2 Giờ') },
+        { id: '5_HOUR', label: _t('5 Giờ') },
+        { id: '1_DAY',  label: _t('1 Ngày (24h)') },
+        { id: 'SHIFT',  label: _t('Theo Ca Kíp') }
     ];
 
     let intervalButtonsHtml = '';
@@ -553,31 +553,31 @@ function renderWorkspace3_Timeline(container) {
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                     <div>
                         <h3 style="font-size:15px; font-weight:900; margin:0; display:flex; align-items:center; gap:8px;">
-                            <span>🕒</span> DIỄN BIẾN CHẤT LƯỢNG SẢN XUẤT THEO KHUNG THỜI GIAN CHUẨN
+                            <span>🕒</span> ${_t('DIỄN BIẾN CHẤT LƯỢNG SẢN XUẤT THEO KHUNG THỜI GIAN CHUẨN')}
                         </h3>
                         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                            Phân tích chi tiết năng suất &amp; chất lượng trong từng <strong>15p, 30p, 45p, 60p, 2h, 5h, 1 ngày</strong> theo timestamp tệp Klippel.
+                            ${_t('Phân tích chi tiết năng suất & chất lượng trong từng {0} theo timestamp tệp Klippel.', '<strong>15p, 30p, 45p, 60p, 2h, 5h, 1 ngày</strong>')}
                         </div>
                     </div>
                     <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                        <button class="btn btn-sm btn-secondary" onclick="exportProductionTimelineExcel()">📥 Xuất Excel Diễn Biến</button>
-                        <button class="btn btn-sm btn-outline" onclick="openShiftSettingsModal()">⚙️ Cài Đặt Giờ Ca</button>
+                        <button class="btn btn-sm btn-secondary" onclick="exportProductionTimelineExcel()">📥 ${_t('Xuất Excel Diễn Biến')}</button>
+                        <button class="btn btn-sm btn-outline" onclick="openShiftSettingsModal()">⚙️ ${_t('Cài Đặt Giờ Ca')}</button>
                     </div>
                 </div>
 
                 <!-- Dải nút chọn Khung thời gian & Dropdown lọc lỗi -->
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:12px; border-top:1px solid var(--border-color); flex-wrap:wrap; gap:12px;">
                     <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                        <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">⏱️ Khung Chia:</span>
+                        <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-right:4px;">⏱️ ${_t('Khung Chia')}:</span>
                         ${intervalButtonsHtml}
                     </div>
 
                     <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                        <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">🎯 Lọc Lỗi:</span>
+                        <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">🎯 ${_t('Lọc Lỗi')}:</span>
                         <select id="timeline-defect-select" class="form-select" onchange="setProductionTimelineDefectFilter(this.value)" style="min-width:280px; font-size:12px; font-weight:700; background:var(--bg-surface); border-color:var(--border-color); color:var(--text-main); padding:5px 10px; border-radius:8px;">
                             ${defectOptionsHtml}
                         </select>
-                        ${isFilteringDefect ? `<button class="btn btn-sm btn-outline-danger" onclick="setProductionTimelineDefectFilter('ALL')" style="font-size:11px;">✕ Hủy Lọc</button>` : ''}
+                        ${isFilteringDefect ? `<button class="btn btn-sm btn-outline-danger" onclick="setProductionTimelineDefectFilter('ALL')" style="font-size:11px;">✕ ${_t('Hủy Lọc')}</button>` : ''}
                     </div>
                 </div>
             </div>
@@ -585,26 +585,26 @@ function renderWorkspace3_Timeline(container) {
             <!-- 4 THẺ TỔNG QUAN DIỄN BIẾN SẢN XUẤT -->
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
                 <div class="kpi-card">
-                    <div class="kpi-label">TỔNG SẢN LƯỢNG ĐO</div>
+                    <div class="kpi-label">${_t('TỔNG SẢN LƯỢNG ĐO')}</div>
                     <div class="kpi-val">${sum.total.toLocaleString()}</div>
-                    <div style="font-size:10px; color:var(--text-muted);">Tổng các lượt đo trong giai đoạn</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${_t('Tổng các lượt đo trong giai đoạn')}</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">${isFilteringDefect ? 'SỐ LƯỢNG LỖI ĐANG LỌC' : 'TỔNG LỖI PHÁT SINH'}</div>
+                    <div class="kpi-label">${isFilteringDefect ? _t('SỐ LƯỢNG LỖI ĐANG LỌC') : _t('TỔNG LỖI PHÁT SINH')}</div>
                     <div class="kpi-val" style="color:#ef4444;">${(isFilteringDefect ? sum.filteredDefectCount : sum.fail).toLocaleString()}</div>
-                    <div style="font-size:10px; color:var(--text-muted);">${isFilteringDefect ? `Chiếm ${sum.filteredDefectRate.toFixed(1)}% sản lượng` : `Tỷ lệ NG: ${sum.ngRate.toFixed(1)}%`}</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${isFilteringDefect ? _t('Chiếm {0}% sản lượng', sum.filteredDefectRate.toFixed(1)) : _t('Tỷ lệ NG: {0}%', sum.ngRate.toFixed(1))}</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">${isFilteringDefect ? 'TỶ LỆ LỖI TRUNG BÌNH' : 'TỶ LỆ ĐẠT TRUNG BÌNH'}</div>
+                    <div class="kpi-label">${isFilteringDefect ? _t('TỶ LỆ LỖI TRUNG BÌNH') : _t('TỶ LỆ ĐẠT TRUNG BÌNH')}</div>
                     <div class="kpi-val" style="color:${isFilteringDefect ? '#f59e0b' : '#10b981'};">${(isFilteringDefect ? sum.filteredDefectRate : sum.yieldRate).toFixed(1)}%</div>
                     <div style="font-size:10px; color:var(--text-muted);">${isFilteringDefect ? activeDefectName : 'First/Final Pass Yield'}</div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">KHUNG GIỜ ĐẠT CAO NHẤT</div>
+                    <div class="kpi-label">${_t('KHUNG GIỜ ĐẠT CAO NHẤT')}</div>
                     <div class="kpi-val" style="color:#38bdf8; font-size:16px; margin-top:2px;">
                         ${sum.peakBucket ? `${sum.peakBucket.label} (${sum.peakBucket.yieldRate.toFixed(1)}%)` : '—'}
                     </div>
-                    <div style="font-size:10px; color:var(--text-muted);">${sum.worstBucket ? `Thấp nhất: ${sum.worstBucket.label} (${sum.worstBucket.yieldRate.toFixed(1)}%)` : '—'}</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${sum.worstBucket ? _t('Thấp nhất: {0} ({1}%)', sum.worstBucket.label, sum.worstBucket.yieldRate.toFixed(1)) : '—'}</div>
                 </div>
             </div>
 
@@ -613,21 +613,21 @@ function renderWorkspace3_Timeline(container) {
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
                     <div>
                         <h4 style="font-size:13.5px; font-weight:900; margin:0; display:flex; align-items:center; gap:8px;">
-                            <span>📊</span> BIỂU ĐỒ DIỄN BIẾN ${isFilteringDefect ? `LỖI: "${escapeHtml(activeDefectName)}"` : 'SẢN LƯỢNG &amp; TỶ LỆ ĐẠT'}
+                            <span>📊</span> ${_t('BIỂU ĐỒ DIỄN BIẾN')} ${isFilteringDefect ? `${_t('LỖI')}: "${escapeHtml(activeDefectName)}"` : _t('SẢN LƯỢNG & TỶ LỆ ĐẠT')}
                         </h4>
                         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                            ${isFilteringDefect ? `Theo dõi số lần xuất hiện và tỷ lệ phát sinh của lỗi <strong>${escapeHtml(activeDefectName)}</strong> qua từng khung thời gian.` : 'Biểu đồ kết hợp Sản lượng Đạt (PASS), Lỗi (FAIL/NG) và Đường Tỷ lệ Đạt (Yield %) hiển thị lớp trên cùng.'}
+                            ${isFilteringDefect ? _t('Theo dõi số lần xuất hiện và tỷ lệ phát sinh của lỗi {0} qua từng khung thời gian.', `<strong>${escapeHtml(activeDefectName)}</strong>`) : _t('Biểu đồ kết hợp Sản lượng Đạt (PASS), Lỗi (FAIL/NG) và Đường Tỷ lệ Đạt (Yield %) hiển thị lớp trên cùng.')}
                         </div>
                     </div>
                     <div style="display:flex; gap:14px; font-size:11px; color:var(--text-sub); font-family:var(--font-mono); align-items:center;">
                         ${!isFilteringDefect ? `
-                            <span style="color:#10b981;">■ ĐẠT (PASS)</span>
-                            <span style="color:#ef4444;">■ LỖI (FAIL)</span>
-                            <span style="color:#00f2fe; font-weight:800;">— TỶ LỆ ĐẠT (%)</span>
+                            <span style="color:#10b981;">■ ${_t('ĐẠT (PASS)')}</span>
+                            <span style="color:#ef4444;">■ ${_t('LỖI (FAIL)')}</span>
+                            <span style="color:#00f2fe; font-weight:800;">— ${_t('TỶ LỆ ĐẠT (%)')}</span>
                         ` : `
-                            <span style="color:#0ea5e9;">■ KHÔNG BỊ LỖI NÀY</span>
-                            <span style="color:#ef4444; font-weight:700;">■ SỐ LẦN DÍNH LỖI NÀY</span>
-                            <span style="color:#f59e0b; font-weight:800;">— TỶ LỆ LỖI (%)</span>
+                            <span style="color:#0ea5e9;">■ ${_t('KHÔNG BỊ LỖI NÀY')}</span>
+                            <span style="color:#ef4444; font-weight:700;">■ ${_t('SỐ LẦN DÍNH LỖI NÀY')}</span>
+                            <span style="color:#f59e0b; font-weight:800;">— ${_t('TỶ LỆ LỖI (%)')}</span>
                         `}
                     </div>
                 </div>
@@ -641,10 +641,10 @@ function renderWorkspace3_Timeline(container) {
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
                     <div>
                         <h4 style="font-size:13.5px; font-weight:900; margin:0; display:flex; align-items:center; gap:8px;">
-                            <span>📋</span> BẢNG CHI TIẾT SẢN XUẤT &amp; BÓC TÁCH LỖI NG CỤ THỂ TỪNG KHUNG GIỜ
+                            <span>📋</span> ${_t('BẢNG CHI TIẾT SẢN XUẤT & BÓC TÁCH LỖI NG CỤ THỂ TỪNG KHUNG GIỜ')}
                         </h4>
                         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                            Hiển thị chi tiết từng lỗi phát sinh (Defect Breakdown Tag Cloud). Nhấp vào bất kỳ mã lỗi nào để lọc biểu đồ hoặc bấm "Xem PCS" để truy vết mã vạch.
+                            ${_t('Hiển thị chi tiết từng lỗi phát sinh (Defect Breakdown Tag Cloud). Nhấp vào bất kỳ mã lỗi nào để lọc biểu đồ hoặc bấm "Xem PCS" để truy vết mã vạch.')}
                         </div>
                     </div>
                 </div>
@@ -656,13 +656,13 @@ function renderWorkspace3_Timeline(container) {
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
                     <div>
                         <h4 style="font-size:12.5px; font-weight:800; text-transform:uppercase; color:var(--text-main); margin:0; display:flex; align-items:center; gap:6px;">
-                            <span>🚩</span> CỘT MỐC SỰ KIỆN CA SẢN XUẤT (EVENT MILESTONES)
+                            <span>🚩</span> ${_t('CỘT MỐC SỰ KIỆN CA SẢN XUẤT (EVENT MILESTONES)')}
                         </h4>
                         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                            Đánh dấu các mốc can thiệp kỹ thuật (Đổi cuộn dây, Thay Jig, Giao ca, Hiệu chuẩn) để đối chiếu trực tiếp với diễn biến lỗi theo thời gian.
+                            ${_t('Đánh dấu các mốc can thiệp kỹ thuật (Đổi cuộn dây, Thay Jig, Giao ca, Hiệu chuẩn) để đối chiếu trực tiếp với diễn biến lỗi theo thời gian.')}
                         </div>
                     </div>
-                    <button class="btn btn-sm btn-secondary" onclick="promptAddNewFlagZone()">+ Thêm Mốc Sự Kiện</button>
+                    <button class="btn btn-sm btn-secondary" onclick="promptAddNewFlagZone()">+ ${_t('Thêm Mốc Sự Kiện')}</button>
                 </div>
                 <div id="flag-zones-container" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
                     ${renderFlagZoneChips()}
@@ -674,13 +674,13 @@ function renderWorkspace3_Timeline(container) {
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
                     <div>
                         <h3 style="font-size:15px; font-weight:900; margin:0; display:flex; align-items:center; gap:8px;">
-                            <span>⏱️</span> HIỆU SUẤT THEO CA SẢN XUẤT
+                            <span>⏱️</span> ${_t('HIỆU SUẤT THEO CA SẢN XUẤT')}
                         </h3>
                         <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                            Thống kê sản lượng, tỷ lệ Đạt (FPY) và Top 3 lỗi trọng điểm của từng ca làm việc.
+                            ${_t('Thống kê sản lượng, tỷ lệ Đạt (FPY) và Top 3 lỗi trọng điểm của từng ca làm việc.')}
                         </div>
                     </div>
-                    <button class="btn btn-sm btn-outline" onclick="openShiftSettingsModal()">⚙️ Cài Đặt Giờ Ca</button>
+                    <button class="btn btn-sm btn-outline" onclick="openShiftSettingsModal()">⚙️ ${_t('Cài Đặt Giờ Ca')}</button>
                 </div>
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
                     ${renderShiftCards()}
@@ -690,13 +690,13 @@ function renderWorkspace3_Timeline(container) {
             <!-- PHẦN 6: SO SÁNH TRẠM & MODEL -->
             <div class="card" style="padding:18px;">
                 <h3 style="font-size:15px; font-weight:900; margin:0 0 14px; display:flex; align-items:center; gap:8px;">
-                    <span>⚖️</span> SO SÁNH NĂNG LỰC TRẠM ĐO &amp; MODEL
+                    <span>⚖️</span> ${_t('SO SÁNH NĂNG LỰC TRẠM ĐO & MODEL')}
                 </h3>
                 <div style="display:grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px;">
                     <!-- Trạm đo -->
                     <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:10px; padding:14px;">
                         <div style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:10px;">
-                            🏭 SO SÁNH GIỮA CÁC TRẠM / MÁY ĐO KLIPPEL
+                            🏭 ${_t('SO SÁNH GIỮA CÁC TRẠM / MÁY ĐO KLIPPEL')}
                         </div>
                         <div class="table-wrapper">
                             ${renderStationBenchmarkTable()}
@@ -706,7 +706,7 @@ function renderWorkspace3_Timeline(container) {
                     <!-- Model -->
                     <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-color); border-radius:10px; padding:14px;">
                         <div style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; margin-bottom:10px;">
-                            📦 PHÂN BỔ TỶ LỆ LỖI THEO MODEL SẢN PHẨM
+                            📦 ${_t('PHÂN BỔ TỶ LỆ LỖI THEO MODEL SẢN PHẨM')}
                         </div>
                         <div class="table-wrapper">
                             ${renderModelBenchmarkTable()}
@@ -717,7 +717,7 @@ function renderWorkspace3_Timeline(container) {
             <!-- PHẦN 7: BẢN ĐỒ NHIỆT TỶ LỆ ĐẠT THEO 24 KHUNG GIỜ TRONG NGÀY -->
             <div class="card" style="padding:18px;">
                 <h3 style="font-size:15px; font-weight:900; margin:0 0 10px; display:flex; align-items:center; gap:8px;">
-                    <span>🔥</span> BẢN ĐỒ NHIỆT HIỆU SUẤT THEO KHUNG GIỜ TRONG NGÀY (24H YIELD HEATMAP)
+                    <span>🔥</span> ${_t('BẢN ĐỒ NHIỆT HIỆU SUẤT THEO KHUNG GIỜ TRONG NGÀY (24H YIELD HEATMAP)')}
                 </h3>
                 <div id="hourly-yield-container"></div>
             </div>
@@ -867,14 +867,14 @@ function renderProductionTimelineChart() {
                             const dataIndex = tooltipItems[0].dataIndex;
                             const bucket = buckets[dataIndex];
                             if (!bucket || !bucket.errorBreakdown || bucket.errorBreakdown.length === 0) {
-                                return '\n✓ 100% Đạt Chuẩn (Không có lỗi)';
+                                return '\n' + _t('✓ 100% Đạt Chuẩn (Không có lỗi)');
                             }
-                            let text = '\n🔍 Chi tiết lỗi trong khung giờ:';
+                            let text = '\n' + _t('🔍 Chi tiết lỗi trong khung giờ:');
                             bucket.errorBreakdown.slice(0, 4).forEach(err => {
                                 text += `\n • ${err.mappedName}: ${err.count} PCS (${err.pctOfTotal.toFixed(1)}%)`;
                             });
                             if (bucket.errorBreakdown.length > 4) {
-                                text += `\n • ...và ${bucket.errorBreakdown.length - 4} lỗi khác`;
+                                text += '\n • ' + _t('...và {0} lỗi khác', bucket.errorBreakdown.length - 4);
                             }
                             return text;
                         }
@@ -904,7 +904,7 @@ function renderProductionTimelineChart() {
 function renderProductionTimelineBreakdownTable() {
     const buckets = productionTimelineData.buckets || [];
     if (buckets.length === 0) {
-        return `<div style="text-align:center; color:var(--text-muted); padding:20px;">Không có dữ liệu thời gian để lập bảng chi tiết</div>`;
+        return `<div style="text-align:center; color:var(--text-muted); padding:20px;">${_t('Không có dữ liệu thời gian để lập bảng chi tiết')}</div>`;
     }
 
     let html = `
@@ -913,13 +913,13 @@ function renderProductionTimelineBreakdownTable() {
                 <thead style="position:sticky; top:0; z-index:2; background:var(--bg-surface-elevated);">
                     <tr>
                         <th style="width:45px; text-align:center;">STT</th>
-                        <th>Khung Thời Gian</th>
-                        <th style="text-align:center;">Sản Lượng</th>
-                        <th style="text-align:center;">Đạt (PASS)</th>
-                        <th style="text-align:center;">Lỗi (FAIL/NG)</th>
-                        <th style="text-align:center;">Tỷ Lệ Đạt</th>
-                        <th>Bóc Tách Các Lỗi NG Cụ Thể (Số lượng PCS dính lỗi)</th>
-                        <th style="text-align:center; width:90px;">Thao Tác</th>
+                        <th>${_t('Khung Thời Gian')}</th>
+                        <th style="text-align:center;">${_t('Sản Lượng')}</th>
+                        <th style="text-align:center;">${_t('Đạt (PASS)')}</th>
+                        <th style="text-align:center;">${_t('Lỗi (FAIL/NG)')}</th>
+                        <th style="text-align:center;">${_t('Tỷ Lệ Đạt')}</th>
+                        <th>${_t('Bóc Tách Các Lỗi NG Cụ Thể (Số lượng PCS dính lỗi)')}</th>
+                        <th style="text-align:center; width:90px;">${_t('Thao Tác')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -930,7 +930,7 @@ function renderProductionTimelineBreakdownTable() {
         
         let errorChipsHtml = '';
         if (!b.errorBreakdown || b.errorBreakdown.length === 0) {
-            errorChipsHtml = `<span style="color:#10b981; font-size:11.5px; font-weight:600;">✓ 100% Đạt Chuẩn (0 lỗi)</span>`;
+            errorChipsHtml = `<span style="color:#10b981; font-size:11.5px; font-weight:600;">${_t('✓ 100% Đạt Chuẩn (0 lỗi)')}</span>`;
         } else {
             errorChipsHtml = `<div style="display:flex; flex-wrap:wrap; gap:5px;">`;
             b.errorBreakdown.forEach(err => {
@@ -941,7 +941,7 @@ function renderProductionTimelineBreakdownTable() {
                     <span class="badge-pill badge-fail" 
                           style="background:${chipBg}; border:1px solid ${chipBorder}; font-size:11px; cursor:pointer;"
                           onclick="filterTimelineBySpecificError('${escapeHtml(err.rawName)}')"
-                          title="Bấm để lọc biểu đồ theo lỗi này: ${escapeHtml(err.mappedName)}">
+                          title="${_t('Bấm để lọc biểu đồ theo lỗi này:')} ${escapeHtml(err.mappedName)}">
                         ${escapeHtml(err.mappedName)}: <strong>${err.count}</strong>
                     </span>
                 `;
@@ -964,8 +964,8 @@ function renderProductionTimelineBreakdownTable() {
                 </td>
                 <td>${errorChipsHtml}</td>
                 <td style="text-align:center;">
-                    <button class="btn btn-sm btn-outline" onclick="openBucketDrilldown('${escapeHtml(b.key)}')" style="font-size:11px; padding:3px 8px;" title="Xem danh sách mã vạch đo trong khung giờ này">
-                        🔍 Xem PCS
+                    <button class="btn btn-sm btn-outline" onclick="openBucketDrilldown('${escapeHtml(b.key)}')" style="font-size:11px; padding:3px 8px;" title="${_t('Xem danh sách mã vạch đo trong khung giờ này')}">
+                        🔍 ${_t('Xem PCS')}
                     </button>
                 </td>
             </tr>
@@ -982,7 +982,7 @@ function renderProductionTimelineBreakdownTable() {
 function openBucketDrilldown(bucketKey) {
     const bucket = (productionTimelineData.buckets || []).find(b => b.key === bucketKey);
     if (!bucket || !bucket.records || bucket.records.length === 0) {
-        showToast('Không có dữ liệu trong khung giờ này', 'warning');
+        showToast(_t('Không có dữ liệu trong khung giờ này'), 'warning');
         return;
     }
     openCustomRecordsModal(`${_t('Chi Tiết Bản Ghi')} · ${bucket.label} (${bucket.dateStr})`, bucket.records);
@@ -996,16 +996,16 @@ function openCustomRecordsModal(title, recordsList) {
     const thead = modal.querySelector('.modal-body thead');
 
     if (titleEl) {
-        titleEl.innerHTML = `🔍 <strong style="color:var(--accent-cyan);">${escapeHtml(title)}</strong> (${recordsList.length} mẫu)`;
+        titleEl.innerHTML = `🔍 <strong style="color:var(--accent-cyan);">${escapeHtml(title)}</strong> (${recordsList.length} ${_t('mẫu')})`;
     }
     if (thead) {
         thead.innerHTML = `
             <tr>
                 <th style="width:40px; text-align:center;">#</th>
                 <th>Serial Number / DUT</th>
-                <th>Thời Gian Đo</th>
-                <th>Trạm Đo &amp; Model</th>
-                <th>Phán Định &amp; Chi Tiết Lỗi</th>
+                <th>${_t('Thời Gian Đo')}</th>
+                <th>${_t('Trạm Đo & Model')}</th>
+                <th>${_t('Phán Định & Chi Tiết Lỗi')}</th>
             </tr>
         `;
     }
@@ -1040,30 +1040,30 @@ function openCustomRecordsModal(title, recordsList) {
  */
 async function exportProductionTimelineExcel() {
     if (typeof ExcelJS === 'undefined') {
-        showToast('⚠️ Thư viện ExcelJS chưa tải xong.', 'warning');
+        showToast(_t('⚠️ Thư viện ExcelJS chưa tải xong.'), 'warning');
         return;
     }
 
     const buckets = productionTimelineData.buckets || [];
     if (buckets.length === 0) {
-        showToast('⚠️ Không có dữ liệu diễn biến để xuất.', 'warning');
+        showToast(_t('⚠️ Không có dữ liệu diễn biến để xuất.'), 'warning');
         return;
     }
 
-    showToast('⏳ Đang xuất báo cáo Excel Diễn Biến Sản Xuất...', 'info');
+    showToast(_t('⏳ Đang xuất báo cáo Excel Diễn Biến Sản Xuất...'), 'info');
 
     const workbook = new ExcelJS.Workbook();
     workbook.creator = 'QIT Scanner v2';
     workbook.created = new Date();
 
     const ws = workbook.addWorksheet('Production Timeline');
-    ws.addRow(['QIT SCANNER V2 — BÁO CÁO DIỄN BIẾN SẢN XUẤT & BÓC TÁCH LỖI THEO THỜI GIAN']);
-    ws.addRow(['Khung chia thời gian:', currentProductionInterval || '60_MIN']);
-    ws.addRow(['Bộ lọc lỗi hiện tại:', currentProductionDefectFilter === 'ALL' ? 'Tất cả lỗi' : getMappedName(currentProductionDefectFilter)]);
-    ws.addRow(['Thời gian xuất:', new Date().toLocaleString()]);
+    ws.addRow([_t('QIT SCANNER V2 — BÁO CÁO DIỄN BIẾN SẢN XUẤT & BÓC TÁCH LỖI THEO THỜI GIAN')]);
+    ws.addRow([_t('Khung chia thời gian:'), currentProductionInterval || '60_MIN']);
+    ws.addRow([_t('Bộ lọc lỗi hiện tại:'), currentProductionDefectFilter === 'ALL' ? _t('Tất cả lỗi') : getMappedName(currentProductionDefectFilter)]);
+    ws.addRow([_t('Thời gian xuất:'), new Date().toLocaleString()]);
     ws.addRow([]);
 
-    ws.addRow(['STT', 'Ngày', 'Khung Giờ', 'Tổng Sản Lượng', 'Đạt (PASS)', 'Lỗi (FAIL)', 'Tỷ Lệ Đạt (Yield %)', 'Chi Tiết Phân Tách Các Lỗi NG']);
+    ws.addRow([_t('STT'), _t('Ngày'), _t('Khung Giờ'), _t('Tổng Sản Lượng'), _t('Đạt (PASS)'), _t('Lỗi (FAIL)'), _t('Tỷ Lệ Đạt (Yield %)'), _t('Chi Tiết Phân Tách Các Lỗi NG')]);
 
     buckets.forEach((b, idx) => {
         const errDetail = (b.errorBreakdown || []).map(e => `${e.mappedName}: ${e.count}`).join(' | ');
@@ -1075,7 +1075,7 @@ async function exportProductionTimelineExcel() {
             b.pass,
             b.fail,
             b.yieldRate.toFixed(2) + '%',
-            errDetail || '100% Đạt Chuẩn (0 lỗi)'
+            errDetail || _t('100% Đạt Chuẩn (0 lỗi)')
         ]);
     });
 
@@ -1087,13 +1087,13 @@ async function exportProductionTimelineExcel() {
     a.download = `QIT_Production_Timeline_${currentProductionInterval}_${Date.now()}.xlsx`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('✅ Đã xuất báo cáo Excel Diễn Biến Sản Xuất thành công!', 'success');
+    showToast(_t('✅ Đã xuất báo cáo Excel Diễn Biến Sản Xuất thành công!'), 'success');
 }
 
 function renderShiftCards() {
     const shifts = shiftData.shifts || [];
     if (shifts.length === 0) {
-        return `<div style="text-align:center; padding:20px; color:var(--text-muted);">Chưa có dữ liệu ca</div>`;
+        return `<div style="text-align:center; padding:20px; color:var(--text-muted);">${_t('Chưa có dữ liệu ca')}</div>`;
     }
 
     let html = '';
@@ -1101,7 +1101,7 @@ function renderShiftCards() {
         const yieldColor = s.fpy >= 90 ? '#10b981' : (s.fpy >= 80 ? '#f59e0b' : '#ef4444');
         let topErrHtml = s.topErrors && s.topErrors.length > 0
             ? s.topErrors.map(e => `<span class="badge-pill badge-fail" style="font-size:10px;">${escapeHtml(e.name)}: ${e.count}</span>`).join(' ')
-            : `<span style="font-size:11px; color:var(--text-muted);">Không ghi nhận lỗi</span>`;
+            : `<span style="font-size:11px; color:var(--text-muted);">${_t('Không ghi nhận lỗi')}</span>`;
 
         html += `
             <div style="background:var(--bg-surface-elevated); border:1px solid var(--border-color); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
@@ -1110,11 +1110,11 @@ function renderShiftCards() {
                     <span style="font-size:17px; font-weight:900; font-family:var(--font-mono); color:${yieldColor};">${s.fpy.toFixed(1)}%</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); border-top:1px solid var(--border-color); padding-top:8px;">
-                    <span>Tổng sản lượng: <strong style="color:var(--text-main); font-family:var(--font-mono);">${s.total}</strong></span>
-                    <span>Đạt / Lỗi: <strong style="color:#10b981;">${s.pass}</strong> / <strong style="color:#ef4444;">${s.fail}</strong></span>
+                    <span>${_t('Tổng sản lượng')}: <strong style="color:var(--text-main); font-family:var(--font-mono);">${s.total}</strong></span>
+                    <span>${_t('Đạt / Lỗi')}: <strong style="color:#10b981;">${s.pass}</strong> / <strong style="color:#ef4444;">${s.fail}</strong></span>
                 </div>
                 <div style="font-size:11px; color:var(--text-sub);">
-                    Top lỗi: ${topErrHtml}
+                    ${_t('Top lỗi')}: ${topErrHtml}
                 </div>
             </div>
         `;
@@ -1126,18 +1126,18 @@ function renderShiftCards() {
 function renderStationBenchmarkTable() {
     const { stations } = benchmarkData;
     if (!stations || stations.length === 0) {
-        return `<div style="text-align:center; padding:20px; color:var(--text-muted);">Chưa có dữ liệu trạm đo</div>`;
+        return `<div style="text-align:center; padding:20px; color:var(--text-muted);">${_t('Chưa có dữ liệu trạm đo')}</div>`;
     }
 
     let html = `
         <table class="data-table" style="font-size:11.5px;">
             <thead>
                 <tr>
-                    <th>Tên Trạm</th>
-                    <th style="text-align:center;">Sản Lượng</th>
-                    <th style="text-align:center;">Đạt (PASS)</th>
-                    <th style="text-align:center;">Lỗi (FAIL)</th>
-                    <th style="text-align:center;">Tỷ Lệ Đạt</th>
+                    <th>${_t('Tên Trạm')}</th>
+                    <th style="text-align:center;">${_t('Sản Lượng')}</th>
+                    <th style="text-align:center;">${_t('Đạt (PASS)')}</th>
+                    <th style="text-align:center;">${_t('Lỗi (FAIL)')}</th>
+                    <th style="text-align:center;">${_t('Tỷ Lệ Đạt')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -1163,17 +1163,17 @@ function renderStationBenchmarkTable() {
 function renderModelBenchmarkTable() {
     const { models } = benchmarkData;
     if (!models || models.length === 0) {
-        return `<div style="text-align:center; padding:20px; color:var(--text-muted);">Chưa có dữ liệu Model</div>`;
+        return `<div style="text-align:center; padding:20px; color:var(--text-muted);">${_t('Chưa có dữ liệu Model')}</div>`;
     }
 
     let html = `
         <table class="data-table" style="font-size:11.5px;">
             <thead>
                 <tr>
-                    <th>Mã Model</th>
-                    <th style="text-align:center;">Sản Lượng</th>
-                    <th style="text-align:center;">Lỗi (FAIL)</th>
-                    <th style="text-align:center;">Tỷ Lệ Đạt</th>
+                    <th>${_t('Mã Model')}</th>
+                    <th style="text-align:center;">${_t('Sản Lượng')}</th>
+                    <th style="text-align:center;">${_t('Lỗi (FAIL)')}</th>
+                    <th style="text-align:center;">${_t('Tỷ Lệ Đạt')}</th>
                 </tr>
             </thead>
             <tbody>
@@ -1291,7 +1291,7 @@ function renderParetoTableAndChart() {
             scales: {
                 x: { ticks: { color: textCol, maxRotation: 45, minRotation: 0, font: { size: 10 } }, grid: { color: gridCol } },
                 y: { type: 'linear', position: 'left', ticks: { color: textCol }, grid: { color: gridCol }, title: { display: true, text: _t('Số Lỗi'), color: textCol } },
-                y1: { type: 'linear', position: 'right', min: 0, max: 100, ticks: { color: '#38bdf8', callback: val => `${val}%` }, grid: { drawOnChartArea: false }, title: { display: true, text: '% Tích Lũy', color: '#38bdf8' } }
+                y1: { type: 'linear', position: 'right', min: 0, max: 100, ticks: { color: '#38bdf8', callback: val => `${val}%` }, grid: { drawOnChartArea: false }, title: { display: true, text: _t('% Tích Lũy'), color: '#38bdf8' } }
             }
         }
     });
@@ -1326,7 +1326,7 @@ function renderHourlyYieldHeatmap() {
 
     let html = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:11px; color:var(--text-muted); flex-wrap:wrap; gap:8px;">
-            <div>${_t('Mức độ tỷ lệ lỗi')}: <span style="color:#10b981;">0% (Xanh)</span> $\\rightarrow$ <span style="color:#ef4444;">Cao (Đỏ đậm)</span></div>
+            <div>${_t('Mức độ tỷ lệ lỗi')}: <span style="color:#10b981;">${_t('0% (Xanh)')}</span> $\\rightarrow$ <span style="color:#ef4444;">${_t('Cao (Đỏ đậm)')}</span></div>
             <div>${_t('Tổng số khung giờ ghi nhận')}: <strong>${activeHours.length} ${_t('giờ')}</strong></div>
         </div>
         <div class="hourly-grid">
@@ -1378,7 +1378,7 @@ function onMatrixEvalModeChange(val) {
     matrixEvalMode = val;
     calculateMatrixData();
     renderAnalysisDashboard();
-    showToast(`✓ Đã chuyển sang chế độ: ${val === 'FIRST' ? 'Lấy kết quả LẦN ĐẦU (FPY)' : 'Lấy kết quả LẦN CUỐI (Final)'}`, 'info');
+    showToast(_t('✓ Đã chuyển sang chế độ: {0}', val === 'FIRST' ? _t('Lấy kết quả LẦN ĐẦU (FPY)') : _t('Lấy kết quả LẦN CUỐI (Final)')), 'info');
 }
 
 function openMatrixDetailModal(sn, runId, showAllRuns = false) {
@@ -1401,13 +1401,13 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                     <div>
                         <span style="color:var(--accent-blue);">🔍 ${escapeHtml(runInfo.shortLabel)}</span> 
-                        <span style="font-size:12px; color:var(--text-muted); font-weight:normal;">(Trạm: ${escapeHtml(runInfo.stationName)})</span>
+                        <span style="font-size:12px; color:var(--text-muted); font-weight:normal;">(${_t('Trạm')}: ${escapeHtml(runInfo.stationName)})</span>
                         <div style="font-size:13px; color:var(--text-main); font-weight:700; margin-top:2px;">
                             PCS: <strong style="font-family:var(--font-mono); color:#38bdf8;">${escapeHtml(ev.rawSN || sn)}</strong>
                         </div>
                     </div>
                     <button class="btn btn-sm btn-secondary" onclick="openMatrixDetailModal('${escapeHtml(sn)}', '${escapeHtml(runId)}', true)" style="font-size:11px;">
-                        📋 Xem toàn bộ ${ev.records.length} lần đo của PCS này
+                        📋 ${_t('Xem toàn bộ {0} lần đo của PCS này', ev.records.length)}
                     </button>
                 </div>
             `;
@@ -1415,12 +1415,12 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
             titleEl.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                     <div>
-                        <span style="color:#38bdf8;">🔍 TOÀN BỘ LỊCH SỬ ĐO (${ev.records.length} LẦN)</span>
+                        <span style="color:#38bdf8;">🔍 ${_t('TOÀN BỘ LỊCH SỬ ĐO ({0} LẦN)', ev.records.length)}</span>
                         <div style="font-size:13px; color:var(--text-main); font-weight:700; margin-top:2px;">
                             PCS: <strong style="font-family:var(--font-mono); color:var(--accent-blue);">${escapeHtml(ev.rawSN || sn)}</strong>
                         </div>
                     </div>
-                    ${runId ? `<button class="btn btn-sm btn-outline" onclick="openMatrixDetailModal('${escapeHtml(sn)}', '${escapeHtml(runId)}', false)" style="font-size:11px;">📌 Chỉ xem lượt ${escapeHtml(runInfo ? runInfo.shortLabel : '')}</button>` : ''}
+                    ${runId ? `<button class="btn btn-sm btn-outline" onclick="openMatrixDetailModal('${escapeHtml(sn)}', '${escapeHtml(runId)}', false)" style="font-size:11px;">📌 ${_t('Chỉ xem lượt {0}', escapeHtml(runInfo ? runInfo.shortLabel : ''))}</button>` : ''}
                 </div>
             `;
         }
@@ -1430,10 +1430,10 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
         thead.innerHTML = `
             <tr>
                 <th style="width:40px; text-align:center;">#</th>
-                <th>Model &amp; Trạm Đo</th>
-                <th>Thời Gian</th>
-                <th style="text-align:center;">Phán Định</th>
-                <th>Chi Tiết Lỗi &amp; Thông Số Vật Lý</th>
+                <th>${_t('Model & Trạm Đo')}</th>
+                <th>${_t('Thời Gian')}</th>
+                <th style="text-align:center;">${_t('Phán Định')}</th>
+                <th>${_t('Chi Tiết Lỗi & Thông Số Vật Lý')}</th>
             </tr>
         `;
     }
@@ -1441,7 +1441,7 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
     if (tbody) {
         tbody.innerHTML = '';
         if (targetRecords.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">Không tìm thấy bản ghi đo nào trong lượt này.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--text-muted);">${_t('Không tìm thấy bản ghi đo nào trong lượt này.')}</td></tr>`;
         } else {
             targetRecords.forEach((rec, idx) => {
                 const tr = document.createElement('tr');
@@ -1452,7 +1452,7 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
                 if (!pass && errs.length > 0) {
                     detailsHtml = errs.map(e => `<span class="badge-pill badge-fail" style="margin-right:4px; font-size:11px;">❌ ${escapeHtml(getMappedName(e))}</span>`).join('');
                 } else if (pass) {
-                    detailsHtml = `<span class="badge-pill badge-pass" style="font-size:11px;">✓ Đạt tất cả tiêu chuẩn kiểm tra</span>`;
+                    detailsHtml = `<span class="badge-pill badge-pass" style="font-size:11px;">${_t('✓ Đạt tất cả tiêu chuẩn kiểm tra')}</span>`;
                 }
 
                 // Nếu có thông số đo vật lý
@@ -1470,7 +1470,7 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
                     <td style="text-align:center; font-weight:700; color:var(--text-muted);">#${idx + 1}</td>
                     <td>
                         <strong style="color:var(--accent-blue);">${escapeHtml(rec.modelName ? ('Model ' + rec.modelName) : rec.fileName)}</strong>
-                        <div style="font-size:11px; color:var(--text-muted);">Trạm: ${escapeHtml(rec.stationName)} · Tệp: ${escapeHtml(rec.fileName)}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">${_t('Trạm')}: ${escapeHtml(rec.stationName)} · ${_t('Tệp')}: ${escapeHtml(rec.fileName)}</div>
                     </td>
                     <td style="font-family:var(--font-mono); font-size:12px;">${rec.timestamp ? rec.timestamp.toLocaleString() : '—'}</td>
                     <td style="text-align:center;">${pass ? '<span class="badge-pill badge-pass">PASS</span>' : '<span class="badge-pill badge-fail">FAIL</span>'}</td>
@@ -1518,9 +1518,9 @@ function openDrilldownModal(errorName) {
             <tr>
                 <th style="width:40px; text-align:center;">#</th>
                 <th>Serial Number</th>
-                <th>Thời Gian Đo</th>
-                <th>Trạm Đo</th>
-                <th>Tệp Nguồn / Phán Định</th>
+                <th>${_t('Thời Gian Đo')}</th>
+                <th>${_t('Trạm Đo')}</th>
+                <th>${_t('Tệp Nguồn / Phán Định')}</th>
             </tr>
         `;
     }
@@ -1587,7 +1587,7 @@ function copyAllDefectSNs() {
 function exportMatrixStandaloneHTML() {
     const { runs, rows } = matrixData;
     if (!rows || rows.length === 0) {
-        showToast('⚠️ Không có dữ liệu ma trận để xuất.', 'warning');
+        showToast(_t('⚠️ Không có dữ liệu ma trận để xuất.'), 'warning');
         return;
     }
 
@@ -1599,9 +1599,9 @@ function exportMatrixStandaloneHTML() {
 
     let headersHtml = `<th style="width:45px; text-align:center;">STT</th><th style="text-align:left; min-width:180px;">Serial Number / DUT</th>`;
     runs.forEach(r => {
-        headersHtml += `<th style="text-align:center; min-width:140px;">${escapeHtml(r.shortLabel || r.stationName)}<br><span style="font-size:10px; font-weight:normal; opacity:0.75;">(${r.recordCount} mẫu)</span></th>`;
+        headersHtml += `<th style="text-align:center; min-width:140px;">${escapeHtml(r.shortLabel || r.stationName)}<br><span style="font-size:10px; font-weight:normal; opacity:0.75;">(${r.recordCount} ${_t('mẫu')})</span></th>`;
     });
-    headersHtml += `<th style="width:120px; text-align:center;">Phán Định (${matrixEvalMode === 'FIRST' ? 'Đầu' : 'Cuối'})</th><th style="width:90px; text-align:center;">Tổng Lần Đo</th>`;
+    headersHtml += `<th style="width:120px; text-align:center;">${_t('Phán Định ({0})', matrixEvalMode === 'FIRST' ? _t('Đầu') : _t('Cuối'))}</th><th style="width:90px; text-align:center;">${_t('Tổng Lần Đo')}</th>`;
 
     let rowsJson = JSON.stringify(rows.map((row, idx) => {
         const runResults = {};
@@ -1628,7 +1628,7 @@ function exportMatrixStandaloneHTML() {
 <html lang="vi" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<title>QIT Scanner v2 - Báo Cáo Ma Trận Đa Lượt Đo</title>
+<title>${_t('QIT Scanner v2 - Báo Cáo Ma Trận Đa Lượt Đo')}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root {
@@ -1731,38 +1731,38 @@ function exportMatrixStandaloneHTML() {
         <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
       </svg>
       <div class="brand-text">
-        <h1>🧩 BÁO CÁO MA TRẬN ĐA LƯỢT ĐO & BIẾN ĐỔI CHẤT LƯỢNG</h1>
+        <h1>🧩 ${_t('BÁO CÁO MA TRẬN ĐA LƯỢT ĐO & BIẾN ĐỔI CHẤT LƯỢNG')}</h1>
         <p>QIT SCANNER V2 · KLIPPEL ACOUSTIC MULTI-RUN QUALITY MATRIX</p>
       </div>
     </div>
     <div class="header-actions">
-      <button class="theme-toggle-btn" id="theme-btn" onclick="toggleReportTheme()" title="Chuyển đổi giao diện Sáng / Tối">
+      <button class="theme-toggle-btn" id="theme-btn" onclick="toggleReportTheme()" title="${_t('Chuyển đổi giao diện Sáng / Tối')}">
         <span class="rpt-theme-icon">☀️</span>
       </button>
       <div class="meta">
-        <div>Thời gian xuất: <strong>${new Date().toLocaleString()}</strong></div>
-        <div>Đánh giá: <strong>${matrixEvalMode === 'FIRST' ? 'Lần đầu (FPY)' : 'Lần cuối (Final)'}</strong></div>
+        <div>${_t('Thời gian xuất')}: <strong>${new Date().toLocaleString()}</strong></div>
+        <div>${_t('Đánh giá')}: <strong>${matrixEvalMode === 'FIRST' ? _t('Lần đầu (FPY)') : _t('Lần cuối (Final)')}</strong></div>
       </div>
     </div>
   </div>
 
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-label">TỔNG LƯỢT ĐO</div><div class="kpi-val" style="color:var(--cyan);">${totalRuns} Lượt</div></div>
-    <div class="kpi-card"><div class="kpi-label">TỔNG SỐ PCS</div><div class="kpi-val" style="color:var(--pass);">${totalUnits} PCS</div></div>
-    <div class="kpi-card"><div class="kpi-label">SẢN PHẨM LỖI (FAIL)</div><div class="kpi-val" style="color:var(--fail);">${failUnits} (${totalUnits > 0 ? ((failUnits/totalUnits)*100).toFixed(1) : 0}%)</div></div>
-    <div class="kpi-card"><div class="kpi-label">ĐỔI KẾT QUẢ</div><div class="kpi-val" style="color:var(--warn);">${changedUnits} PCS</div></div>
-    <div class="kpi-card"><div class="kpi-label">ĐO LẠI (RETEST)</div><div class="kpi-val" style="color:var(--purple);">${retestUnits} PCS</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('TỔNG SỐ LƯỢT ĐO')}</div><div class="kpi-val" style="color:var(--cyan);">${totalRuns} ${_t('Lượt')}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('TỔNG SỐ PCS')}</div><div class="kpi-val" style="color:var(--pass);">${totalUnits} PCS</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('SẢN PHẨM LỖI (FAIL)')}</div><div class="kpi-val" style="color:var(--fail);">${failUnits} (${totalUnits > 0 ? ((failUnits/totalUnits)*100).toFixed(1) : 0}%)</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('ĐỔI KẾT QUẢ')}</div><div class="kpi-val" style="color:var(--warn);">${changedUnits} PCS</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('ĐO LẠI (RETEST)')}</div><div class="kpi-val" style="color:var(--purple);">${retestUnits} PCS</div></div>
   </div>
 
   <div class="controls">
     <select id="filterSelect" class="filter-select" onchange="applyFilters()">
-      <option value="ALL">Tất cả trạng thái (${totalUnits})</option>
-      <option value="FAIL">Chỉ PCS dính lỗi (${failUnits})</option>
-      <option value="CHANGED">PCS đổi kết quả (${changedUnits})</option>
-      <option value="RETEST">PCS đo lại nhiều lần (${retestUnits})</option>
+      <option value="ALL">${_t('Tất cả trạng thái ({0})', totalUnits)}</option>
+      <option value="FAIL">${_t('Chỉ PCS dính lỗi ({0})', failUnits)}</option>
+      <option value="CHANGED">${_t('PCS đổi kết quả ({0})', changedUnits)}</option>
+      <option value="RETEST">${_t('PCS đo lại nhiều lần ({0})', retestUnits)}</option>
     </select>
-    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Tìm kiếm Serial Number..." oninput="applyFilters()">
-    <span id="matchCount" style="font-size:12px; color:var(--txt-sub); margin-left:auto; font-weight:700;">Hiển thị: <strong style="color:var(--cyan);">${totalUnits}</strong> PCS</span>
+    <input type="text" id="searchInput" class="search-input" placeholder="${_t('🔍 Tìm kiếm Serial Number...')}" oninput="applyFilters()">
+    <span id="matchCount" style="font-size:12px; color:var(--txt-sub); margin-left:auto; font-weight:700;">${_t('Hiển thị')}: <strong style="color:var(--cyan);">${totalUnits}</strong> PCS</span>
   </div>
 
   <div class="table-box">
@@ -1827,12 +1827,12 @@ function exportMatrixStandaloneHTML() {
       });
 
       html += '<td>' + finalBadge + '</td>';
-      html += '<td style=\"font-family:monospace;\">' + row.totalScans + ' lần</td>';
+      html += '<td style=\"font-family:monospace;\">' + row.totalScans + ' ${_t('lần')}</td>';
       html += '</tr>';
     });
 
-    tbody.innerHTML = html || '<tr><td colspan=\"' + (runsData.length + 4) + '\" style=\"text-align:center; padding:30px; color:var(--txt-sub);\">Không tìm thấy bản ghi nào phù hợp.</td></tr>';
-    document.getElementById('matchCount').innerHTML = 'Hiển thị: <strong style="color:var(--cyan);">' + matches + '</strong> PCS';
+    tbody.innerHTML = html || '<tr><td colspan=\"' + (runsData.length + 4) + '\" style=\"text-align:center; padding:30px; color:var(--txt-sub);\">${_t('Không tìm thấy bản ghi nào phù hợp.')}</td></tr>';
+    document.getElementById('matchCount').innerHTML = '${_t('Hiển thị')}: <strong style="color:var(--cyan);">' + matches + '</strong> PCS';
   }
 
   initReportTheme();
@@ -1842,7 +1842,7 @@ function exportMatrixStandaloneHTML() {
 </html>`;
 
     downloadBlobFile(htmlContent, `QIT_MultiRun_Matrix_Report_${toLocalDateStr(new Date())}.html`, 'text/html;charset=utf-8');
-    showToast('✅ Đã xuất Ma Trận HTML độc lập thành công!', 'success');
+    showToast(_t('✅ Đã xuất Ma Trận HTML độc lập thành công!'), 'success');
 }
 
 /**
@@ -1851,15 +1851,15 @@ function exportMatrixStandaloneHTML() {
 function exportMatrixExcel() {
     const { runs, rows } = matrixData;
     if (!rows || rows.length === 0) {
-        showToast('⚠️ Không có dữ liệu ma trận để xuất.', 'warning');
+        showToast(_t('⚠️ Không có dữ liệu ma trận để xuất.'), 'warning');
         return;
     }
 
-    let csv = '\uFEFFSTT,Serial Number,Mã Thô,';
+    let csv = '\uFEFF' + _t('STT') + ',Serial Number,' + _t('Mã Thô') + ',';
     runs.forEach(r => {
-        csv += `"${r.shortLabel} - Trạm ${r.stationName} (${r.fileName})",`;
+        csv += `"${r.shortLabel} - ${_t('Trạm')} ${r.stationName} (${r.fileName})",`;
     });
-    csv += `Phán Định (${matrixEvalMode === 'FIRST' ? 'Đầu' : 'Cuối'}),Tổng Lần Đo,Có Đổi Kết Quả\n`;
+    csv += `${_t('Phán Định ({0})', matrixEvalMode === 'FIRST' ? _t('Đầu') : _t('Cuối'))},${_t('Tổng Lần Đo')},${_t('Có Đổi Kết Quả')}\n`;
 
     rows.forEach((row, idx) => {
         let line = `${idx + 1},"${row.sn}","${row.rawSN || row.sn}",`;
@@ -1874,7 +1874,7 @@ function exportMatrixExcel() {
     });
 
     downloadBlobFile(csv, `QIT_Matrix_Data_${toLocalDateStr(new Date())}.csv`, 'text/csv;charset=utf-8');
-    showToast('✅ Đã xuất dữ liệu Ma Trận Excel (CSV) thành công!', 'success');
+    showToast(_t('✅ Đã xuất dữ liệu Ma Trận Excel (CSV) thành công!'), 'success');
 }
 
 /**
@@ -1882,18 +1882,18 @@ function exportMatrixExcel() {
  */
 function exportParetoExcel() {
     if (!analysisData.errorPareto || analysisData.errorPareto.length === 0) {
-        showToast('⚠️ Không có dữ liệu lỗi Pareto để xuất.', 'warning');
+        showToast(_t('⚠️ Không có dữ liệu lỗi Pareto để xuất.'), 'warning');
         return;
     }
 
-    let csv = '\uFEFFHạng,Mã Lỗi Kỹ Thuật (Raw),Tên Hiển Thị (Alias),Số Lượng Lỗi,% Đóng Góp Lỗi,% SP Bị Ảnh Hưởng,% Tích Lũy Pareto,Phân Loại 80/20\n';
+    let csv = '\uFEFF' + _t('Hạng') + ',' + _t('Mã Lỗi Kỹ Thuật (Raw)') + ',' + _t('Tên Hiển Thị (Alias)') + ',' + _t('Số Lượng Lỗi') + ',' + _t('% Đóng Góp Lỗi') + ',' + _t('% SP Bị Ảnh Hưởng') + ',' + _t('% Tích Lũy Pareto') + ',' + _t('Phân Loại 80/20') + '\n';
     analysisData.errorPareto.forEach((item, idx) => {
         const isVital = (item.cumPercent || 0) <= 80 || idx === 0;
-        csv += `${idx + 1},"${item.rawName}","${getMappedName(item.rawName)}",${item.count},${(item.pctOfDefects || 0).toFixed(2)}%,${(item.pctOfUnits || 0).toFixed(2)}%,${(item.cumPercent || 0).toFixed(2)}%,"${isVital ? 'Top 80% Lỗi Trọng Tâm' : 'Vùng Dài 20%'}"\n`;
+        csv += `${idx + 1},"${item.rawName}","${getMappedName(item.rawName)}",${item.count},${(item.pctOfDefects || 0).toFixed(2)}%,${(item.pctOfUnits || 0).toFixed(2)}%,${(item.cumPercent || 0).toFixed(2)}%,"${isVital ? _t('Top 80% Lỗi Trọng Tâm') : _t('Vùng Dài 20%')}"\n`;
     });
 
     downloadBlobFile(csv, `QIT_Pareto_80_20_${toLocalDateStr(new Date())}.csv`, 'text/csv;charset=utf-8');
-    showToast('✅ Đã xuất dữ liệu Pareto Excel (CSV) thành công!', 'success');
+    showToast(_t('✅ Đã xuất dữ liệu Pareto Excel (CSV) thành công!'), 'success');
 }
 
 /**
@@ -1913,7 +1913,7 @@ function exportKPIStandaloneHTML() {
             <td style="font-family:monospace; font-weight:800; color:#f87171;">${item.count}</td>
             <td style="font-family:monospace;">${item.pctOfDefects.toFixed(2)}%</td>
             <td style="font-family:monospace; font-weight:700; color:${isVital ? '#ef4444' : '#38bdf8'};">${item.cumPercent.toFixed(2)}%</td>
-            <td><span class="badge ${isVital ? 'badge-fail' : 'badge-pass'}">${isVital ? 'Top 80% Trọng Tâm' : 'Vùng Dài 20%'}</span></td>
+            <td><span class="badge ${isVital ? 'badge-fail' : 'badge-pass'}">${isVital ? _t('Top 80% Trọng Tâm') : _t('Vùng Dài 20%')}</span></td>
         </tr>`;
     });
 
@@ -1921,7 +1921,7 @@ function exportKPIStandaloneHTML() {
 <html lang="vi" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<title>QIT Scanner v2 - Báo Cáo Tổng Quan KPI & Pareto</title>
+<title>${_t('QIT Scanner v2 - Báo Cáo Tổng Quan KPI & Pareto')}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root {
@@ -2015,16 +2015,16 @@ function exportKPIStandaloneHTML() {
         <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
       </svg>
       <div class="brand-text">
-        <h1>📊 BÁO CÁO TỔNG QUAN CHẤT LƯỢNG & PARETO 80/20</h1>
+        <h1>📊 ${_t('BÁO CÁO TỔNG QUAN CHẤT LƯỢNG & PARETO 80/20')}</h1>
         <p>QIT SCANNER V2 · KLIPPEL ACOUSTIC QUALITY AUDIT</p>
       </div>
     </div>
     <div class="header-actions">
-      <button class="theme-toggle-btn" onclick="toggleReportTheme()" title="Chuyển đổi giao diện Sáng / Tối">
+      <button class="theme-toggle-btn" onclick="toggleReportTheme()" title="${_t('Chuyển đổi giao diện Sáng / Tối')}">
         <span class="rpt-theme-icon">☀️</span>
       </button>
       <div class="meta">
-        <div>Thời gian xuất: <strong>${new Date().toLocaleString()}</strong></div>
+        <div>${_t('Thời gian xuất')}: <strong>${new Date().toLocaleString()}</strong></div>
       </div>
     </div>
   </div>
@@ -2032,29 +2032,29 @@ function exportKPIStandaloneHTML() {
   <div class="kpi-grid">
     <div class="kpi-card"><div class="kpi-label">FIRST PASS YIELD</div><div class="kpi-val" style="color:var(--pass);">${(analysisData.fpy || 0).toFixed(1)}%</div></div>
     <div class="kpi-card"><div class="kpi-label">FINAL PASS YIELD</div><div class="kpi-val" style="color:var(--blue);">${(analysisData.finalPassRate || 0).toFixed(1)}%</div></div>
-    <div class="kpi-card"><div class="kpi-label">TỔNG PCS (DUT)</div><div class="kpi-val">${analysisData.uniqueUnitsCount}</div></div>
-    <div class="kpi-card"><div class="kpi-label">SẢN PHẨM ĐẠT</div><div class="kpi-val" style="color:var(--pass);">${analysisData.passCount}</div></div>
-    <div class="kpi-card"><div class="kpi-label">SẢN PHẨM LỖI</div><div class="kpi-val" style="color:var(--fail);">${analysisData.failCount}</div></div>
-    <div class="kpi-card"><div class="kpi-label">ĐO LẠI (RETEST)</div><div class="kpi-val" style="color:var(--warn);">${analysisData.retestCount}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('TỔNG SỐ PCS')}</div><div class="kpi-val">${analysisData.uniqueUnitsCount}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('SẢN PHẨM ĐẠT')}</div><div class="kpi-val" style="color:var(--pass);">${analysisData.passCount}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('SẢN PHẨM LỖI')}</div><div class="kpi-val" style="color:var(--fail);">${analysisData.failCount}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('ĐO LẠI (RETEST)')}</div><div class="kpi-val" style="color:var(--warn);">${analysisData.retestCount}</div></div>
   </div>
 
   <div class="card">
     <h3 style="margin-bottom:14px; font-size:14px; font-weight:800; color:var(--cyan); display:flex; align-items:center; gap:8px;">
-      <span>🔥</span> BẢNG PHÂN TÍCH LỖI PARETO 80/20
+      <span>🔥</span> ${_t('BẢNG PHÂN TÍCH LỖI PARETO 80/20')}
     </h3>
     <div style="overflow-x:auto;">
       <table>
         <thead>
           <tr>
-            <th style="width:50px;">Hạng</th>
-            <th style="text-align:left;">Thông Số Lỗi</th>
-            <th>Số Lượng Lỗi</th>
-            <th>Tỷ Lệ %</th>
-            <th>% Tích Lũy</th>
-            <th>Phân Loại 80/20</th>
+            <th style="width:50px;">${_t('Hạng')}</th>
+            <th style="text-align:left;">${_t('Thông Số Lỗi')}</th>
+            <th>${_t('Số Lượng Lỗi')}</th>
+            <th>${_t('Tỷ Lệ %')}</th>
+            <th>${_t('% Tích Lũy')}</th>
+            <th>${_t('Phân Loại 80/20')}</th>
           </tr>
         </thead>
-        <tbody>${paretoRowsHtml || '<tr><td colspan="6" style="padding:24px; color:var(--txt-sub);">Không ghi nhận lỗi nào.</td></tr>'}</tbody>
+        <tbody>${paretoRowsHtml || ('<tr><td colspan="6" style="padding:24px; color:var(--txt-sub);">' + _t('Không ghi nhận lỗi nào.') + '</td></tr>')}</tbody>
       </table>
     </div>
   </div>
@@ -2079,5 +2079,5 @@ function exportKPIStandaloneHTML() {
 </html>`;
 
     downloadBlobFile(htmlContent, `QIT_KPI_Pareto_Report_${toLocalDateStr(new Date())}.html`, 'text/html;charset=utf-8');
-    showToast('✅ Đã xuất Báo Cáo KPI HTML độc lập thành công!', 'success');
+    showToast(_t('✅ Đã xuất Báo Cáo KPI HTML độc lập thành công!'), 'success');
 }

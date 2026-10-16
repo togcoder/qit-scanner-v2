@@ -8,19 +8,19 @@ function renderParametricDashboard() {
             area.innerHTML = `
                 <div class="card" style="padding:48px 24px; text-align:center; max-width:720px; margin:20px auto;">
                     <div style="font-size:48px; margin-bottom:14px;">📈</div>
-                    <h3 style="font-size:17px; font-weight:900; margin:0 0 8px; color:var(--text-main);">CHƯA CÓ DỮ LIỆU THÔNG SỐ ĐO VẬT LÝ &amp; CPK</h3>
+                    <h3 style="font-size:17px; font-weight:900; margin:0 0 8px; color:var(--text-main);">${_t('CHƯA CÓ DỮ LIỆU THÔNG SỐ ĐO VẬT LÝ & CPK')}</h3>
                     <p style="font-size:12.5px; color:var(--text-muted); line-height:1.6; margin:0 auto 24px;">
-                        Tính năng Phân Tích Thông Số &amp; Cpk khai thác các giá trị đo vật lý liên tục ($R_e, f_s, Q_{ts}$, SPL, THD...) từ tệp nhật ký Klippel để tính toán độ lệch chuẩn Gauss, $C_p, C_{pk}, P_{pk}$ và phát hiện sản phẩm cận biên LSL/USL.
+                        ${_t('Tính năng Phân Tích Thông Số & Cpk khai thác các giá trị đo vật lý liên tục ($R_e, f_s, Q_{ts}$, SPL, THD...) từ tệp nhật ký Klippel để tính toán độ lệch chuẩn Gauss, $C_p, C_{pk}, P_{pk}$ và phát hiện sản phẩm cận biên LSL/USL.')}
                     </p>
                     <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
                         <button class="btn btn-primary" onclick="loadBuiltInDemoKlippelLogs()" style="padding:10px 22px; font-weight:800; font-size:13px;">
-                            🧪 Nạp Bộ Dữ Liệu Mẫu Klippel (3 Trạm · Cpk 6-Sigma)
+                            ${_t('🧪 Nạp Bộ Dữ Liệu Mẫu Klippel (3 Trạm · Cpk 6-Sigma)')}
                         </button>
                         <button class="btn btn-outline" onclick="startFastDirectoryScan()" style="padding:10px 20px; font-size:13px;">
-                            📁 Quét Thư Mục Summary
+                            ${_t('📁 Quét Thư Mục Summary')}
                         </button>
                         <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()" style="padding:10px 20px; font-size:13px;">
-                            📄 Chọn Tệp Log (.log, .txt, .csv)
+                            ${_t('📄 Chọn Tệp Log (.log, .txt, .csv)')}
                         </button>
                     </div>
                 </div>
@@ -42,7 +42,7 @@ function renderMetricSelectorDropdown() {
     selectEl.innerHTML = '';
 
     if (parametricAnalysisMap.size === 0) {
-        selectEl.innerHTML = `<option value="">(Không có thông số đo liên tục)</option>`;
+        selectEl.innerHTML = `<option value="">(${_t('Không có thông số đo liên tục')})</option>`;
         return;
     }
 
@@ -50,7 +50,7 @@ function renderMetricSelectorDropdown() {
         const opt = document.createElement('option');
         opt.value = key;
         const cpkTxt = m.cpk !== null ? ` · Cpk=${m.cpk.toFixed(2)}` : '';
-        opt.textContent = `${m.name} ${m.condition ? '(' + m.condition + ')' : ''} [${m.unit || '—'}] — ${m.count} mẫu${cpkTxt}`;
+        opt.textContent = `${m.name} ${m.condition ? '(' + m.condition + ')' : ''} [${m.unit || '—'}] — ${m.count} ${_t('mẫu')}${cpkTxt}`;
         selectEl.appendChild(opt);
     });
 
@@ -78,7 +78,7 @@ function setParametricFilterMode(mode) {
     } catch(e) {}
     calculateParametricCpkStats();
     renderSelectedMetricCpk();
-    showToast(`✓ Đã chuyển chế độ dữ liệu Cpk: ${mode === 'PASS_ONLY' ? 'Chỉ SP ĐẠT (Chuẩn SPC)' : (mode === 'TRIMMED_3SIGMA' ? 'Lọc dị biệt 3-Sigma' : 'Toàn bộ sản phẩm')}`, 'info');
+    showToast(_t('✓ Đã chuyển chế độ dữ liệu Cpk: {0}', mode === 'PASS_ONLY' ? _t('Chỉ SP ĐẠT (Chuẩn SPC)') : (mode === 'TRIMMED_3SIGMA' ? _t('Lọc dị biệt 3-Sigma') : _t('Toàn bộ sản phẩm'))), 'info');
 }
 
 /**
@@ -95,20 +95,20 @@ function renderAllMetricsSummaryMatrix() {
                 badge = `<span class="badge-pill badge-pass">🌟 6-Sigma (&ge;${CFG.CPK_EXCELLENT})</span>`;
                 cpkCol = '#10b981';
             } else if (item.cpk >= CFG.CPK_CAPABLE) {
-                badge = `<span class="badge-pill" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35);">✓ Đạt (&ge;${CFG.CPK_CAPABLE})</span>`;
+                badge = `<span class="badge-pill" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35);">${_t('✓ Đạt')} (&ge;${CFG.CPK_CAPABLE})</span>`;
                 cpkCol = '#38bdf8';
             } else if (item.cpk >= CFG.CPK_MARGINAL) {
-                badge = `<span class="badge-pill badge-warn">⚠️ Cận biên</span>`;
+                badge = `<span class="badge-pill badge-warn">${_t('⚠️ Cận biên')}</span>`;
                 cpkCol = '#f59e0b';
             } else {
-                badge = `<span class="badge-pill badge-fail">✕ Kém (&lt;1.00)</span>`;
+                badge = `<span class="badge-pill badge-fail">${_t('✕ Kém (<1.00)')}</span>`;
                 cpkCol = '#ef4444';
             }
         }
         const nfLen = item.nearFailList ? item.nearFailList.length : 0;
 
         rowsHtml += `
-            <tr style="cursor:pointer; ${isSelected ? 'background:rgba(0,242,254,0.10); border-left:3px solid var(--accent-cyan);' : ''}" onclick="onParametricMetricChange('${escapeHtml(key)}')" title="Nhấp để xem biểu đồ phân phối Gauss &amp; danh sách cận biên của thông số này">
+            <tr style="cursor:pointer; ${isSelected ? 'background:rgba(0,242,254,0.10); border-left:3px solid var(--accent-cyan);' : ''}" onclick="onParametricMetricChange('${escapeHtml(key)}')" title="" data-i18n-title="Nhấp để xem biểu đồ phân phối Gauss & danh sách cận biên của thông số này">
                 <td style="font-weight:800; color:${isSelected ? 'var(--accent-cyan)' : 'var(--text-main)'};">
                     ${isSelected ? '▶ ' : ''}${escapeHtml(item.name)}
                     ${item.condition ? `<span style="font-size:10.5px; color:var(--text-muted); font-family:var(--font-mono);"> (${escapeHtml(item.condition)})</span>` : ''}
@@ -133,28 +133,28 @@ function renderAllMetricsSummaryMatrix() {
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
                 <div>
                     <div style="font-size:12px; font-weight:800; text-transform:uppercase; color:var(--accent-cyan); letter-spacing:0.06em;">
-                        📋 BẢNG TỔNG HỢP NĂNG LỰC QUY TRÌNH TOÀN BỘ THÔNG SỐ (ALL-PARAMETER SPC MATRIX)
+                        ${_t('📋 BẢNG TỔNG HỢP NĂNG LỰC QUY TRÌNH TOÀN BỘ THÔNG SỐ (ALL-PARAMETER SPC MATRIX)')}
                     </div>
-                    <div style="font-size:11px; color:var(--text-muted);">Nhấp vào bất kỳ dòng thông số nào dưới đây để chuyển biểu đồ Histogram Gauss và danh sách Cận biên</div>
+                    <div style="font-size:11px; color:var(--text-muted);">${_t('Nhấp vào bất kỳ dòng thông số nào dưới đây để chuyển biểu đồ Histogram Gauss và danh sách Cận biên')}</div>
                 </div>
-                <span class="meta-chip">${parametricAnalysisMap.size} thông số liên tục</span>
+                <span class="meta-chip">${_t('{0} thông số liên tục', parametricAnalysisMap.size)}</span>
             </div>
             <div class="table-wrapper" style="max-height:240px; overflow-y:auto;">
                 <table class="data-table" style="font-size:11.5px;">
                     <thead>
                         <tr>
-                            <th>Thông Số Đo (Điều Kiện)</th>
-                            <th style="text-align:center;">Đơn Vị</th>
-                            <th style="text-align:center;">Mẫu (n)</th>
+                            <th>${_t('Thông Số Đo (Điều Kiện)')}</th>
+                            <th style="text-align:center;">${_t('Đơn Vị')}</th>
+                            <th style="text-align:center;">${_t('Mẫu (n)')}</th>
                             <th style="text-align:right;">LSL (Min)</th>
                             <th style="text-align:right;">Mean (μ)</th>
                             <th style="text-align:right;">USL (Max)</th>
                             <th style="text-align:right;">StdDev (σ)</th>
                             <th style="text-align:right;">Cp</th>
                             <th style="text-align:right;">Cpk</th>
-                            <th style="text-align:right;">Lệch Tâm (k)</th>
-                            <th style="text-align:center;">Cận Biên</th>
-                            <th style="text-align:center;">Phân Hạng SPC</th>
+                            <th style="text-align:right;">${_t('Lệch Tâm (k)')}</th>
+                            <th style="text-align:center;">${_t('Cận Biên')}</th>
+                            <th style="text-align:center;">${_t('Phân Hạng SPC')}</th>
                         </tr>
                     </thead>
                     <tbody>${rowsHtml}</tbody>
@@ -187,20 +187,20 @@ function renderSelectedMetricCpk() {
     let ratingColor = '#94a3b8';
     if (m.cpk !== null) {
         if (m.cpk >= CFG.CPK_EXCELLENT) {
-            ratingBadge = '🌟 XUẤT SẮC (6-SIGMA CLASS)';
+            ratingBadge = _t('🌟 XUẤT SẮC (6-SIGMA CLASS)');
             ratingColor = '#10b981';
         } else if (m.cpk >= CFG.CPK_CAPABLE) {
-            ratingBadge = '✓ ĐẠT NĂNG LỰC (CAPABLE)';
+            ratingBadge = _t('✓ ĐẠT NĂNG LỰC (CAPABLE)');
             ratingColor = '#38bdf8';
         } else if (m.cpk >= CFG.CPK_MARGINAL) {
-            ratingBadge = '⚠️ CẬN BIÊN (MARGINAL)';
+            ratingBadge = _t('⚠️ CẬN BIÊN (MARGINAL)');
             ratingColor = '#f59e0b';
         } else {
-            ratingBadge = '✕ KHÔNG ĐẠT (INCAPABLE)';
+            ratingBadge = _t('✕ KHÔNG ĐẠT (INCAPABLE)');
             ratingColor = '#ef4444';
         }
     } else {
-        ratingBadge = 'KHÔNG CÓ DUNG SAI LSL/USL';
+        ratingBadge = _t('KHÔNG CÓ DUNG SAI LSL/USL');
     }
 
     const fmt = num => (typeof num === 'number' && !isNaN(num)) ? (Math.abs(num) >= 100 ? num.toFixed(2) : (Math.abs(num) >= 0.01 ? num.toFixed(4) : num.toExponential(3))) : '—';
@@ -213,48 +213,48 @@ function renderSelectedMetricCpk() {
         <!-- THANH CHỌN NGUỒN DỮ LIỆU TÍNH TOÁN CPK THEO CHUẨN SPC -->
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding:10px 14px; background:var(--bg-surface-elevated); border:1px solid var(--border-color); border-radius:10px; flex-wrap:wrap; gap:10px;">
             <div style="display:flex; align-items:center; gap:8px; font-size:12px; flex-wrap:wrap;">
-                <span style="font-weight:800; color:var(--accent-blue);">🎯 NGUỒN DỮ LIỆU TÍNH CPK:</span>
+                <span style="font-weight:800; color:var(--accent-blue);">${_t('🎯 NGUỒN DỮ LIỆU TÍNH CPK:')}</span>
                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                    <button class="btn btn-sm ${curFilter === 'PASS_ONLY' ? 'btn-primary' : 'btn-outline'}" onclick="setParametricFilterMode('PASS_ONLY')" title="Loại bỏ các mẫu rơi rớt / hở mạch ngoại lai để tính đúng độ biến thiên tự nhiên của máy">
-                        ✓ Chỉ SP ĐẠT (Chuẩn SPC)
+                    <button class="btn btn-sm ${curFilter === 'PASS_ONLY' ? 'btn-primary' : 'btn-outline'}" onclick="setParametricFilterMode('PASS_ONLY')" title="${_t('Loại bỏ các mẫu rơi rớt / hở mạch ngoại lai để tính đúng độ biến thiên tự nhiên của máy')}">
+                        ${_t('✓ Chỉ SP ĐẠT (Chuẩn SPC)')}
                     </button>
-                    <button class="btn btn-sm ${curFilter === 'ALL' ? 'btn-primary' : 'btn-outline'}" onclick="setParametricFilterMode('ALL')" title="Tính trên 100% sản phẩm gồm cả hàng hỏng">
-                        Toàn Bộ Sản Phẩm
+                    <button class="btn btn-sm ${curFilter === 'ALL' ? 'btn-primary' : 'btn-outline'}" onclick="setParametricFilterMode('ALL')" title="${_t('Tính trên 100% sản phẩm gồm cả hàng hỏng')}">
+                        ${_t('Toàn Bộ Sản Phẩm')}
                     </button>
-                    <button class="btn btn-sm ${curFilter === 'TRIMMED_3SIGMA' ? 'btn-primary' : 'btn-outline'}" onclick="setParametricFilterMode('TRIMMED_3SIGMA')" title="Tự động loại bỏ giá trị dị biệt vượt ngoài 3-Sigma">
-                        Lọc Dị Biệt 3-Sigma
+                    <button class="btn btn-sm ${curFilter === 'TRIMMED_3SIGMA' ? 'btn-primary' : 'btn-outline'}" onclick="setParametricFilterMode('TRIMMED_3SIGMA')" title="${_t('Tự động loại bỏ giá trị dị biệt vượt ngoài 3-Sigma')}">
+                        ${_t('Lọc Dị Biệt 3-Sigma')}
                     </button>
                 </div>
             </div>
             <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
-                Đang phân tích: <strong style="color:var(--accent-cyan);">${escapeHtml(m.name)}</strong> · Mẫu: <strong>${m.count}</strong> / Tổng: <strong>${m.totalCount}</strong> (Đạt: ${m.passCount})
+                ${_t('Đang phân tích:')} <strong style="color:var(--accent-cyan);">${escapeHtml(m.name)}</strong> · ${_t('Mẫu:')} <strong>${m.count}</strong> / ${_t('Tổng:')} <strong>${m.totalCount}</strong> (${_t('Đạt:')} ${m.passCount})
             </div>
         </div>
 
         <!-- DÒNG 1: CÁC THẺ KPI THỐNG KÊ & CPK -->
         <div class="cpk-kpi-grid">
             <div class="cpk-card highlight-card" style="border-top-color:${ratingColor};">
-                <div class="cpk-label">CHỈ SỐ NĂNG LỰC CPK (${escapeHtml(m.name)})</div>
+                <div class="cpk-label">${_t('CHỈ SỐ NĂNG LỰC CPK ({0})', escapeHtml(m.name))}</div>
                 <div class="cpk-val" style="color:${ratingColor};">${m.cpk !== null ? m.cpk.toFixed(2) : '—'}</div>
                 <div class="cpk-sub" style="color:${ratingColor}; font-weight:700;">${ratingBadge}</div>
             </div>
 
             <div class="cpk-card">
-                <div class="cpk-label">NĂNG LỰC TIỀM NĂNG (CP) / HIỆU SUẤT (PPK)</div>
+                <div class="cpk-label">${_t('NĂNG LỰC TIỀM NĂNG (CP) / HIỆU SUẤT (PPK)')}</div>
                 <div class="cpk-val">${m.cp !== null ? m.cp.toFixed(2) : '—'} <span style="font-size:13px; color:var(--text-muted); font-weight:600;">(Ppk: ${m.ppk !== null ? m.ppk.toFixed(2) : '—'})</span></div>
                 <div class="cpk-sub">Cpl: ${m.cpl !== null ? m.cpl.toFixed(2) : '—'} | Cpu: ${m.cpu !== null ? m.cpu.toFixed(2) : '—'}</div>
             </div>
 
             <div class="cpk-card">
-                <div class="cpk-label">GIÁ TRỊ TRUNG BÌNH (MEAN) &amp; ĐỘ LỆCH TÂM (k)</div>
+                <div class="cpk-label">${_t('GIÁ TRỊ TRUNG BÌNH (MEAN) & ĐỘ LỆCH TÂM (k)')}</div>
                 <div class="cpk-val">${fmt(m.mean)} <span class="unit-mini">${escapeHtml(m.unit)}</span></div>
-                <div class="cpk-sub">Độ lệch chuẩn σ: ${fmt(m.stdDev)} ${m.kFactor !== null ? `| k: ${(m.kFactor * 100).toFixed(1)}%` : ''}</div>
+                <div class="cpk-sub">${_t('Độ lệch chuẩn σ: {0}', fmt(m.stdDev))} ${m.kFactor !== null ? '| k: ' + (m.kFactor * 100).toFixed(1) + '%' : ''}</div>
             </div>
 
             <div class="cpk-card">
-                <div class="cpk-label">GIỚI HẠN DUNG SAI (LSL / USL)</div>
+                <div class="cpk-label">${_t('GIỚI HẠN DUNG SAI (LSL / USL)')}</div>
                 <div class="cpk-val">${m.lsl !== null ? fmt(m.lsl) : '—'} / ${m.usl !== null ? fmt(m.usl) : '—'}</div>
-                <div class="cpk-sub">Thực tế Min: ${fmt(m.min)} | Max: ${fmt(m.max)}</div>
+                <div class="cpk-sub">${_t('Thực tế Min:')} ${fmt(m.min)} | Max: ${fmt(m.max)}</div>
             </div>
         </div>
 
@@ -262,11 +262,11 @@ function renderSelectedMetricCpk() {
         <div class="card" style="margin-top:16px; padding:18px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
                 <div style="font-weight:800; font-size:13.5px; text-transform:uppercase; letter-spacing:0.5px;">
-                    📈 BIỂU ĐỒ PHÂN PHỐI HISTOGRAM &amp; ĐƯỜNG CONG GAUSS — <span style="color:var(--accent-cyan);">${escapeHtml(m.name)} ${m.condition ? '(' + escapeHtml(m.condition) + ')' : ''}</span>
+                    ${_t('📈 BIỂU ĐỒ PHÂN PHỐI HISTOGRAM & ĐƯỜNG CONG GAUSS —')} <span style="color:var(--accent-cyan);">${escapeHtml(m.name)} ${m.condition ? '(' + escapeHtml(m.condition) + ')' : ''}</span>
                 </div>
                 <div style="display:flex; gap:14px; font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
-                    <span style="color:#38bdf8;">■ Tần suất mẫu (n=${m.count})</span>
-                    <span style="color:#f59e0b;">— Chuẩn Gauss N(μ,σ)</span>
+                    <span style="color:#38bdf8;">${_t('■ Tần suất mẫu (n={0})', m.count)}</span>
+                    <span style="color:#f59e0b;">${_t('— Chuẩn Gauss N(μ,σ)')}</span>
                     <span style="color:#ef4444;">┆ LSL: ${m.lsl !== null ? m.lsl : '—'} / USL: ${m.usl !== null ? m.usl : '—'}</span>
                     <span style="color:#10b981;">┆ Mean μ: ${m.mean.toFixed(3)}</span>
                 </div>
@@ -281,14 +281,14 @@ function renderSelectedMetricCpk() {
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
                 <div>
                     <div style="font-weight:800; font-size:13.5px; text-transform:uppercase; color:#f59e0b;">
-                        ⚠️ DANH SÁCH SẢN PHẨM CẬN BIÊN DUNG SAI (NEAR-FAIL: ${m.nearFailList.length} SP)
+                        ${_t('⚠️ DANH SÁCH SẢN PHẨM CẬN BIÊN DUNG SAI (NEAR-FAIL: {0} SP)', m.nearFailList.length)}
                     </div>
                     <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                        Các mẫu PASS nhưng giá trị đo nằm sát mép giới hạn LSL/USL trong biên độ cảnh báo sớm ${CFG.NEAR_FAIL_MARGIN_PCT}%
+                        ${_t('Các mẫu PASS nhưng giá trị đo nằm sát mép giới hạn LSL/USL trong biên độ cảnh báo sớm {0}%', CFG.NEAR_FAIL_MARGIN_PCT)}
                     </div>
                 </div>
                 ${m.nearFailList && m.nearFailList.length > 0 ? `
-                    <button class="btn btn-sm btn-outline" onclick="copyNearFailSerials()">📋 Copy ${m.nearFailList.length} Mã Cận Biên</button>
+                    <button class="btn btn-sm btn-outline" onclick="copyNearFailSerials()">${_t('📋 Copy {0} Mã Cận Biên', m.nearFailList.length)}</button>
                 ` : ''}
             </div>
 
@@ -297,13 +297,13 @@ function renderSelectedMetricCpk() {
                     <thead>
                         <tr>
                             <th style="width:50px; text-align:center;">STT</th>
-                            <th>Mã Serial Number / DUT</th>
-                            <th>Giá Trị Đo Thực Tế</th>
-                            <th>Cảnh Báo Giới Hạn</th>
-                            <th>Khoảng Cách An Toàn</th>
-                            <th>Trạm Đo</th>
-                            <th>Thời Gian Đo</th>
-                            <th style="text-align:center;">Hồ Sơ</th>
+                            <th>${_t('Mã Serial Number / DUT')}</th>
+                            <th>${_t('Giá Trị Đo Thực Tế')}</th>
+                            <th>${_t('Cảnh Báo Giới Hạn')}</th>
+                            <th>${_t('Khoảng Cách An Toàn')}</th>
+                            <th>${_t('Trạm Đo')}</th>
+                            <th>${_t('Thời Gian Đo')}</th>
+                            <th style="text-align:center;">${_t('Hồ Sơ')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -323,7 +323,7 @@ function copyNearFailSerials() {
     const m = parametricAnalysisMap.get(currentSelectedMetric);
     if (!m.nearFailList || m.nearFailList.length === 0) return;
     const sns = m.nearFailList.map(it => it.displayID || it.serialNo);
-    copyTextSafe(sns.join('\n'), `📋 Đã sao chép ${sns.length} mã cận biên của thông số ${m.name}!`);
+    copyTextSafe(sns.join('\n'), _t('📋 Đã sao chép {0} mã cận biên của thông số {1}!', sns.length, m.name));
 }
 
 function renderNearFailTableRows(m) {
@@ -342,9 +342,9 @@ function renderNearFailTableRows(m) {
 
         let distPct = '';
         if (m.lsl !== null && item.nearLimit && item.nearLimit.startsWith('LSL')) {
-            distPct = `${(((item.value - m.lsl) / span) * 100).toFixed(2)}% cách LSL`;
+            distPct = _t('{0}% cách LSL', (((item.value - m.lsl) / span) * 100).toFixed(2));
         } else if (m.usl !== null && item.nearLimit && item.nearLimit.startsWith('USL')) {
-            distPct = `${(((m.usl - item.value) / span) * 100).toFixed(2)}% cách USL`;
+            distPct = _t('{0}% cách USL', (((m.usl - item.value) / span) * 100).toFixed(2));
         }
 
         html += `
@@ -352,8 +352,8 @@ function renderNearFailTableRows(m) {
                 <td style="text-align:center; color:var(--text-muted); font-family:var(--font-mono);">${idx + 1}</td>
                 <td style="font-weight:700; font-family:var(--font-mono);">${escapeHtml(displaySN)}</td>
                 <td style="font-weight:700; font-family:var(--font-mono); color:#f59e0b;">${item.value.toFixed(4)} ${escapeHtml(m.unit)}</td>
-                <td><span class="badge-pill badge-warn">${escapeHtml(item.nearLimit || 'Sát Mép')}</span></td>
-                <td style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${escapeHtml(distPct || 'Trong biên ' + CFG.NEAR_FAIL_MARGIN_PCT + '%')}</td>
+                <td><span class="badge-pill badge-warn">${escapeHtml(item.nearLimit ? _t(item.nearLimit) : _t('Sát Mép'))}</span></td>
+                <td style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">${escapeHtml(distPct || _t('Trong biên {0}%', CFG.NEAR_FAIL_MARGIN_PCT))}</td>
                 <td><span style="color:var(--accent-blue); font-weight:700;">${escapeHtml(station)}</span></td>
                 <td style="font-size:11.5px; color:var(--text-muted); font-family:var(--font-mono);">${ts ? ts.toLocaleString('vi-VN', { hour12: false }) : '—'}</td>
                 <td style="text-align:center;">
@@ -464,12 +464,12 @@ function renderHistogramChart(m) {
             },
             scales: {
                 x: {
-                    title: { display: true, text: `Giá trị đo [${m.unit || 'unitless'}]`, color: textCol },
+                    title: { display: true, text: `${_t('Giá trị đo')} [${m.unit || 'unitless'}]`, color: textCol },
                     grid: { color: gridCol },
                     ticks: { color: textCol }
                 },
                 y: {
-                    title: { display: true, text: 'Số lượng mẫu', color: textCol },
+                    title: { display: true, text: _t('Số lượng mẫu'), color: textCol },
                     grid: { color: gridCol },
                     ticks: { color: textCol, precision: 0 }
                 }
@@ -488,26 +488,26 @@ function renderHistogramChart(m) {
  */
 function exportCpkExcel() {
     if (parametricAnalysisMap.size === 0) {
-        showToast('⚠️ Không có thông số đo liên tục để xuất Cpk.', 'warning');
+        showToast(_t('⚠️ Không có thông số đo liên tục để xuất Cpk.'), 'warning');
         return;
     }
 
-    let csv = '\uFEFFThông Số Đo,Điều Kiện Đo,Đơn Vị,LSL (Dưới),USL (Trên),Số Mẫu (N),Trung Bình (Mean),Độ Lệch Chuẩn (StdDev),Min,Max,Cp,Cpk,Cpl,Cpu,Ppk,Số Con Sát Giới Hạn (Near-Fail),Đánh Giá Năng Lực\n';
+    let csv = '\uFEFF' + _t('Thông Số Đo') + ',' + _t('Điều Kiện Đo') + ',' + _t('Đơn Vị') + ',' + _t('LSL (Dưới)') + ',' + _t('USL (Trên)') + ',' + _t('Số Mẫu (N)') + ',' + _t('Trung Bình (Mean)') + ',' + _t('Độ Lệch Chuẩn (StdDev)') + ',Min,Max,Cp,Cpk,Cpl,Cpu,Ppk,' + _t('Số Con Sát Giới Hạn (Near-Fail)') + ',' + _t('Đánh Giá Năng Lực') + '\n';
 
     parametricAnalysisMap.forEach(m => {
         let rating = 'N/A';
         if (m.cpk !== null) {
-            if (m.cpk >= CFG.CPK_EXCELLENT) rating = 'Xuất sắc (>=1.67)';
-            else if (m.cpk >= CFG.CPK_CAPABLE) rating = 'Đạt năng lực (>=1.33)';
-            else if (m.cpk >= CFG.CPK_MARGINAL) rating = 'Cận biên (1.00 - 1.33)';
-            else rating = 'Không đạt (<1.00)';
+            if (m.cpk >= CFG.CPK_EXCELLENT) rating = _t('Xuất sắc (>=1.67)');
+            else if (m.cpk >= CFG.CPK_CAPABLE) rating = _t('Đạt năng lực (>=1.33)');
+            else if (m.cpk >= CFG.CPK_MARGINAL) rating = _t('Cận biên (1.00 - 1.33)');
+            else rating = _t('Không đạt (<1.00)');
         }
 
         csv += `"${m.name}","${m.condition || 'Standard'}","${m.unit || ''}",${m.lsl !== null ? m.lsl : '—'},${m.usl !== null ? m.usl : '—'},${m.count},${m.mean.toFixed(4)},${m.stdDev.toFixed(4)},${m.min.toFixed(4)},${m.max.toFixed(4)},${m.cp !== null ? m.cp.toFixed(3) : '—'},${m.cpk !== null ? m.cpk.toFixed(3) : '—'},${m.cpl !== null ? m.cpl.toFixed(3) : '—'},${m.cpu !== null ? m.cpu.toFixed(3) : '—'},${m.ppk !== null ? m.ppk.toFixed(3) : '—'},${m.nearFailList ? m.nearFailList.length : 0},"${rating}"\n`;
     });
 
     downloadBlobFile(csv, `QIT_Cpk_Statistical_Report_${toLocalDateStr(new Date())}.csv`, 'text/csv;charset=utf-8');
-    showToast('✅ Đã xuất dữ liệu Cpk Excel (CSV) thành công!', 'success');
+    showToast(_t('✅ Đã xuất dữ liệu Cpk Excel (CSV) thành công!'), 'success');
 }
 
 /**
@@ -515,7 +515,7 @@ function exportCpkExcel() {
  */
 function exportCpkHTML() {
     if (parametricAnalysisMap.size === 0) {
-        showToast('⚠️ Không có thông số đo liên tục để xuất Cpk.', 'warning');
+        showToast(_t('⚠️ Không có thông số đo liên tục để xuất Cpk.'), 'warning');
         return;
     }
 
@@ -527,16 +527,16 @@ function exportCpkHTML() {
         let ratingBadge = '<span class="badge" style="background:rgba(148,163,184,0.15); color:var(--txt-sub);">N/A</span>';
         if (m.cpk !== null) {
             if (m.cpk >= CFG.CPK_EXCELLENT) {
-                ratingBadge = '<span class="badge badge-pass">🌟 Xuất Sắc (&ge;1.67)</span>';
+                ratingBadge = '<span class="badge badge-pass">' + _t('🌟 Xuất Sắc (&ge;1.67)') + '</span>';
                 excellentCount++;
             } else if (m.cpk >= CFG.CPK_CAPABLE) {
-                ratingBadge = '<span class="badge badge-capable">✓ Đạt Năng Lực (&ge;1.33)</span>';
+                ratingBadge = '<span class="badge badge-capable">' + _t('✓ Đạt Năng Lực (&ge;1.33)') + '</span>';
                 capableCount++;
             } else if (m.cpk >= CFG.CPK_MARGINAL) {
-                ratingBadge = '<span class="badge badge-warn">⚠️ Cận Biên (1.00 - 1.33)</span>';
+                ratingBadge = '<span class="badge badge-warn">' + _t('⚠️ Cận Biên (1.00 - 1.33)') + '</span>';
                 marginalCount++;
             } else {
-                ratingBadge = '<span class="badge badge-fail">✕ Không Đạt (&lt;1.00)</span>';
+                ratingBadge = '<span class="badge badge-fail">' + _t('✕ Không Đạt (&lt;1.00)') + '</span>';
                 incapableCount++;
             }
         }
@@ -566,7 +566,7 @@ function exportCpkHTML() {
 <html lang="vi" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<title>QIT Scanner v2 Pro - Báo Cáo Năng Lực Quy Trình Cpk</title>
+<title>${_t('QIT Scanner v2 Pro - Báo Cáo Năng Lực Quy Trình Cpk')}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root {
@@ -599,34 +599,34 @@ function exportCpkHTML() {
 <div class="container">
   <div class="header">
     <div>
-      <h1 style="font-size:19px; font-weight:900; color:var(--cyan);">📈 BÁO CÁO NĂNG LỰC QUY TRÌNH &amp; DUNG SAI 6-SIGMA (Cpk)</h1>
+      <h1 style="font-size:19px; font-weight:900; color:var(--cyan);">📈 ${_t('BÁO CÁO NĂNG LỰC QUY TRÌNH & DUNG SAI 6-SIGMA (Cpk)')}</h1>
       <p style="font-size:11px; color:var(--txt-sub); font-family:monospace; margin-top:3px;">QIT SCANNER V2 PRO · PARAMETRIC STATISTICAL PROCESS CONTROL (SPC)</p>
     </div>
-    <div style="font-size:11.5px; color:var(--txt-sub); font-family:monospace;">Xuất lúc: <strong>${new Date().toLocaleString()}</strong></div>
+    <div style="font-size:11.5px; color:var(--txt-sub); font-family:monospace;">${_t('Xuất lúc')}: <strong>${new Date().toLocaleString()}</strong></div>
   </div>
   <div class="kpi-grid">
-    <div class="kpi-card"><div class="kpi-label">TỔNG THÔNG SỐ SPC</div><div class="kpi-val" style="color:var(--cyan);">${totalParams}</div></div>
-    <div class="kpi-card"><div class="kpi-label">XUẤT SẮC (&ge;1.67)</div><div class="kpi-val" style="color:var(--pass);">${excellentCount}</div></div>
-    <div class="kpi-card"><div class="kpi-label">ĐẠT NĂNG LỰC (&ge;1.33)</div><div class="kpi-val" style="color:var(--blue);">${capableCount}</div></div>
-    <div class="kpi-card"><div class="kpi-label">CẬN BIÊN (1.00-1.33)</div><div class="kpi-val" style="color:var(--warn);">${marginalCount}</div></div>
-    <div class="kpi-card"><div class="kpi-label">KHÔNG ĐẠT (&lt;1.00)</div><div class="kpi-val" style="color:var(--fail);">${incapableCount}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('TỔNG THÔNG SỐ SPC')}</div><div class="kpi-val" style="color:var(--cyan);">${totalParams}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('XUẤT SẮC (&ge;1.67)')}</div><div class="kpi-val" style="color:var(--pass);">${excellentCount}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('ĐẠT NĂNG LỰC (&ge;1.33)')}</div><div class="kpi-val" style="color:var(--blue);">${capableCount}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('CẬN BIÊN (1.00-1.33)')}</div><div class="kpi-val" style="color:var(--warn);">${marginalCount}</div></div>
+    <div class="kpi-card"><div class="kpi-label">${_t('KHÔNG ĐẠT (&lt;1.00)')}</div><div class="kpi-val" style="color:var(--fail);">${incapableCount}</div></div>
   </div>
   <div class="card">
     <div style="overflow-x:auto;">
       <table>
         <thead>
           <tr>
-            <th style="text-align:left;">Thông Số Đo</th>
-            <th>Đơn Vị</th>
+            <th style="text-align:left;">${_t('Thông Số Đo')}</th>
+            <th>${_t('Đơn Vị')}</th>
             <th>LSL</th>
             <th>USL</th>
-            <th>Số Mẫu (N)</th>
+            <th>${_t('Số Mẫu (N)')}</th>
             <th>Mean (&mu;)</th>
             <th>StdDev (&sigma;)</th>
             <th>Cp</th>
             <th>Cpk</th>
-            <th>Sát Giới Hạn</th>
-            <th>Đánh Giá Năng Lực</th>
+            <th>${_t('Sát Giới Hạn')}</th>
+            <th>${_t('Đánh Giá Năng Lực')}</th>
           </tr>
         </thead>
         <tbody>${rowsHtml}</tbody>
@@ -638,5 +638,5 @@ function exportCpkHTML() {
 </html>`;
 
     downloadBlobFile(htmlContent, `QIT_Cpk_Statistical_Report_${toLocalDateStr(new Date())}.html`, 'text/html;charset=utf-8');
-    showToast('✅ Đã xuất Báo Cáo Cpk HTML độc lập thành công!', 'success');
+    showToast(_t('✅ Đã xuất Báo Cáo Cpk HTML độc lập thành công!'), 'success');
 }

@@ -27,12 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             dropZone.classList.remove('drop-zone-active');
             
-            showToast('🔄 Đang kiểm tra và trích xuất tệp...', 'info');
+            showToast(_t('🔄 Đang kiểm tra và trích xuất tệp...'), 'info');
             const extractedFiles = await extractFilesFromDataTransfer(e.dataTransfer);
             if (extractedFiles.length > 0) {
                 handleSelectedFiles(extractedFiles, true);
             } else {
-                showToast('⚠️ Không tìm thấy tệp nhật ký hợp lệ (.log, .txt, .csv)', 'warning');
+                showToast(_t('⚠️ Không tìm thấy tệp nhật ký hợp lệ (.log, .txt, .csv)'), 'warning');
             }
         });
 
@@ -242,12 +242,12 @@ async function startFastDirectoryScan() {
             currentFastScanFoundFiles = [];
             handleSelectedFiles(files, true, true);
         } else {
-            showToast('ℹ️ Đã quét xong nhưng không tìm thấy tệp chứa chữ "Summary".', 'info');
+            showToast(_t('ℹ️ Đã quét xong nhưng không tìm thấy tệp chứa chữ "Summary".'), 'info');
         }
     } catch (err) {
         if (err.name !== 'AbortError') {
             console.error('Fast directory scan error:', err);
-            showToast(`⚠️ Không thể truy cập thư mục: ${err.message}`, 'warning');
+            showToast(_t('⚠️ Không thể truy cập thư mục: {0}', err.message), 'warning');
         }
         closeFastScanModal();
     }
@@ -348,28 +348,28 @@ function openFastScanModal(folderName) {
                         </svg>
                     </div>
                     <div>
-                        <h3 style="font-size:16px; font-weight:800; margin:0; color:var(--text-main);">ĐANG QUÉT TÌM TỆP SUMMARY...</h3>
+                        <h3 style="font-size:16px; font-weight:800; margin:0; color:var(--text-main);">${_t('ĐANG QUÉT TÌM TỆP SUMMARY...')}</h3>
                         <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono); margin-top:2px;">
-                            Thư mục: <strong style="color:var(--accent-blue);">${escapeHtml(folderName)}</strong>
+                            ${_t('Thư mục:')} <strong style="color:var(--accent-blue);">${escapeHtml(folderName)}</strong>
                         </div>
                     </div>
                 </div>
-                <button class="btn-icon" onclick="abortFastScan(true)" title="Đóng">✕</button>
+                <button class="btn-icon" onclick="abortFastScan(true)" title="${_t('Đóng')}">✕</button>
             </div>
 
             <div class="modal-body" style="padding:16px; display:flex; flex-direction:column; gap:14px;">
                 <!-- 3 Thẻ Đếm Thời Gian Thực -->
                 <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
                     <div style="background:var(--bg-surface-elevated); border:1px solid var(--border-color); border-radius:8px; padding:10px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Thư Mục Đã Quét</div>
+                        <div style="font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">${_t('Thư Mục Đã Quét')}</div>
                         <div id="fs-dirs-count" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:var(--accent-blue); margin-top:4px;">0</div>
                     </div>
                     <div style="background:var(--bg-surface-elevated); border:1px solid var(--border-color); border-radius:8px; padding:10px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Tệp Đã Lọc Bỏ</div>
+                        <div style="font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">${_t('Tệp Đã Lọc Bỏ')}</div>
                         <div id="fs-files-count" style="font-size:18px; font-weight:800; font-family:var(--font-mono); color:var(--text-main); margin-top:4px;">0</div>
                     </div>
                     <div style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:10px; text-align:center;">
-                        <div style="font-size:10px; font-weight:800; color:#34d399; text-transform:uppercase;">File Summary Tìm Thấy</div>
+                        <div style="font-size:10px; font-weight:800; color:#34d399; text-transform:uppercase;">${_t('File Summary Tìm Thấy')}</div>
                         <div id="fs-summary-count" style="font-size:18px; font-weight:900; font-family:var(--font-mono); color:#10b981; margin-top:4px;">0</div>
                     </div>
                 </div>
@@ -377,19 +377,19 @@ function openFastScanModal(folderName) {
                 <!-- Danh sách file tìm thấy trực tiếp -->
                 <div>
                     <div style="font-size:11px; font-weight:800; color:var(--text-muted); margin-bottom:6px; display:flex; justify-content:space-between;">
-                        <span>📋 TỆP SUMMARY TÌM THẤY TRỰC TIẾP:</span>
-                        <span id="fs-status-text" style="color:var(--accent-blue); font-weight:700;">Đang duyệt luồng...</span>
+                        <span>${_t('📋 TỆP SUMMARY TÌM THẤY TRỰC TIẾP:')}</span>
+                        <span id="fs-status-text" style="color:var(--accent-blue); font-weight:700;">${_t('Đang duyệt luồng...')}</span>
                     </div>
                     <div id="fs-found-list" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:8px; max-height:160px; overflow-y:auto; padding:6px 10px; font-family:var(--font-mono); font-size:11.5px; display:flex; flex-direction:column; gap:4px;">
-                        <div style="color:var(--text-muted); text-align:center; padding:20px;">Đang quét qua các thư mục con...</div>
+                        <div style="color:var(--text-muted); text-align:center; padding:20px;">${_t('Đang quét qua các thư mục con...')}</div>
                     </div>
                 </div>
             </div>
 
             <div class="modal-footer" style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-top:1px solid var(--border-color);">
-                <button class="btn btn-secondary btn-sm" onclick="abortFastScan(true)">✕ Hủy Bỏ</button>
+                <button class="btn btn-secondary btn-sm" onclick="abortFastScan(true)">${_t('✕ Hủy Bỏ')}</button>
                 <button id="fs-btn-done" class="btn btn-primary btn-sm" onclick="finishFastScanImmediately()">
-                    ⏹ Dừng &amp; Nạp Ngay (<span id="fs-done-count">0</span> Tệp)
+                    ⏹ ${_t('Dừng & Nạp Ngay')} (<span id="fs-done-count">0</span> ${_t('Tệp')})
                 </button>
             </div>
         </div>
@@ -411,7 +411,7 @@ function updateFastScanUI(stats, isComplete) {
     if (doneCountEl) doneCountEl.innerText = stats.summaryFound;
 
     if (statusEl && isComplete) {
-        statusEl.innerHTML = '<span style="color:#10b981;">✓ Hoàn tất</span>';
+        statusEl.innerHTML = '<span style="color:#10b981;">✓ ' + _t('Hoàn tất') + '</span>';
     }
 }
 
@@ -438,7 +438,7 @@ function abortFastScan(cancelAll = false) {
     isFastScanRunning = false;
     closeFastScanModal();
     if (cancelAll) {
-        showToast('Đã hủy quá trình quét thư mục.', 'info');
+        showToast(_t('Đã hủy quá trình quét thư mục.'), 'info');
     }
 }
 
@@ -452,7 +452,7 @@ function finishFastScanImmediately() {
         currentFastScanFoundFiles = [];
         handleSelectedFiles(files, true, true);
     } else {
-        showToast('⚠️ Chưa tìm thấy tệp Summary nào để nạp.', 'warning');
+        showToast(_t('⚠️ Chưa tìm thấy tệp Summary nào để nạp.'), 'warning');
     }
 }
 
@@ -477,47 +477,47 @@ function openNetworkShareGuideModal() {
                 <div style="display:flex; align-items:center; gap:12px;">
                     <div style="width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,#00f2fe,#38bdf8); display:grid; place-items:center; font-size:16px;">🌐</div>
                     <div>
-                        <h3 style="font-size:16px; font-weight:800; margin:0;">MẸO TÌM FILE SUMMARY SIÊU TỐC TRÊN Ổ MẠNG (MILLION FILES)</h3>
+                        <h3 style="font-size:16px; font-weight:800; margin:0;">${_t('MẸO TÌM FILE SUMMARY SIÊU TỐC TRÊN Ổ MẠNG (MILLION FILES)')}</h3>
                         <div style="font-size:10.5px; color:var(--text-muted); font-family:var(--font-mono);">HIGH-SCALE NETWORK SHARED DRIVE SCANNING</div>
                     </div>
                 </div>
-                <button class="btn-icon" onclick="closeNetworkShareGuideModal()" title="Đóng">✕</button>
+                <button class="btn-icon" onclick="closeNetworkShareGuideModal()" title="${_t('Đóng')}">✕</button>
             </div>
 
             <div class="modal-body" style="padding:18px; display:flex; flex-direction:column; gap:16px; font-size:13px; line-height:1.6;">
                 <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:10px; padding:12px 14px;">
-                    <strong style="color:var(--accent-blue);">💡 Tại sao quét ổ mạng qua trình duyệt có thể chậm?</strong>
+                    <strong style="color:var(--accent-blue);">💡 ${_t('Tại sao quét ổ mạng qua trình duyệt có thể chậm?')}</strong>
                     <div style="color:var(--text-sub); font-size:12px; margin-top:4px;">
-                        Khi thư mục mạng chứa hàng trăm ngàn đến hàng triệu file con (đặc biệt là file sóng .wav, file dữ liệu thô), giao thức SMB qua mạng LAN tạo độ trễ kết nối cho từng file. Dưới đây là 3 cách tối ưu nhất:
+                        ${_t('Khi thư mục mạng chứa hàng trăm ngàn đến hàng triệu file con (đặc biệt là file sóng .wav, file dữ liệu thô), giao thức SMB qua mạng LAN tạo độ trễ kết nối cho từng file. Dưới đây là 3 cách tối ưu nhất:')}
                     </div>
                 </div>
 
                 <!-- Cách 1: Nút Quét Nhanh Trực Tiếp -->
                 <div>
                     <h4 style="font-size:13px; font-weight:800; color:var(--text-main); margin-bottom:4px;">
-                        🚀 Cách 1: Sử dụng nút "⚡ Quét Nhanh File System" trực tiếp trên Web
+                        🚀 ${_t('Cách 1: Sử dụng nút "⚡ Quét Nhanh File System" trực tiếp trên Web')}
                     </h4>
                     <p style="color:var(--text-sub); font-size:12px; margin:0;">
-                        Bấm nút <strong>"⚡ Quét Nhanh Thư Mục / Ổ Mạng"</strong> tại màn hình nạp tệp. Trình duyệt sẽ dùng API Streaming bỏ qua 100% file không phải Summary, không tốn RAM và cho phép bấm <strong>[⏹ Dừng & Nạp Ngay]</strong> bất kỳ lúc nào.
+                        ${_t('Bấm nút "⚡ Quét Nhanh Thư Mục / Ổ Mạng" tại màn hình nạp tệp. Trình duyệt sẽ dùng API Streaming bỏ qua 100% file không phải Summary, không tốn RAM và cho phép bấm [⏹ Dừng & Nạp Ngay] bất kỳ lúc nào.')}
                     </p>
                 </div>
 
                 <!-- Cách 2: Tìm bằng Windows Explorer -->
                 <div>
                     <h4 style="font-size:13px; font-weight:800; color:#34d399; margin-bottom:4px;">
-                        📂 Cách 2: Tìm bằng Windows Explorer rồi kéo thả (Khuyên Dùng - 3 giây)
+                        📂 ${_t('Cách 2: Tìm bằng Windows Explorer rồi kéo thả (Khuyên Dùng - 3 giây)')}
                     </h4>
                     <ol style="color:var(--text-sub); font-size:12px; padding-left:20px; margin:4px 0 0 0;">
-                        <li>Mở thư mục ổ mạng trên máy tính (ví dụ: ổ <code>Z:\\Klippel_Logs</code>).</li>
-                        <li>Gõ <code>*summary*.log</code> hoặc <code>*summary*</code> vào ô tìm kiếm góc trên bên phải Windows Explorer và bấm Enter.</li>
-                        <li>Bấm <code>Ctrl + A</code> chọn toàn bộ các file kết quả $\\rightarrow$ Kéo thả thẳng vào giao diện QIT Scanner.</li>
+                        <li>${_t('Mở thư mục ổ mạng trên máy tính (ví dụ: ổ Z:\\Klippel_Logs).')}</li>
+                        <li>${_t('Gõ *summary*.log hoặc *summary* vào ô tìm kiếm góc trên bên phải Windows Explorer và bấm Enter.')}</li>
+                        <li>${_t('Bấm {0} chọn toàn bộ các file kết quả {1} Kéo thả thẳng vào giao diện QIT Scanner.', '<code>Ctrl + A</code>', '→')}</li>
                     </ol>
                 </div>
 
                 <!-- Cách 3: Lệnh PowerShell 1 Dòng -->
                 <div>
                     <h4 style="font-size:13px; font-weight:800; color:#a855f7; margin-bottom:6px;">
-                        ⚡ Cách 3: Lệnh PowerShell tự động lọc gom file ra thư mục riêng
+                        ⚡ ${_t('Cách 3: Lệnh PowerShell tự động lọc gom file ra thư mục riêng')}
                     </h4>
                     <div style="position:relative; background:#0b0f19; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px 12px; font-family:var(--font-mono); font-size:11.5px; color:#38bdf8;">
                         <code>Get-ChildItem -Path "Z:\\Log" -Filter "*summary*.log" -Recurse | Copy-Item -Destination "C:\\QIT_Logs\\"</code>
@@ -527,7 +527,7 @@ function openNetworkShareGuideModal() {
             </div>
 
             <div class="modal-footer" style="display:flex; justify-content:flex-end; padding:12px 16px; border-top:1px solid var(--border-color);">
-                <button class="btn btn-primary btn-sm" onclick="closeNetworkShareGuideModal()">Đã Hiểu</button>
+                <button class="btn btn-primary btn-sm" onclick="closeNetworkShareGuideModal()">${_t('Đã Hiểu')}</button>
             </div>
         </div>
     `;
@@ -542,7 +542,7 @@ function closeNetworkShareGuideModal() {
 
 function copyPowerShellCommand() {
     const cmd = 'Get-ChildItem -Path "Z:\\Log" -Filter "*summary*.log" -Recurse | Copy-Item -Destination "C:\\QIT_Logs\\"';
-    copyTextSafe(cmd, '✅ Đã sao chép lệnh PowerShell vào Clipboard!');
+    copyTextSafe(cmd, _t('✅ Đã sao chép lệnh PowerShell vào Clipboard!'));
 }
 
 /**
@@ -556,7 +556,7 @@ function handleSelectedFiles(files, isFromFolder = false, autoProcess = false) {
     });
 
     if (validFiles.length === 0) {
-        showToast('⚠️ Vui lòng chọn tệp có định dạng .log, .txt hoặc .csv', 'warning');
+        showToast(_t('⚠️ Vui lòng chọn tệp có định dạng .log, .txt hoặc .csv'), 'warning');
         return;
     }
 
@@ -565,10 +565,10 @@ function handleSelectedFiles(files, isFromFolder = false, autoProcess = false) {
     if (shouldFilterSummary && isFromFolder) {
         const summaryFiles = validFiles.filter(f => /summary/i.test(f.name));
         if (summaryFiles.length > 0) {
-            showToast(`🔍 Đã tự động lọc ${summaryFiles.length} tệp Summary!`, 'success');
+            showToast(_t('🔍 Đã tự động lọc {0} tệp Summary!', summaryFiles.length), 'success');
             validFiles = summaryFiles;
         } else {
-            showToast(`ℹ️ Không tìm thấy chữ "Summary" trong tên. Đã nạp ${validFiles.length} tệp nhật ký.`, 'info');
+            showToast(_t('ℹ️ Không tìm thấy chữ "Summary" trong tên. Đã nạp {0} tệp nhật ký.', validFiles.length), 'info');
         }
     }
 

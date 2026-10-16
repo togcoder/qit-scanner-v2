@@ -1,13 +1,21 @@
 /* ════════════ THUẬT TOÁN ĐỐI SOÁT & TÌM KIẾM MÃ VẠCH V2 PRO ════════════ */
 
 var MATCH_TIER = { EXACT: 100, SUFFIX: 80, PREFIX: 60, CONTAINS: 40, REVERSE: 20 };
-var MATCH_TIER_NAME = {
-    100: 'Tầng 1 · Trùng khớp tuyệt đối (Exact)',
-    80:  'Tầng 2 · Khớp hậu tố Serial (Suffix)',
-    60:  'Tầng 3 · Khớp tiền tố (Prefix)',
-    40:  'Tầng 3 · Chứa chuỗi con (Substring)',
-    20:  'Tầng 3 · Khớp ngược (Reverse)'
-};
+function getMatchTierName(tier) {
+    var names = {
+        100: _t('Tầng 1 · Trùng khớp tuyệt đối (Exact)'),
+        80:  _t('Tầng 2 · Khớp hậu tố Serial (Suffix)'),
+        60:  _t('Tầng 3 · Khớp tiền tố (Prefix)'),
+        40:  _t('Tầng 3 · Chứa chuỗi con (Substring)'),
+        20:  _t('Tầng 3 · Khớp ngược (Reverse)')
+    };
+    return names[tier] || _t('Khớp mở rộng');
+}
+var MATCH_TIER_NAME = new Proxy({}, {
+    get: function(target, prop) {
+        return getMatchTierName(Number(prop));
+    }
+});
 
 /**
  * Tiền xử lý chuỗi quét theo cấu hình CFG (cắt khoảng trắng, lọc tiền tố/hậu tố cố định)
@@ -94,7 +102,7 @@ function findRecordByBarcode(rawScan, stationFilter) {
                 const rec = pool[i];
                 const tier = scoreMatch(cleanScan, rec.cleanSN);
                 if (tier > 0) {
-                    return { record: rec, matchType: 'FUZZY_MATCH', tier: tier, tierName: MATCH_TIER_NAME[tier] || 'Khớp mở rộng', allRecords: findAllRecordsForDUT(rec) };
+                    return { record: rec, matchType: 'FUZZY_MATCH', tier: tier, tierName: MATCH_TIER_NAME[tier] || _t('Khớp mở rộng'), allRecords: findAllRecordsForDUT(rec) };
                 }
             }
         }
@@ -135,7 +143,7 @@ function findRecordByBarcode(rawScan, stationFilter) {
                 record: rec,
                 matchType: 'FUZZY_MATCH',
                 tier: tier,
-                tierName: MATCH_TIER_NAME[tier] || 'Khớp chuỗi con',
+                tierName: MATCH_TIER_NAME[tier] || _t('Khớp chuỗi con'),
                 allRecords: findAllRecordsForDUT(rec)
             };
         }

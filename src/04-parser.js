@@ -157,7 +157,7 @@ function processFiles() {
 async function processMultipleLogFiles(fileList) {
     if (!fileList || fileList.length === 0) return;
 
-    showSplash('ĐANG NẠP DỮ LIỆU...', `Đang xử lý ${fileList.length} tệp log Klippel QC`);
+    showSplash(_t('ĐANG NẠP DỮ LIỆU...'), _t('Đang xử lý {0} tệp log Klippel QC', fileList.length));
     setProcessingButtonState(true, _t('ĐANG ĐỌC & PHÂN TÍCH TỆP...'));
 
     await new Promise(r => setTimeout(r, 60));
@@ -173,7 +173,7 @@ async function processMultipleLogFiles(fileList) {
         completeImport();
     } catch (err) {
         console.error('File parsing error:', err);
-        showToast('❌ Đã xảy ra lỗi khi đọc tệp: ' + err.message, 'error');
+        showToast(_t('❌ Đã xảy ra lỗi khi đọc tệp: {0}', err.message), 'error');
         setProcessingButtonState(false, _t('TIẾN HÀNH XỬ LÝ DỮ LIỆU'));
     } finally {
         setTimeout(() => hideSplash(), 400);
@@ -216,7 +216,7 @@ function processSingleLogFile(rawContent, fileName, fileId) {
     // 2. Tự động trích xuất Metadata Header và dòng Tiêu đề Cột
     const { headerRowIndex, headers, metadata } = extractHeaderAndMetadata(lines, delimiter);
     if (headers.length === 0) {
-        parseWarnings.push(`Tệp ${fileName} không tìm thấy tiêu đề hợp lệ.`);
+        parseWarnings.push(_t('Tệp {0} không tìm thấy tiêu đề hợp lệ.', fileName));
         return;
     }
 
@@ -611,7 +611,7 @@ function extractStationFromDbPath(dbPath, fileName) {
 function completeImport() {
     if (dictLookupClean.size === 0 && timelineData.length === 0) {
         setProcessingButtonState(false, _t('TIẾN HÀNH XỬ LÝ DỮ LIỆU'));
-        showToast('❌ Không đọc được bản ghi nào. Kiểm tra lại định dạng tệp.', 'error');
+        showToast(_t('❌ Không đọc được bản ghi nào. Kiểm tra lại định dạng tệp.'), 'error');
         return;
     }
 
@@ -626,7 +626,7 @@ function completeImport() {
     if (typeof syncAuditWithKlippelLogs === 'function') {
         syncAuditWithKlippelLogs();
     }
-    showToast(`✅ Đã nạp thành công ${loadedFilesMap.size} tệp (${timelineData.length.toLocaleString()} bản ghi đo)!`, 'success');
+    showToast(_t('✅ Đã nạp thành công {0} tệp ({1} bản ghi đo)!', loadedFilesMap.size, timelineData.length.toLocaleString()), 'success');
 }
 
 /**
@@ -762,6 +762,6 @@ function loadBuiltInDemoKlippelLogs(silent = false) {
     }
 
     if (!silent) {
-        showToast('🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!', 'success');
+        showToast(_t('🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!'), 'success');
     }
 }

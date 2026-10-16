@@ -32,7 +32,7 @@ function setLiveScanMatchMode(mode) {
     CFG.SCAN_MATCH_MODE = mode === 'exact' ? 'exact' : 'flex';
     saveCustomConfig();
     renderScanStatsOverview();
-    showToast(`✓ Chế độ so khớp mã vạch: ${CFG.SCAN_MATCH_MODE === 'exact' ? 'Chính xác 100% (Exact)' : 'Đa tầng thông minh 3-Tier O(1)'}`, 'info');
+    showToast(_t('✓ Chế độ so khớp mã vạch: {0}', CFG.SCAN_MATCH_MODE === 'exact' ? _t('Chính xác 100% (Exact)') : _t('Đa tầng thông minh 3-Tier O(1)')), 'info');
     focusActiveScanInput();
 }
 
@@ -75,7 +75,7 @@ function handleScanBarcode(rawBarcode) {
     const processed = typeof preprocessRawScan === 'function' ? preprocessRawScan(rawBarcode) : String(rawBarcode || '').trim();
     const cleanScan = getAlphaNum(processed);
     if (!cleanScan || cleanScan.length < CFG.MIN_SCAN_LEN) {
-        showToast('⚠️ ' + _t('Mã quét quá ngắn hoặc không hợp lệ') + ` (Tối thiểu ${CFG.MIN_SCAN_LEN} ký tự)`, 'warning');
+        showToast('⚠️ ' + _t('Mã quét quá ngắn hoặc không hợp lệ') + ' (' + _t('Tối thiểu {0} ký tự', CFG.MIN_SCAN_LEN) + ')', 'warning');
         return;
     }
 
@@ -105,7 +105,7 @@ function handleScanBarcode(rawBarcode) {
         recordRobotStats(1, 0, 0, 1);
         historyEntry.status = 'NOT_FOUND';
         if (loadedFilesMap.size === 0) {
-            showToast('ℹ️ Chưa nạp tệp log Klippel. Bấm [🧪 Nạp Dữ Liệu Mẫu] hoặc sang tab [🎯 KIỂM TRA DANH SÁCH] để đối soát.', 'info');
+            showToast(_t('ℹ️ Chưa nạp tệp log Klippel. Bấm [🧪 Nạp Dữ Liệu Mẫu] hoặc sang tab [🎯 KIỂM TRA DANH SÁCH] để đối soát.'), 'info');
         }
     } else {
         const rec = match.record;
@@ -175,24 +175,24 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
         ? `<span class="meta-chip meta-chip-cyan">${escapeHtml(matchInfo.tierName)}</span>`
         : '';
     const retestBadge = runCount > 1
-        ? `<span class="meta-chip meta-chip-warn">🔄 Đo ${runCount} lượt (Retest ×${runCount - 1})</span>`
-        : `<span class="meta-chip">Lần đo thứ 1 (First Run)</span>`;
+        ? `<span class="meta-chip meta-chip-warn">${_t('🔄 Đo {0} lượt (Retest ×{1})', runCount, runCount - 1)}</span>`
+        : `<span class="meta-chip">${_t('Lần đo thứ 1 (First Run)')}</span>`;
 
     if (status === 'PASS' || status === 'PASS_DUP') {
         band.classList.add('verdict-pass');
         mark.style.display = 'flex';
         mark.innerHTML = '✓';
-        title.innerHTML = `PASS · ĐẠT CHUẨN` + (status === 'PASS_DUP' ? ` <span class="badge-dup">⚠️ QUÉT LẶP</span>` : '');
+        title.innerHTML = _t('PASS · ĐẠT CHUẨN') + (status === 'PASS_DUP' ? ` <span class="badge-dup">${_t('⚠️ QUÉT LẶP')}</span>` : '');
         sub.innerHTML = `
             <div class="verdict-meta-grid">
-                <div><span class="vm-lbl">MÃ ĐỊNH DANH (DUT):</span> <strong class="vm-mono">${escapeHtml(record ? record.displayID : rawScan)}</strong></div>
+                <div><span class="vm-lbl">${_t('MÃ ĐỊNH DANH (DUT):')}</span> <strong class="vm-mono">${escapeHtml(record ? record.displayID : rawScan)}</strong></div>
                 <div><span class="vm-lbl">MODEL / SERIAL:</span> <strong class="vm-mono">${escapeHtml(record ? (record.modelName || '—') : '—')}</strong> · <strong class="vm-mono" style="color:var(--accent-cyan);">${escapeHtml(record ? (record.serialNo || '—') : '—')}</strong></div>
-                <div><span class="vm-lbl">TRẠM ĐO &amp; GIỜ ĐO:</span> <strong style="color:var(--accent-blue);">${escapeHtml(record ? record.stationName : '—')}</strong> · <span class="vm-mono">${record && record.timestamp ? record.timestamp.toLocaleString('vi-VN', { hour12: false }) : '—'}</span></div>
+                <div><span class="vm-lbl">${_t('TRẠM ĐO & GIỜ ĐO:')}</span> <strong style="color:var(--accent-blue);">${escapeHtml(record ? record.stationName : '—')}</strong> · <span class="vm-mono">${record && record.timestamp ? record.timestamp.toLocaleString('vi-VN', { hour12: false }) : '—'}</span></div>
             </div>
         `;
         detailDrawer.innerHTML = `
             <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; align-items:center;">
-                <span class="badge-pill badge-pass">✓ Đạt 100% bài kiểm tra Klippel QC</span>
+                <span class="badge-pill badge-pass">${_t('✓ Đạt 100% bài kiểm tra Klippel QC')}</span>
                 ${tierBadge}
                 ${retestBadge}
                 ${record && record.userName ? `<span class="meta-chip">👤 OP: ${escapeHtml(record.userName)}</span>` : ''}
@@ -202,12 +202,12 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
         band.classList.add('verdict-fail');
         mark.style.display = 'flex';
         mark.innerHTML = '✕';
-        title.innerHTML = `FAIL · SẢN PHẨM LỖI` + (status === 'FAIL_DUP' ? ` <span class="badge-dup">⚠️ QUÉT LẶP</span>` : '');
+        title.innerHTML = _t('FAIL · SẢN PHẨM LỖI') + (status === 'FAIL_DUP' ? ` <span class="badge-dup">${_t('⚠️ QUÉT LẶP')}</span>` : '');
         sub.innerHTML = `
             <div class="verdict-meta-grid">
-                <div><span class="vm-lbl">MÃ ĐỊNH DANH (DUT):</span> <strong class="vm-mono">${escapeHtml(record ? record.displayID : rawScan)}</strong></div>
+                <div><span class="vm-lbl">${_t('MÃ ĐỊNH DANH (DUT):')}</span> <strong class="vm-mono">${escapeHtml(record ? record.displayID : rawScan)}</strong></div>
                 <div><span class="vm-lbl">MODEL / SERIAL:</span> <strong class="vm-mono">${escapeHtml(record ? (record.modelName || '—') : '—')}</strong> · <strong class="vm-mono" style="color:#fca5a5;">${escapeHtml(record ? (record.serialNo || '—') : '—')}</strong></div>
-                <div><span class="vm-lbl">TRẠM ĐO &amp; GIỜ ĐO:</span> <strong style="color:var(--accent-blue);">${escapeHtml(record ? record.stationName : '—')}</strong> · <span class="vm-mono">${record && record.timestamp ? record.timestamp.toLocaleString('vi-VN', { hour12: false }) : '—'}</span></div>
+                <div><span class="vm-lbl">${_t('TRẠM ĐO & GIỜ ĐO:')}</span> <strong style="color:var(--accent-blue);">${escapeHtml(record ? record.stationName : '—')}</strong> · <span class="vm-mono">${record && record.timestamp ? record.timestamp.toLocaleString('vi-VN', { hour12: false }) : '—'}</span></div>
             </div>
         `;
 
@@ -215,7 +215,7 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
         const actErrs = record ? activeErrors(record.errors) : [];
         if (actErrs.length > 0) {
             actErrs.forEach(err => {
-                errBadges += `<span class="badge-pill badge-fail">✕ LỖI: ${escapeHtml(getMappedName(err))} <small style="opacity:0.8;">(${escapeHtml(err)})</small></span>`;
+                errBadges += `<span class="badge-pill badge-fail">✕ ${_t('LỖI:')} ${escapeHtml(getMappedName(err))} <small style="opacity:0.8;">(${escapeHtml(err)})</small></span>`;
             });
         } else {
             errBadges += `<span class="badge-pill badge-fail">✕ Verdict Overall FAIL</span>`;
@@ -229,9 +229,9 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
         title.innerHTML = _t('KHÔNG TÌM THẤY DỮ LIỆU');
         sub.innerHTML = `
             <div class="verdict-meta-grid">
-                <div><span class="vm-lbl">CHUỖI QUÉT THÔ:</span> <strong class="vm-mono">${escapeHtml(rawScan)}</strong></div>
-                <div><span class="vm-lbl">CHUỖI CHUẨN HÓA:</span> <strong class="vm-mono">${escapeHtml(getAlphaNum(rawScan))}</strong></div>
-                <div><span class="vm-lbl">TRẠNG THÁI KHO LOG:</span> <span>${loadedFilesMap.size > 0 ? `Đã tra cứu trên ${dictLookupClean.size.toLocaleString()} DUT nhưng không có bản ghi khớp` : 'Chưa nạp tệp nhật ký Klippel nào vào hệ thống'}</span></div>
+                <div><span class="vm-lbl">${_t('CHUỖI QUÉT THÔ:')}</span> <strong class="vm-mono">${escapeHtml(rawScan)}</strong></div>
+                <div><span class="vm-lbl">${_t('CHUỖI CHUẨN HÓA:')}</span> <strong class="vm-mono">${escapeHtml(getAlphaNum(rawScan))}</strong></div>
+                <div><span class="vm-lbl">${_t('TRẠNG THÁI KHO LOG:')}</span> <span>${loadedFilesMap.size > 0 ? _t('Đã tra cứu trên {0} DUT nhưng không có bản ghi khớp', dictLookupClean.size.toLocaleString()) : _t('Chưa nạp tệp nhật ký Klippel nào vào hệ thống')}</span></div>
             </div>
         `;
     } else {
@@ -300,11 +300,11 @@ function renderParametricSnapshotBand(container, record) {
 
         if (hasMin && m.value < m.minLimit) {
             stateClass = 'fail';
-            statusLabel = 'LOW (Dưới LSL)';
+            statusLabel = _t('LOW (Dưới LSL)');
             pctPos = 4;
         } else if (hasMax && m.value > m.maxLimit) {
             stateClass = 'fail';
-            statusLabel = 'HIGH (Vượt USL)';
+            statusLabel = _t('HIGH (Vượt USL)');
             pctPos = 96;
         } else if (hasMin && hasMax && (m.maxLimit - m.minLimit) > 0) {
             const span = m.maxLimit - m.minLimit;
@@ -312,7 +312,7 @@ function renderParametricSnapshotBand(container, record) {
             const margin = span * ((CFG.NEAR_FAIL_MARGIN_PCT || 10) / 100);
             if ((m.value - m.minLimit) <= margin || (m.maxLimit - m.value) <= margin) {
                 stateClass = 'warn';
-                statusLabel = 'CẬN BIÊN';
+                statusLabel = _t('CẬN BIÊN');
             }
         }
 
@@ -327,7 +327,7 @@ function renderParametricSnapshotBand(container, record) {
                     <span class="snapshot-status-tag tag-${stateClass}">${statusLabel}</span>
                 </div>
                 <div class="snapshot-val">${formattedVal} <small>${escapeHtml(m.unit || '')}</small></div>
-                <div class="snapshot-bar-track" title="Vị trí giá trị đo trong dải dung sai [LSL - USL]">
+                <div class="snapshot-bar-track" title="" data-i18n-title="Vị trí giá trị đo trong dải dung sai [LSL - USL]">
                     <div class="snapshot-bar-zone"></div>
                     <div class="snapshot-bar-marker marker-${stateClass}" style="left:${pctPos.toFixed(1)}%;"></div>
                 </div>
@@ -359,7 +359,7 @@ function renderDUTDeepInspector(container, record, allRuns, rawScan, status) {
     const taskEntries = Object.entries(record.taskVerdicts || {});
     let tasksHtml = '';
     if (taskEntries.length === 0) {
-        tasksHtml = `<span style="font-size:11.5px; color:var(--text-muted);">Không có cột Task rời rạc</span>`;
+        tasksHtml = `<span style="font-size:11.5px; color:var(--text-muted);">${_t('Không có cột Task rời rạc')}</span>`;
     } else {
         tasksHtml = `<div style="display:flex; flex-wrap:wrap; gap:6px;">`;
         taskEntries.forEach(([tName, vCode]) => {
@@ -368,7 +368,7 @@ function renderDUTDeepInspector(container, record, allRuns, rawScan, status) {
                 tasksHtml += `<span class="badge-pill badge-pass" style="font-size:11px;">✓ ${escapeHtml(getMappedName(tName))}${escapeHtml(grade)}</span>`;
             } else if (vCode === 0) {
                 const isHidden = !isErrorVisible(tName);
-                tasksHtml += `<span class="badge-pill ${isHidden ? 'badge-warn' : 'badge-fail'}" style="font-size:11px;">${isHidden ? '🙈 (Đã ẩn)' : '✕'} ${escapeHtml(getMappedName(tName))}${escapeHtml(grade)}</span>`;
+                tasksHtml += `<span class="badge-pill ${isHidden ? 'badge-warn' : 'badge-fail'}" style="font-size:11px;">${isHidden ? _t('🙈 (Đã ẩn)') : '✕'} ${escapeHtml(getMappedName(tName))}${escapeHtml(grade)}</span>`;
             } else {
                 tasksHtml += `<span class="badge-pill" style="background:rgba(148,163,184,0.12); color:var(--text-muted); border:1px solid var(--border-color); font-size:11px;">— ${escapeHtml(getMappedName(tName))} (SKIP)</span>`;
             }
@@ -382,18 +382,18 @@ function renderDUTDeepInspector(container, record, allRuns, rawScan, status) {
         runsHtml = `
             <div style="margin-top:12px; padding-top:12px; border-top:1px solid var(--border-color);">
                 <div style="font-size:11px; font-weight:800; color:var(--accent-cyan); text-transform:uppercase; margin-bottom:8px;">
-                    🔄 LỊCH SỬ CÁC LƯỢT ĐO CỦA SẢN PHẨM NÀY (${allRuns.length} LẦN ĐO TRONG HỆ THỐNG)
+                    ${_t('🔄 LỊCH SỬ CÁC LƯỢT ĐO CỦA SẢN PHẨM NÀY ({0} LẦN ĐO TRONG HỆ THỐNG)', allRuns.length)}
                 </div>
                 <div class="table-wrapper">
                     <table class="data-table" style="font-size:11.5px;">
                         <thead>
                             <tr>
-                                <th>Lần Đo</th>
-                                <th>Thời Gian</th>
-                                <th>Trạm Đo</th>
-                                <th>Tệp Nguồn</th>
-                                <th>Phán Định</th>
-                                <th>Chi Tiết Lỗi / Thông Số</th>
+                                <th>${_t('Lần Đo')}</th>
+                                <th>${_t('Thời Gian')}</th>
+                                <th>${_t('Trạm Đo')}</th>
+                                <th>${_t('Tệp Nguồn')}</th>
+                                <th>${_t('Phán Định')}</th>
+                                <th>${_t('Chi Tiết Lỗi / Thông Số')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -403,12 +403,12 @@ function renderDUTDeepInspector(container, record, allRuns, rawScan, status) {
                                 const isCurrent = r.id === record.id;
                                 return `
                                     <tr style="${isCurrent ? 'background:rgba(0,242,254,0.08);' : ''}">
-                                        <td style="font-family:var(--font-mono); font-weight:700;">Lần #${i + 1} ${isCurrent ? '<span style="color:var(--accent-cyan);">(Đang xem)</span>' : ''}</td>
+                                        <td style="font-family:var(--font-mono); font-weight:700;">${_t('Lần #{0}', i + 1)} ${isCurrent ? `<span style="color:var(--accent-cyan);">(${_t('Đang xem')})</span>` : ''}</td>
                                         <td style="font-family:var(--font-mono);">${r.timestamp ? r.timestamp.toLocaleString('vi-VN', { hour12: false }) : '—'}</td>
                                         <td><strong style="color:var(--accent-blue);">${escapeHtml(r.stationName)}</strong></td>
                                         <td style="color:var(--text-muted);">${escapeHtml(r.fileName)}</td>
                                         <td><span class="badge-pill ${p ? 'badge-pass' : 'badge-fail'}">${p ? 'PASS' : 'FAIL'}</span></td>
-                                        <td>${p ? '<span style="color:#10b981;">Đạt tất cả tiêu chí</span>' : `<span style="color:#f87171; font-weight:700;">${escapeHtml(errs || 'Overall FAIL')}</span>`}</td>
+                                        <td>${p ? `<span style="color:#10b981;">${_t('Đạt tất cả tiêu chí')}</span>` : `<span style="color:#f87171; font-weight:700;">${escapeHtml(errs || 'Overall FAIL')}</span>`}</td>
                                     </tr>
                                 `;
                             }).join('')}
@@ -423,17 +423,17 @@ function renderDUTDeepInspector(container, record, allRuns, rawScan, status) {
         <div class="card" style="padding:14px 18px; border-left:4px solid var(--accent-cyan);">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
                 <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                    <span style="font-size:11px; font-weight:800; letter-spacing:0.1em; color:var(--accent-cyan); text-transform:uppercase;">🔬 HỒ SƠ KỸ THUẬT CHI TIẾT DUT</span>
-                    <span class="meta-chip">Tệp: <strong>${escapeHtml(record.fileName)}</strong></span>
+                    <span style="font-size:11px; font-weight:800; letter-spacing:0.1em; color:var(--accent-cyan); text-transform:uppercase;">${_t('🔬 HỒ SƠ KỸ THUẬT CHI TIẾT DUT')}</span>
+                    <span class="meta-chip">${_t('Tệp:')} <strong>${escapeHtml(record.fileName)}</strong></span>
                     ${record.dbPath ? `<span class="meta-chip" title="${escapeHtml(record.dbPath)}">🗄️ DB: <span style="font-family:var(--font-mono);">${escapeHtml(record.dbPath.length > 55 ? '...' + record.dbPath.slice(-52) : record.dbPath)}</span></span>` : ''}
                 </div>
                 <div style="display:flex; gap:6px;">
-                    <button class="btn btn-sm btn-secondary" onclick="copyTextSafe('${escapeHtml(record.displayID)}', '✅ Đã copy mã DUT: ${escapeHtml(record.displayID)}')">📋 Copy Mã DUT</button>
-                    <button class="btn btn-sm btn-outline" onclick="inspectRecordInModal('${escapeHtml(record.id)}')">🔍 Mở Cửa Sổ Đầy Đủ</button>
+                    <button class="btn btn-sm btn-secondary" onclick="copyTextSafe('${escapeHtml(record.displayID)}', '${_t('✅ Đã copy mã DUT: {0}', escapeHtml(record.displayID))}')">${_t('📋 Copy Mã DUT')}</button>
+                    <button class="btn btn-sm btn-outline" onclick="inspectRecordInModal('${escapeHtml(record.id)}')">${_t('🔍 Mở Cửa Sổ Đầy Đủ')}</button>
                 </div>
             </div>
             <div>
-                <div style="font-size:10.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Trạng Thái Từng Bài Đo Âm Học (Klippel Task Verdicts):</div>
+                <div style="font-size:10.5px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">${_t('Trạng Thái Từng Bài Đo Âm Học (Klippel Task Verdicts):')}</div>
                 ${tasksHtml}
             </div>
             ${runsHtml}
@@ -486,11 +486,11 @@ function renderScanHistoryTable() {
     });
 
     if (countLabel) {
-        countLabel.textContent = `${filtered.length} / ${scanHistory.length} lượt`;
+        countLabel.textContent = `${filtered.length} / ${scanHistory.length} ${_t('lượt')}`;
     }
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:24px;">${scanHistory.length === 0 ? _t('Chưa có lượt quét nào trong phiên. Hãy quét mã vạch hoặc bấm nút [Quét Thử Mẫu] phía trên.') : 'Không có lượt quét nào khớp với bộ lọc hiện tại.'}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:24px;">${scanHistory.length === 0 ? _t('Chưa có lượt quét nào trong phiên. Hãy quét mã vạch hoặc bấm nút [Quét Thử Mẫu] phía trên.') : _t('Không có lượt quét nào khớp với bộ lọc hiện tại.')}</td></tr>`;
         return;
     }
 
@@ -501,7 +501,7 @@ function renderScanHistoryTable() {
         const isNotFound = item.status === 'NOT_FOUND';
         const badgeClass = isNotFound ? 'badge-warn' : (isPass ? 'badge-pass' : 'badge-fail');
         const badgeText = isNotFound ? 'NOT FOUND' : (isPass ? 'PASS' : 'FAIL');
-        const dupTag = item.isDuplicate ? `<span class="badge-pill badge-warn" style="font-size:9.5px; margin-left:4px;">LẶP</span>` : '';
+        const dupTag = item.isDuplicate ? `<span class="badge-pill badge-warn" style="font-size:9.5px; margin-left:4px;">${_t('LẶP')}</span>` : '';
 
         const rec = item.record;
         let reVal = '—', fsVal = '—', splVal = '—';
@@ -516,10 +516,10 @@ function renderScanHistoryTable() {
 
         const errText = (rec && !isPass && rec.errors && rec.errors.length > 0)
             ? activeErrors(rec.errors).map(getMappedName).join(', ')
-            : (isNotFound ? 'Không có bản ghi log' : 'Đạt 100%');
+            : (isNotFound ? _t('Không có bản ghi log') : _t('Đạt 100%'));
 
         html += `
-            <tr style="cursor:pointer;" onclick="selectScanHistoryItem(${origIdx})" title="Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này">
+            <tr style="cursor:pointer;" onclick="selectScanHistoryItem(${origIdx})" title="" data-i18n-title="Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này">
                 <td style="text-align:center; font-weight:700; color:var(--text-muted);">${scanHistory.length - origIdx}</td>
                 <td style="font-family:var(--font-mono); color:var(--text-muted); font-size:11.5px;">${item.time}</td>
                 <td style="font-weight:700; font-family:var(--font-mono); color:var(--text-main);">
@@ -572,7 +572,7 @@ function renderScanStatsOverview() {
         const ts = liveScanSession.timestamps;
         if (ts.length >= 2) {
             const avgSec = ((ts[ts.length - 1] - ts[0]) / (ts.length - 1)) / 1000;
-            sesPaceEl.textContent = avgSec < 60 ? `${avgSec.toFixed(1)}s/mã` : '—';
+            sesPaceEl.textContent = avgSec < 60 ? `${avgSec.toFixed(1)}${_t('s/mã')}` : '—';
         } else {
             sesPaceEl.textContent = '—';
         }
@@ -583,9 +583,9 @@ function renderScanStatsOverview() {
     if (stSelect) {
         const stations = Array.from(new Set(Array.from(loadedFilesMap.values()).filter(f => f.active).map(f => f.stationName)));
         const cur = liveScanSession.stationFilter || 'ALL';
-        let opts = `<option value="ALL" ${cur === 'ALL' ? 'selected' : ''}>🏭 Tất cả trạm đo (${stations.length})</option>`;
+        let opts = `<option value="ALL" ${cur === 'ALL' ? 'selected' : ''}>${_t('🏭 Tất cả trạm đo ({0})', stations.length)}</option>`;
         stations.forEach(s => {
-            opts += `<option value="${escapeHtml(s)}" ${cur === s ? 'selected' : ''}>Trạm: ${escapeHtml(s)}</option>`;
+            opts += `<option value="${escapeHtml(s)}" ${cur === s ? 'selected' : ''}>${_t('Trạm: {0}', escapeHtml(s))}</option>`;
         });
         stSelect.innerHTML = opts;
     }
@@ -606,7 +606,7 @@ function resetLiveScanSessionStats() {
     liveScanSession.timestamps = [];
     currentScannedSerialsSet.clear();
     renderScanStatsOverview();
-    showToast('✓ Đã đặt lại bộ đếm phiên quét hiện tại', 'info');
+    showToast(_t('✓ Đã đặt lại bộ đếm phiên quét hiện tại'), 'info');
 }
 
 /**
@@ -614,11 +614,11 @@ function resetLiveScanSessionStats() {
  */
 function exportScanHistoryExcel() {
     if (!scanHistory || scanHistory.length === 0) {
-        showToast('⚠️ Chưa có lượt quét nào để xuất.', 'warning');
+        showToast(_t('⚠️ Chưa có lượt quét nào để xuất.'), 'warning');
         return;
     }
 
-    let csv = '\uFEFFSTT,Thời Gian,Mã Quét Thô,Serial Chuẩn Hóa,Trạng Thái,Quét Lặp,Trạm Đo,Model,Re (Ω),fs (Hz),SPL (dB),Lỗi Chi Tiết\n';
+    let csv = '\uFEFF' + [_t('STT'), _t('Thời Gian'), _t('Mã Quét Thô'), _t('Serial Chuẩn Hóa'), _t('Trạng Thái'), _t('Quét Lặp'), _t('Trạm Đo'), 'Model', 'Re (Ω)', 'fs (Hz)', 'SPL (dB)', _t('Lỗi Chi Tiết')].join(',') + '\n';
     scanHistory.forEach((item, idx) => {
         const rec = item.record;
         let reVal = '', fsVal = '', splVal = '';
@@ -635,5 +635,5 @@ function exportScanHistoryExcel() {
     });
 
     downloadBlobFile(csv, `QIT_Live_Scan_History_${toLocalDateStr(new Date())}.csv`, 'text/csv;charset=utf-8');
-    showToast('✅ Đã xuất lịch sử quét thành công!', 'success');
+    showToast(_t('✅ Đã xuất lịch sử quét thành công!'), 'success');
 }

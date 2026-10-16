@@ -8,19 +8,19 @@ function renderFilesManager() {
         container.innerHTML = `
             <div class="card" style="padding:48px 24px; text-align:center; max-width:720px; margin:20px auto;">
                 <div style="font-size:48px; margin-bottom:14px;">📁</div>
-                <h3 style="font-size:17px; font-weight:900; margin:0 0 8px; color:var(--text-main);">CHƯA CÓ TỆP NHẬT KÝ KLIPPEL NÀO ĐƯỢC NẠP</h3>
+                <h3 style="font-size:17px; font-weight:900; margin:0 0 8px; color:var(--text-main);">${_t('CHƯA CÓ TỆP NHẬT KÝ KLIPPEL NÀO ĐƯỢC NẠP')}</h3>
                 <p style="font-size:12.5px; color:var(--text-muted); line-height:1.6; margin:0 auto 24px;">
-                    Bạn có thể nạp ngay Bộ dữ liệu mẫu đa trạm của Klippel để trải nghiệm hệ thống, hoặc chọn thư mục / tệp nhật ký (.log, .txt, .csv) từ máy tính.
+                    ${_t('Bạn có thể nạp ngay Bộ dữ liệu mẫu đa trạm của Klippel để trải nghiệm hệ thống, hoặc chọn thư mục / tệp nhật ký (.log, .txt, .csv) từ máy tính.')}
                 </p>
                 <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
                     <button class="btn btn-primary" onclick="loadBuiltInDemoKlippelLogs()" style="padding:10px 22px; font-weight:800; font-size:13px;">
-                        🧪 Nạp Bộ Dữ Liệu Mẫu (3 Trạm · 3 Ca)
+                        ${_t('🧪 Nạp Bộ Dữ Liệu Mẫu (3 Trạm · 3 Ca)')}
                     </button>
                     <button class="btn btn-outline" onclick="startFastDirectoryScan()" style="padding:10px 20px; font-size:13px;">
-                        📁 Quét Thư Mục Summary
+                        ${_t('📁 Quét Thư Mục Summary')}
                     </button>
                     <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()" style="padding:10px 20px; font-size:13px;">
-                        📄 Chọn Tệp Riêng Lẻ
+                        ${_t('📄 Chọn Tệp Riêng Lẻ')}
                     </button>
                 </div>
             </div>
@@ -34,16 +34,16 @@ function renderFilesManager() {
         <div class="card" style="padding:16px 20px; margin-bottom:16px;">
             <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                 <div>
-                    <h3 style="font-size:16px; font-weight:900; margin:0;">📁 QUẢN LÝ ĐA TỆP LOG &amp; TRẠM ĐO KLIPPEL (${activeCount}/${loadedFilesMap.size} TỆP ĐANG BẬT)</h3>
+                    <h3 style="font-size:16px; font-weight:900; margin:0;">${_t('📁 QUẢN LÝ ĐA TỆP LOG & TRẠM ĐO KLIPPEL ({0}/{1} TỆP ĐANG BẬT)', activeCount, loadedFilesMap.size)}</h3>
                     <div style="font-size:11.5px; color:var(--text-muted); margin-top:3px;">
-                        Tổng số bản ghi đang kích hoạt: <strong style="color:var(--accent-cyan); font-family:var(--font-mono);">${filteredTimelineData.length.toLocaleString()}</strong> mẫu · Bật/tắt checkbox từng trạm để lọc báo cáo toàn cục
+                        ${_t('Tổng số bản ghi đang kích hoạt: {0} mẫu · Bật/tắt checkbox từng trạm để lọc báo cáo toàn cục', `<strong style="color:var(--accent-cyan); font-family:var(--font-mono);">${filteredTimelineData.length.toLocaleString()}</strong>`)}
                     </div>
                 </div>
                 <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                    <button class="btn btn-primary btn-sm" onclick="document.getElementById('file-input').click()">+ Nạp Thêm Tệp Log</button>
-                    <button class="btn btn-outline btn-sm" onclick="startFastDirectoryScan()">📁 Quét Thư Mục</button>
-                    <button class="btn btn-secondary btn-sm" onclick="setAllFilesActive(true)">✓ Bật Tất Cả</button>
-                    <button class="btn btn-secondary btn-sm" onclick="setAllFilesActive(false)">✕ Tắt Tất Cả</button>
+                    <button class="btn btn-primary btn-sm" onclick="document.getElementById('file-input').click()">${_t('+ Nạp Thêm Tệp Log')}</button>
+                    <button class="btn btn-outline btn-sm" onclick="startFastDirectoryScan()">${_t('📁 Quét Thư Mục')}</button>
+                    <button class="btn btn-secondary btn-sm" onclick="setAllFilesActive(true)">${_t('✓ Bật Tất Cả')}</button>
+                    <button class="btn btn-secondary btn-sm" onclick="setAllFilesActive(false)">${_t('✕ Tắt Tất Cả')}</button>
                 </div>
             </div>
         </div>
@@ -85,29 +85,29 @@ function renderFilesManager() {
 
                 <div class="file-card-body">
                     <div class="file-stat-row">
-                        <span>Mã Model / Lô hàng:</span>
+                        <span>${_t('Mã Model / Lô hàng:')}</span>
                         <strong style="color:var(--accent-cyan);">${escapeHtml(fileInfo.modelName || '—')}</strong>
                     </div>
                     <div class="file-stat-row">
-                        <span>Số bản ghi đo:</span>
-                        <strong>${fileInfo.recordCount.toLocaleString()} mẫu</strong>
+                        <span>${_t('Số bản ghi đo:')}</span>
+                        <strong>${_t('{0} mẫu', fileInfo.recordCount.toLocaleString())}</strong>
                     </div>
                     <div class="file-stat-row">
-                        <span>Đạt (PASS) / Lỗi (FAIL):</span>
+                        <span>${_t('Đạt (PASS) / Lỗi (FAIL):')}</span>
                         <span><strong style="color:#10b981;">${passCount}</strong> / <strong style="color:#ef4444;">${failCount}</strong></span>
                     </div>
                     <div class="file-stat-row">
-                        <span>Cấu trúc Schema:</span>
-                        <strong>${fileInfo.schema.verdictCols.length} Tasks · ${fileInfo.schema.metricCols.length} Thông số</strong>
+                        <span>${_t('Cấu trúc Schema:')}</span>
+                        <strong>${_t('{0} Tasks · {1} Thông số', fileInfo.schema.verdictCols.length, fileInfo.schema.metricCols.length)}</strong>
                     </div>
                 </div>
 
                 <div class="file-card-footer">
                     <button class="btn btn-sm ${isSolo ? 'btn-primary' : 'btn-outline'}" style="flex:1;" onclick="filterSoloFile('${escapeHtml(fileInfo.fileId)}')">
-                        ${isSolo ? '🔍 Đang Lọc Riêng Trạm Này' : '🔍 Chỉ Xem Trạm Này'}
+                        ${isSolo ? _t('🔍 Đang Lọc Riêng Trạm Này') : _t('🔍 Chỉ Xem Trạm Này')}
                     </button>
-                    ${isSolo ? `<button class="btn btn-sm btn-secondary" onclick="filterSoloFile('ALL')">Bỏ Lọc</button>` : ''}
-                    <button class="btn btn-sm btn-outline-danger" onclick="removeLoadedFile('${escapeHtml(fileInfo.fileId)}')" title="Gỡ tệp này khỏi phiên làm việc">🗑️ Gỡ</button>
+                    ${isSolo ? `<button class="btn btn-sm btn-secondary" onclick="filterSoloFile('ALL')">${_t('Bỏ Lọc')}</button>` : ''}
+                    <button class="btn btn-sm btn-outline-danger" onclick="removeLoadedFile('${escapeHtml(fileInfo.fileId)}')" title="${_t('Gỡ tệp này khỏi phiên làm việc')}">${_t('🗑️ Gỡ')}</button>
                 </div>
             </div>
         `;
@@ -157,5 +157,5 @@ function removeLoadedFile(fileId) {
     });
 
     applyFileFiltersAndRecalculate();
-    showToast(`🗑️ Đã gỡ tệp [${f.fileName}]`, 'info');
+    showToast(_t('🗑️ Đã gỡ tệp [{0}]', f.fileName), 'info');
 }

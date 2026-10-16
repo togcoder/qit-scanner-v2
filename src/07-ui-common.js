@@ -91,16 +91,16 @@ function updateStatusBar() {
 
     if (stEl) {
         stEl.textContent = activeStations.length > 0
-            ? `${activeStations.join(' · ')} (${activeFiles.length}/${loadedFilesMap.size} tệp)`
-            : 'Chưa nạp tệp';
+            ? `${activeStations.join(' · ')} (${_t('{0}/{1} tệp', activeFiles.length, loadedFilesMap.size)})`
+            : _t('Chưa nạp tệp');
     }
 
     if (cyEl) {
-        cyEl.textContent = `${currentGapThreshold} phút`;
+        cyEl.textContent = `${currentGapThreshold} ${_t('phút')}`;
     }
 
     if (recEl) {
-        recEl.textContent = `${filteredTimelineData.length.toLocaleString()} mẫu (${analysisData.uniqueUnitsCount.toLocaleString()} DUT)`;
+        recEl.textContent = _t('{0} mẫu ({1} DUT)', filteredTimelineData.length.toLocaleString(), analysisData.uniqueUnitsCount.toLocaleString());
     }
 
     if (fpyEl) {
@@ -110,14 +110,14 @@ function updateStatusBar() {
     }
 
     if (limEl) {
-        limEl.textContent = allKnownMetrics.size > 0 ? `${allKnownMetrics.size} thông số SPC` : 'Sẵn sàng';
+        limEl.textContent = allKnownMetrics.size > 0 ? _t('{0} thông số SPC', allKnownMetrics.size) : _t('Sẵn sàng');
     }
 
     if (audEl) {
         const gCount = (auditState && auditState.groups) ? auditState.groups.length : 0;
         const tot = (auditState && auditState.targetList) ? auditState.targetList.length : 0;
         const sc = (auditState && auditState.scannedCount) ? auditState.scannedCount : 0;
-        audEl.textContent = tot > 0 ? `${sc}/${tot} mã (${gCount} Group)` : '0 mã';
+        audEl.textContent = tot > 0 ? _t('{0}/{1} mã ({2} Group)', sc, tot, gCount) : _t('0 mã');
     }
 
     if (navFilesBadge) {
@@ -225,7 +225,7 @@ function saveCustomConfig() {
 /* ════════════ HỘP THOẠI XÁC NHẬN & NHẬP LIỆU TRONG TRANG (SANDBOX-SAFE MODAL) ════════════ */
 let activeDialogCallback = null;
 
-function openAppDialog({ title, message, showInput = false, inputPlaceholder = '', inputDefault = '', confirmText = 'Xác Nhận', cancelText = 'Hủy Bỏ', danger = false, onConfirm }) {
+function openAppDialog({ title, message, showInput = false, inputPlaceholder = '', inputDefault = '', confirmText = _t('Xác Nhận'), cancelText = _t('Hủy Bỏ'), danger = false, onConfirm }) {
     // Fallback cho môi trường kiểm thử tự động Node.js không có DOM thật
     let modal = document.getElementById('qit-custom-dialog-modal');
     if (!modal && typeof document !== 'undefined' && document.body && typeof document.body.appendChild === 'function') {
@@ -235,7 +235,7 @@ function openAppDialog({ title, message, showInput = false, inputPlaceholder = '
         document.body.appendChild(modal);
     }
     if (!modal || !modal.classList || typeof window === 'undefined' || !window.requestAnimationFrame) {
-        if (typeof onConfirm === 'function') onConfirm(inputDefault || 'Sự kiện kỹ thuật');
+        if (typeof onConfirm === 'function') onConfirm(inputDefault || _t('Sự kiện kỹ thuật'));
         return;
     }
 
@@ -244,7 +244,7 @@ function openAppDialog({ title, message, showInput = false, inputPlaceholder = '
     modal.innerHTML = `
         <div class="modal-card" style="max-width:460px;">
             <div class="modal-header">
-                <h3 style="font-size:15px; font-weight:800; margin:0; color:${danger ? 'var(--status-fail)' : 'var(--accent-cyan)'};">${escapeHtml(title || 'Xác Nhận Hệ Thống')}</h3>
+                <h3 style="font-size:15px; font-weight:800; margin:0; color:${danger ? 'var(--status-fail)' : 'var(--accent-cyan)'};">${escapeHtml(title || _t('Xác Nhận Hệ Thống'))}</h3>
                 <button class="btn-icon" onclick="closeAppDialog()">✕</button>
             </div>
             <div class="modal-body" style="display:flex; flex-direction:column; gap:12px;">
@@ -299,7 +299,7 @@ function toggleAudioMute() {
     try { localStorage.setItem(LS.MUTED, audioMuted); } catch(e) {}
     const btn = document.getElementById('audio-toggle-btn');
     if (btn) btn.innerText = audioMuted ? '🔇' : '🔊';
-    showToast(audioMuted ? '🔇 Đã tắt âm thanh' : '🔊 Đã bật âm thanh', 'info');
+    showToast(audioMuted ? _t('🔇 Đã tắt âm thanh') : _t('🔊 Đã bật âm thanh'), 'info');
 }
 
 function onVolumeSliderInput(val) {
@@ -330,7 +330,7 @@ function playScanSound(type = 'PASS') {
             osc.start(now);
             osc.stop(now + 0.3);
 
-            if (CFG.VOICE_ALERTS_ENABLED) speakVoice('Đạt');
+            if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Đạt'));
         } else if (type === 'FAIL') {
             const osc1 = ctx.createOscillator();
             const gain1 = ctx.createGain();
@@ -356,7 +356,7 @@ function playScanSound(type = 'PASS') {
             osc2.start(now + 0.08);
             osc2.stop(now + 0.29);
 
-            if (CFG.VOICE_ALERTS_ENABLED) speakVoice('Lỗi');
+            if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Lỗi'));
         } else if (type === 'NOT_FOUND') {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -370,7 +370,7 @@ function playScanSound(type = 'PASS') {
             osc.start(now);
             osc.stop(now + 0.23);
 
-            if (CFG.VOICE_ALERTS_ENABLED) speakVoice('Không tìm thấy');
+            if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Không tìm thấy'));
         } else if (type === 'DUPLICATE') {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -383,7 +383,7 @@ function playScanSound(type = 'PASS') {
             osc.start(now);
             osc.stop(now + 0.09);
 
-            if (CFG.VOICE_ALERTS_ENABLED) speakVoice('Trùng');
+            if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Trùng'));
         }
     } catch(e) {
         console.warn('Audio play error:', e);
@@ -437,10 +437,10 @@ function setProcessingButtonState(isProcessing, text) {
 
 function resetApp() {
     openAppDialog({
-        title: '🔄 Nạp Mới & Quản Lý Nguồn Dữ Liệu',
-        message: 'Bạn muốn quay về màn hình nạp tệp nhật ký Klippel mới (và làm mới dữ liệu log hiện tại)? Dữ liệu các Group kiểm tra danh sách (Audit) vẫn được giữ an toàn.',
-        confirmText: '🔄 Về Màn Hình Nạp Tệp',
-        cancelText: 'Ở Lại',
+        title: _t('🔄 Nạp Mới & Quản Lý Nguồn Dữ Liệu'),
+        message: _t('Bạn muốn quay về màn hình nạp tệp nhật ký Klippel mới (và làm mới dữ liệu log hiện tại)? Dữ liệu các Group kiểm tra danh sách (Audit) vẫn được giữ an toàn.'),
+        confirmText: _t('🔄 Về Màn Hình Nạp Tệp'),
+        cancelText: _t('Ở Lại'),
         onConfirm: () => {
             resetAllData();
             filesToLoad = [];
@@ -461,7 +461,7 @@ function resetApp() {
  */
 function copyTextSafe(text, successMsg) {
     if (!text) return;
-    const done = () => showToast(successMsg || `✅ Đã sao chép vào Clipboard!`, 'success');
+    const done = () => showToast(successMsg || _t('✅ Đã sao chép vào Clipboard!'), 'success');
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
     } else {
@@ -481,23 +481,23 @@ function fallbackCopy(text, cb) {
         document.body.removeChild(ta);
         if (cb) cb();
     } catch (e) {
-        showToast('⚠️ Không thể truy cập Clipboard tự động.', 'warning');
+        showToast(_t('⚠️ Không thể truy cập Clipboard tự động.'), 'warning');
     }
 }
 
 /* ════════════ XUẤT DỮ LIỆU EXCEL TỔNG HỢP V2 PRO ════════════ */
 async function exportFullExcelReport() {
     if (typeof ExcelJS === 'undefined') {
-        showToast('⚠️ Thư viện ExcelJS chưa tải xong. Vui lòng thử lại sau giây lát.', 'warning');
+        showToast(_t('⚠️ Thư viện ExcelJS chưa tải xong. Vui lòng thử lại sau giây lát.'), 'warning');
         return;
     }
 
     if (filteredTimelineData.length === 0) {
-        showToast('⚠️ Không có dữ liệu log để xuất báo cáo. Bạn có thể bấm "Nạp Dữ Liệu Mẫu" hoặc nạp file log.', 'warning');
+        showToast(_t('⚠️ Không có dữ liệu log để xuất báo cáo. Bạn có thể bấm "Nạp Dữ Liệu Mẫu" hoặc nạp file log.'), 'warning');
         return;
     }
 
-    showToast('⏳ Đang tạo báo cáo Excel 5-Sheet chi tiết...', 'info');
+    showToast(_t('⏳ Đang tạo báo cáo Excel 5-Sheet chi tiết...'), 'info');
 
     const workbook = new ExcelJS.Workbook();
     workbook.creator = 'QIT Scanner v2 Pro';
@@ -505,23 +505,23 @@ async function exportFullExcelReport() {
 
     // SHEET 1: TỔNG QUAN CHẤT LƯỢNG & KPI
     const wsSummary = workbook.addWorksheet('Quality Summary');
-    wsSummary.addRow(['QIT SCANNER V2 PRO — BÁO CÁO PHÂN TÍCH CHẤT LƯỢNG KLIPPEL QC']);
-    wsSummary.addRow(['Thời gian xuất báo cáo:', new Date().toLocaleString()]);
-    wsSummary.addRow(['Số tệp đã nạp:', loadedFilesMap.size]);
-    wsSummary.addRow(['Bộ lọc hiện tại:', currentActiveFileFilter]);
+    wsSummary.addRow([_t('QIT SCANNER V2 PRO — BÁO CÁO PHÂN TÍCH CHẤT LƯỢNG KLIPPEL QC')]);
+    wsSummary.addRow([_t('Thời gian xuất báo cáo:'), new Date().toLocaleString()]);
+    wsSummary.addRow([_t('Số tệp đã nạp:'), loadedFilesMap.size]);
+    wsSummary.addRow([_t('Bộ lọc hiện tại:'), currentActiveFileFilter]);
     wsSummary.addRow([]);
-    wsSummary.addRow(['CHỈ SỐ KPI CHẤT LƯỢNG', 'GIÁ TRỊ']);
-    wsSummary.addRow(['Tổng số sản phẩm thực tế (Unique DUT)', analysisData.uniqueUnitsCount]);
-    wsSummary.addRow(['Tổng số bản ghi đo thô (Records)', analysisData.rawRecordsCount]);
-    wsSummary.addRow(['Sản phẩm Đạt chuẩn (PASS)', analysisData.passCount]);
-    wsSummary.addRow(['Sản phẩm Lỗi (FAIL/NG)', analysisData.failCount]);
+    wsSummary.addRow([_t('CHỈ SỐ KPI CHẤT LƯỢNG'), _t('GIÁ TRỊ')]);
+    wsSummary.addRow([_t('Tổng số sản phẩm thực tế (Unique DUT)'), analysisData.uniqueUnitsCount]);
+    wsSummary.addRow([_t('Tổng số bản ghi đo thô (Records)'), analysisData.rawRecordsCount]);
+    wsSummary.addRow([_t('Sản phẩm Đạt chuẩn (PASS)'), analysisData.passCount]);
+    wsSummary.addRow([_t('Sản phẩm Lỗi (FAIL/NG)'), analysisData.failCount]);
     wsSummary.addRow(['First Pass Yield (FPY %)', (analysisData.fpy || 0).toFixed(2) + '%']);
-    wsSummary.addRow(['Tỷ lệ Đạt thực tế (Final Yield %)', (analysisData.finalPassRate || 0).toFixed(2) + '%']);
-    wsSummary.addRow(['Số sản phẩm phải đo lại (Retest)', analysisData.retestCount]);
+    wsSummary.addRow([_t('Tỷ lệ Đạt thực tế (Final Yield %)'), (analysisData.finalPassRate || 0).toFixed(2) + '%']);
+    wsSummary.addRow([_t('Số sản phẩm phải đo lại (Retest)'), analysisData.retestCount]);
 
     // SHEET 2: BẢNG PARETO LỖI 80/20
     const wsPareto = workbook.addWorksheet('Pareto Defects');
-    wsPareto.addRow(['Hạng', 'Mã Lỗi Kỹ Thuật (Raw Error)', 'Tên Hiển Thị (Alias)', 'Số Lượt Lỗi', '% Đóng Góp Lỗi', '% SP Bị Ảnh Hưởng', '% Tích Lũy Pareto']);
+    wsPareto.addRow([_t('Hạng'), _t('Mã Lỗi Kỹ Thuật (Raw Error)'), _t('Tên Hiển Thị (Alias)'), _t('Số Lượt Lỗi'), _t('% Đóng Góp Lỗi'), _t('% SP Bị Ảnh Hưởng'), _t('% Tích Lũy Pareto')]);
     analysisData.errorPareto.forEach((item, idx) => {
         wsPareto.addRow([
             idx + 1,
@@ -538,7 +538,7 @@ async function exportFullExcelReport() {
     const wsMatrix = workbook.addWorksheet('Multi-Run Matrix');
     const matrixHeader = ['STT', 'Serial Number / ID'];
     matrixData.runs.forEach(r => matrixHeader.push(`${r.stationName} (${r.fileName})`));
-    matrixHeader.push('Phán Định Cuối', 'Tổng Lần Đo');
+    matrixHeader.push(_t('Phán Định Cuối'), _t('Tổng Lần Đo'));
     wsMatrix.addRow(matrixHeader);
 
     matrixData.rows.forEach((row, idx) => {
@@ -555,14 +555,14 @@ async function exportFullExcelReport() {
 
     // SHEET 4: NĂNG LỰC QUY TRÌNH CPK (PARAMETRIC STATS)
     const wsCpk = workbook.addWorksheet('Parametric & Cpk');
-    wsCpk.addRow(['Thông Số Đo', 'Điều Kiện Kích Thích', 'Đơn Vị', 'LSL (Min Limit)', 'USL (Max Limit)', 'Số Mẫu (N)', 'Trung Bình (Mean)', 'Độ Lệch Chuẩn (StdDev)', 'Min', 'Max', 'Cp', 'Cpk', 'Ppk', 'Đánh Giá Năng Lực']);
+    wsCpk.addRow([_t('Thông Số Đo'), _t('Điều Kiện Kích Thích'), _t('Đơn Vị'), _t('LSL (Min Limit)'), _t('USL (Max Limit)'), _t('Số Mẫu (N)'), _t('Trung Bình (Mean)'), _t('Độ Lệch Chuẩn (StdDev)'), 'Min', 'Max', 'Cp', 'Cpk', 'Ppk', _t('Đánh Giá Năng Lực')]);
     parametricAnalysisMap.forEach(m => {
         let rating = 'N/A';
         if (m.cpk !== null) {
-            if (m.cpk >= CFG.CPK_EXCELLENT) rating = 'Xuất sắc (>=1.67)';
-            else if (m.cpk >= CFG.CPK_CAPABLE) rating = 'Đạt năng lực (>=1.33)';
-            else if (m.cpk >= CFG.CPK_MARGINAL) rating = 'Cận biên (1.00 - 1.33)';
-            else rating = 'Không đạt (<1.00)';
+            if (m.cpk >= CFG.CPK_EXCELLENT) rating = _t('Xuất sắc (>=1.67)');
+            else if (m.cpk >= CFG.CPK_CAPABLE) rating = _t('Đạt năng lực (>=1.33)');
+            else if (m.cpk >= CFG.CPK_MARGINAL) rating = _t('Cận biên (1.00 - 1.33)');
+            else rating = _t('Không đạt (<1.00)');
         }
         wsCpk.addRow([
             m.name,
@@ -584,7 +584,7 @@ async function exportFullExcelReport() {
 
     // SHEET 5: TOÀN BỘ DỮ LIỆU ĐO CHI TIẾT (RAW RECORDS)
     const wsRaw = workbook.addWorksheet('Raw Measurements');
-    const rawHeaders = ['ID', 'Tệp Nguồn', 'Trạm Đo', 'Mã Model', 'Serial Number', 'Định Danh Gốc', 'Ngày Giờ', 'Kết Luận Tổng Thể', 'Lỗi Phát Hiện'];
+    const rawHeaders = ['ID', _t('Tệp Nguồn'), _t('Trạm Đo'), _t('Mã Model'), 'Serial Number', _t('Định Danh Gốc'), _t('Ngày Giờ'), _t('Kết Luận Tổng Thể'), _t('Lỗi Phát Hiện')];
     const metricKeys = Array.from(allKnownMetrics.keys());
     metricKeys.forEach(k => rawHeaders.push(k));
     wsRaw.addRow(rawHeaders);
@@ -620,7 +620,7 @@ async function exportFullExcelReport() {
     a.click();
     window.URL.revokeObjectURL(url);
 
-    showToast('✅ Đã xuất báo cáo Excel 5-Sheet tổng thể thành công!', 'success');
+    showToast(_t('✅ Đã xuất báo cáo Excel 5-Sheet tổng thể thành công!'), 'success');
 }
 
 /**
