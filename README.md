@@ -271,9 +271,9 @@ node build-bundle.js
 # hoặc dùng npm:
 npm run build
 ```
-Kết quả: Tệp `scanner-v2-standalone.html` dung lượng ~1.5 MB được cập nhật ngay lập tức.
+Kết quả: Tệp `scanner-v2-standalone.html` dung lượng ~1.8 MB (nhúng 100% Base64 WOFF2 fonts độc lập hoàn toàn).
 
-### 2. Chạy bộ kiểm thử tự động toàn diện (8 Audit Suites):
+### 2. Chạy bộ kiểm thử tự động toàn diện (9 Audit Suites):
 ```bash
 node test_parser.js
 # hoặc dùng npm:
@@ -290,6 +290,7 @@ Bộ kiểm tra xác thực toàn diện:
 - `Suite 6`: Độ chính xác của Bộ khớp mã vạch 3 tầng ($O(1)$ Barcode Matcher).
 - `Suite 7`: Xử lý sự kiện giao diện và thay đổi cấu hình Settings Modal.
 - `Suite 8`: Chế độ đối soát mã vạch độc lập không cần nạp log (Zero-log Audit).
+- `Suite 9`: Quản lý Đối soát Đa nhóm (Multi-Group Pallet Audit), Smart Splitters & Scope Lock.
 
 ---
 
