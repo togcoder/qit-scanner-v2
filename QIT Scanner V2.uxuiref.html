@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090D16}
+:root{
+  --bg:#090D16;--bg2:#0B1120;--surface:rgba(17,24,39,.80);--surface2:rgba(17,24,39,.45);--surface3:rgba(148,163,184,.06);
+  --line:rgba(148,163,184,.16);--lineStrong:rgba(0,242,254,.24);
+  --txt:#E3E9F4;--txt2:#8B98AF;--txt3:#5D6980;
+  --cyan:#00F2FE;--blue:#38BDF8;--pass:#10B981;--fail:#EF4444;--warn:#F59E0B;
+  --shadow:0 24px 60px -34px rgba(0,0,0,.9);
+}
+[data-theme="light"]{
+  --bg:#F1F5F9;--bg2:#E7EEF7;--surface:rgba(255,255,255,.86);--surface2:rgba(255,255,255,.60);--surface3:rgba(15,23,42,.035);
+  --line:rgba(15,23,42,.10);--lineStrong:rgba(8,145,178,.32);
+  --txt:#0E1729;--txt2:#54637A;--txt3:#8595AD;
+  --cyan:#0891B2;--blue:#0284C7;--pass:#059669;--fail:#DC2626;--warn:#D97706;
+  --shadow:0 24px 60px -40px rgba(15,23,42,.35);
+}
+a{color:var(--blue);text-decoration:none}
+a:hover{color:var(--cyan)}
+[data-st="pass"]{color:var(--pass)}
+[data-st="fail"]{color:var(--fail)}
+[data-st="warn"]{color:var(--warn)}
+[data-st="idle"]{color:var(--txt3)}
+[data-st="brand"]{color:var(--cyan)}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+button[data-nav]{display:flex;align-items:center;gap:8px;padding:9px 15px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--txt2);font-size:12.5px;font-weight:600;letter-spacing:.03em;white-space:nowrap;transition:all .16s ease}
+button[data-nav]:hover{color:var(--txt);background:var(--surface3)}
+button[data-nav][data-active="true"]{color:#04121B;background:linear-gradient(135deg,var(--cyan),var(--blue));border-color:transparent;box-shadow:0 6px 20px -8px var(--cyan)}
+[data-theme="light"] button[data-nav][data-active="true"]{color:#F8FEFF}
+button[data-sset]{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:11px 13px;border-radius:11px;border:1px solid transparent;background:transparent;color:var(--txt2);font-size:12.5px;font-weight:600;transition:all .15s ease}
+button[data-sset]:hover{background:var(--surface3);color:var(--txt)}
+button[data-sset][data-active="true"]{background:var(--surface3);border-color:var(--lineStrong);color:var(--txt)}
+button[data-ico]{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--txt2);font-size:14px;transition:all .15s ease}
+button[data-ico]:hover{color:var(--cyan);border-color:var(--lineStrong)}
+[data-density="compact"] td,[data-density="compact"] th{padding:6px 12px;font-size:11.5px}
+[data-density="comfortable"] td,[data-density="comfortable"] th{padding:10px 14px;font-size:12px}
+[data-density="spacious"] td,[data-density="spacious"] th{padding:15px 16px;font-size:12.5px}
+tbody tr:hover{background:var(--surface3)}
+[data-hm="0"]{background:var(--surface3)}
+[data-hm="1"]{background:rgba(16,185,129,.28)}
+[data-hm="2"]{background:rgba(245,158,11,.30)}
+[data-hm="3"]{background:rgba(239,68,68,.34)}
+[data-hm="4"]{background:rgba(239,68,68,.62)}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(148,163,184,.26);border-radius:9px}
+@keyframes qitPulse{0%,100%{opacity:1}50%{opacity:.28}}
+@keyframes qitRise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes qitSweep{from{transform:translateX(-120%)}to{transform:translateX(320%)}}
+</style>
+</helmet>
+
+<div data-theme="{{ theme }}" data-density="{{ density }}" style="min-height:100vh;background:var(--bg);color:var(--txt);font-family:'Outfit',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased">
+<div style="zoom:{{ zoomFactor }};--cyan:{{ accent }}">
+
+  <header style="position:sticky;top:0;z-index:40;display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;padding:11px 20px;background:var(--surface);backdrop-filter:blur(20px);border-bottom:1px solid var(--line)">
+    <div style="display:flex;align-items:center;gap:11px;flex:none;white-space:nowrap">
+      <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--blue));display:grid;place-items:center;box-shadow:0 0 26px -6px var(--cyan)">
+        <div style="width:13px;height:13px;border:2.5px solid #06121c;border-radius:4px;transform:rotate(45deg)"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <div style="font-size:15.5px;font-weight:800;letter-spacing:.13em;line-height:1">QIT SCANNER V2</div>
+        <div style="font-size:9.5px;color:var(--txt2);letter-spacing:.17em;font-family:'JetBrains Mono',monospace;line-height:1">KLIPPEL ACOUSTIC QC · ANALYTICS SUITE</div>
+      </div>
+    </div>
+
+    <nav style="display:flex;gap:4px;padding:5px;border-radius:14px;background:var(--surface2);border:1px solid var(--line);margin:0 auto;order:3;flex:1 1 640px;min-width:0;overflow-x:auto;scrollbar-width:none">
+      <button data-nav="1" data-active="{{ atScan }}" onClick="{{ goScan }}"><span style="font-size:13px">⚡</span>QUÉT SẢN XUẤT</button>
+      <button data-nav="1" data-active="{{ atAudit }}" onClick="{{ goAudit }}"><span style="font-size:13px">🎯</span>KIỂM TRA DANH SÁCH</button>
+      <button data-nav="1" data-active="{{ atQuality }}" onClick="{{ goQuality }}"><span style="font-size:13px">📊</span>PHÂN TÍCH CHẤT LƯỢNG</button>
+      <button data-nav="1" data-active="{{ atParam }}" onClick="{{ goParam }}"><span style="font-size:13px">📈</span>THÔNG SỐ &amp; Cpk</button>
+      <button data-nav="1" data-active="{{ atFiles }}" onClick="{{ goFiles }}"><span style="font-size:13px">📁</span>TỆP &amp; TRẠM ĐO</button>
+    </nav>
+
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:7px;flex:none;margin-left:auto">
+      <select value="{{ lang }}" onChange="{{ setLang }}" style="height:34px;padding:0 8px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--txt);font-size:12px;font-weight:600">
+        <option value="VN">🇻🇳 VN</option>
+        <option value="EN">🇬🇧 EN</option>
+        <option value="JP">🇯🇵 JP</option>
+        <option value="CN">🇨🇳 CN</option>
+      </select>
+      <button data-ico="1" onClick="{{ toggleMute }}" title="Âm thanh">{{ muteIcon }}</button>
+      <button data-ico="1" onClick="{{ toggleTheme }}" title="Giao diện">{{ themeIcon }}</button>
+      <button data-ico="1" onClick="{{ openSettings }}" title="Cài đặt (ESC)">⚙️</button>
+      <button onClick="{{ exportCsv }}" style="display:flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:10px;border:1px solid var(--lineStrong);background:var(--surface3);color:var(--cyan);font-size:11.5px;font-weight:700;letter-spacing:.04em">📥 XUẤT EXCEL</button>
+      <button onClick="{{ reloadData }}" style="display:flex;align-items:center;gap:7px;height:34px;padding:0 13px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#04121B;font-size:11.5px;font-weight:700;letter-spacing:.04em">🔄 NẠP MỚI</button>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:center;gap:26px;padding:8px 22px;background:var(--surface2);border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--txt2);letter-spacing:.06em;flex-wrap:wrap;row-gap:5px">
+    <div style="display:flex;align-items:center;gap:7px"><span data-st="pass" style="width:7px;height:7px;border-radius:50%;background:currentColor;animation:qitPulse 1.8s infinite"></span>SCANNER ONLINE · COM3 @ 9600</div>
+    <div>TRẠM: <span style="color:var(--txt)">{{ activeStations }}</span></div>
+    <div>CHU KỲ: <span style="color:var(--txt)">{{ cycleLabel }}</span></div>
+    <div>BẢN GHI: <span style="color:var(--txt)">{{ rawRecords }}</span></div>
+    <div>LSL/USL: <span style="color:var(--txt)">{{ limitLabel }}</span></div>
+    <div style="margin-left:auto">CẬP NHẬT {{ clock }}</div>
+  </div>
+
+  <main style="padding:20px 22px 56px;max-width:1720px;margin:0 auto">
+
+  <sc-if value="{{ atScan }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Quét sản xuất" style="display:flex;flex-direction:column;gap:16px;animation:qitRise .3s ease">
+      <div style="display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;backdrop-filter:blur(14px);box-shadow:var(--shadow)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.18em;color:var(--txt2)">Ô QUÉT MÃ VẠCH · LIVE MATCH</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--txt3)">MIN LEN {{ minLen }} · AUTOFOCUS ON</div>
+          </div>
+          <input ref="{{ scanRef }}" value="{{ code }}" onChange="{{ setCode }}" onKeyDown="{{ onScanKey }}" placeholder="QUÉT HOẶC NHẬP SERIAL DUT…" style="width:100%;height:78px;padding:0 22px;border-radius:14px;border:1.5px solid var(--line);background:var(--surface2);color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:29px;font-weight:700;letter-spacing:.09em;outline:none;transition:all .18s ease" style-focus="border-color:var(--cyan);box-shadow:0 0 0 4px rgba(0,242,254,.13),0 0 44px -10px var(--cyan)"></input>
+          <div style="display:flex;gap:9px;margin-top:12px">
+            <button onClick="{{ submitScan }}" style="flex:1;height:40px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#04121B;font-size:12px;font-weight:700;letter-spacing:.1em">ĐỐI SOÁT NGAY</button>
+            <button onClick="{{ clearCode }}" style="height:40px;padding:0 18px;border-radius:11px;border:1px solid var(--line);background:transparent;color:var(--txt2);font-size:12px;font-weight:600">XOÁ Ô</button>
+          </div>
+        </div>
+
+        <div style="position:relative;overflow:hidden;border-radius:18px">
+          <sc-if value="{{ isPass }}" hint-placeholder-val="{{ true }}">
+            <div style="height:100%;min-height:186px;display:flex;align-items:center;gap:20px;padding:22px 26px;border-radius:18px;border:1px solid rgba(16,185,129,.42);background:linear-gradient(115deg,rgba(16,185,129,.20),rgba(16,185,129,.04));box-shadow:0 0 70px -30px var(--pass)">
+              <div data-st="pass" style="width:78px;height:78px;flex:none;border-radius:50%;border:3px solid currentColor;display:grid;place-items:center;font-size:38px;font-weight:700">✓</div>
+              <div style="min-width:0">
+                <div data-st="pass" style="font-size:52px;font-weight:800;letter-spacing:.06em;line-height:1">PASS</div>
+                <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--txt)">{{ lastCode }}</div>
+                <div style="margin-top:4px;font-size:11.5px;color:var(--txt2)">Đạt toàn bộ tiêu chí Klippel QC · {{ lastStation }}</div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isFail }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;min-height:186px;display:flex;align-items:center;gap:20px;padding:22px 26px;border-radius:18px;border:1px solid rgba(239,68,68,.45);background:linear-gradient(115deg,rgba(239,68,68,.20),rgba(239,68,68,.04));box-shadow:0 0 70px -30px var(--fail)">
+              <div data-st="fail" style="width:78px;height:78px;flex:none;border-radius:50%;border:3px solid currentColor;display:grid;place-items:center;font-size:38px;font-weight:700">✕</div>
+              <div style="min-width:0">
+                <div data-st="fail" style="font-size:52px;font-weight:800;letter-spacing:.06em;line-height:1">FAIL</div>
+                <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--txt)">{{ lastCode }}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:9px">
+                  <sc-for list="{{ lastBadges }}" as="b" hint-placeholder-count="2">
+                    <span data-st="fail" style="padding:4px 10px;border-radius:7px;font-size:10.5px;font-weight:700;letter-spacing:.05em;background:color-mix(in oklab,currentColor 16%,transparent);border:1px solid color-mix(in oklab,currentColor 40%,transparent)">{{ b }}</span>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isNotFound }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;min-height:186px;display:flex;align-items:center;gap:20px;padding:22px 26px;border-radius:18px;border:1px solid rgba(245,158,11,.45);background:linear-gradient(115deg,rgba(245,158,11,.20),rgba(245,158,11,.04));box-shadow:0 0 70px -30px var(--warn)">
+              <div data-st="warn" style="width:78px;height:78px;flex:none;border-radius:50%;border:3px solid currentColor;display:grid;place-items:center;font-size:38px;font-weight:700">?</div>
+              <div style="min-width:0">
+                <div data-st="warn" style="font-size:40px;font-weight:800;letter-spacing:.04em;line-height:1.05">NOT FOUND</div>
+                <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--txt)">{{ lastCode }}</div>
+                <div style="margin-top:4px;font-size:11.5px;color:var(--txt2)">Không có bản ghi Klippel tương ứng trong các tệp đang bật</div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isIdle }}" hint-placeholder-val="{{ false }}">
+            <div style="height:100%;min-height:186px;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:22px 26px;border-radius:18px;border:1px dashed var(--line);background:var(--surface2)">
+              <div style="position:relative;height:3px;border-radius:3px;background:var(--surface3);overflow:hidden">
+                <div style="position:absolute;inset:0;width:26%;background:linear-gradient(90deg,transparent,var(--cyan),transparent);animation:qitSweep 2.1s linear infinite"></div>
+              </div>
+              <div style="font-size:26px;font-weight:700;color:var(--txt3);letter-spacing:.04em">CHỜ QUÉT…</div>
+              <div style="font-size:11.5px;color:var(--txt3)">Thẻ phán định sẽ hiển thị ngay khi nhận được serial từ đầu đọc</div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px">
+        <sc-for list="{{ snapshot }}" as="p" hint-placeholder-count="6">
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 15px;backdrop-filter:blur(12px)">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--txt2)">{{ p.key }}</div>
+              <span data-st="{{ p.st }}" style="width:7px;height:7px;border-radius:50%;background:currentColor"></span>
+            </div>
+            <div data-st="{{ p.st }}" style="margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:700;line-height:1">{{ p.value }}</div>
+            <div style="margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--txt3)">{{ p.spec }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start">
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;backdrop-filter:blur(14px)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--line)">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.18em;color:var(--txt2)">LỊCH SỬ 20 LƯỢT QUÉT GẦN NHẤT</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3)">FIFO BUFFER</div>
+          </div>
+          <div style="max-height:330px;overflow:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:12px">
+              <thead>
+                <tr style="position:sticky;top:0;background:var(--bg2);color:var(--txt2);text-align:left">
+                  <th style="font-size:10px;letter-spacing:.12em;font-weight:700">#</th>
+                  <th style="font-size:10px;letter-spacing:.12em;font-weight:700">THỜI GIAN</th>
+                  <th style="font-size:10px;letter-spacing:.12em;font-weight:700">SERIAL</th>
+                  <th style="font-size:10px;letter-spacing:.12em;font-weight:700">TRẠM</th>
+                  <th style="font-size:10px;letter-spacing:.12em;font-weight:700">Re (Ω)</th>
+                  <th style="font-size:10px;letter-spacing:.12em;font-weight:700">fs (Hz)</th>
+                  <th style="font-size:10px;letter-spacing:.12em;font-weight:700">SPL (dB)</th>
+                  <th style="font-size:10px;letter-spacing:.12em;font-weight:700">PHÁN ĐỊNH</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ history }}" as="h" hint-placeholder-count="8">
+                  <tr style="border-top:1px solid var(--line)">
+                    <td style="font-family:'JetBrains Mono',monospace;color:var(--txt3)">{{ h.idx }}</td>
+                    <td style="font-family:'JetBrains Mono',monospace;color:var(--txt2)">{{ h.time }}</td>
+                    <td style="font-family:'JetBrains Mono',monospace;font-weight:600">{{ h.code }}</td>
+                    <td style="color:var(--txt2)">{{ h.station }}</td>
+                    <td style="font-family:'JetBrains Mono',monospace">{{ h.re }}</td>
+                    <td style="font-family:'JetBrains Mono',monospace">{{ h.fs }}</td>
+                    <td style="font-family:'JetBrains Mono',monospace">{{ h.spl }}</td>
+                    <td><span data-st="{{ h.st }}" style="padding:3px 9px;border-radius:6px;font-size:10px;font-weight:700;letter-spacing:.06em;background:color-mix(in oklab,currentColor 15%,transparent);border:1px solid color-mix(in oklab,currentColor 38%,transparent)">{{ h.verdict }}</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ scanKpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:15px 16px;backdrop-filter:blur(12px)">
+              <div style="font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--txt2)">{{ k.label }}</div>
+              <div data-st="{{ k.st }}" style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:27px;font-weight:700;line-height:1">{{ k.value }}</div>
+              <div style="margin-top:5px;font-size:10.5px;color:var(--txt3)">{{ k.note }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ atAudit }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Kiểm tra danh sách" style="display:flex;flex-direction:column;gap:16px;animation:qitRise .3s ease">
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px">
+        <sc-for list="{{ auditCounts }}" as="c" hint-placeholder-count="3">
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:17px 19px;backdrop-filter:blur(12px)">
+            <div style="font-size:10.5px;font-weight:700;letter-spacing:.15em;color:var(--txt2)">{{ c.label }}</div>
+            <div data-st="{{ c.st }}" style="margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:800;line-height:1">{{ c.value }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px;backdrop-filter:blur(12px)">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:11px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2)">TIẾN ĐỘ ĐỐI SOÁT</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--cyan)">{{ auditPctLabel }}</div>
+        </div>
+        <div style="height:12px;border-radius:12px;background:var(--surface3);overflow:hidden">
+          <div style="height:100%;width:{{ auditPct }}%;border-radius:12px;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--pass));box-shadow:0 0 22px -4px var(--cyan);transition:width .35s ease"></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;backdrop-filter:blur(12px)">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2);margin-bottom:11px">DANH SÁCH MÃ MỤC TIÊU (DÁN VÀO ĐÂY)</div>
+          <textarea value="{{ auditTargets }}" onChange="{{ setTargets }}" style="width:100%;height:212px;padding:13px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.8;outline:none;resize:vertical" style-focus="border-color:var(--cyan)"></textarea>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;backdrop-filter:blur(12px);display:flex;flex-direction:column">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2);margin-bottom:11px">QUÉT ĐỐI SOÁT THỰC TẾ</div>
+          <input value="{{ auditCode }}" onChange="{{ setAuditCode }}" onKeyDown="{{ onAuditKey }}" placeholder="QUÉT MÃ THỰC TẾ…" style="width:100%;height:56px;padding:0 18px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface2);color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;letter-spacing:.08em;outline:none" style-focus="border-color:var(--cyan);box-shadow:0 0 0 4px rgba(0,242,254,.12)"></input>
+          <div style="margin-top:12px;flex:1;min-height:0;overflow:auto;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start">
+            <sc-for list="{{ auditScannedList }}" as="s" hint-placeholder-count="6">
+              <span data-st="{{ s.st }}" style="padding:5px 11px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;background:color-mix(in oklab,currentColor 14%,transparent);border:1px solid color-mix(in oklab,currentColor 36%,transparent)">{{ s.code }}</span>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:9px;margin-top:12px">
+            <button onClick="{{ exportAudit }}" style="flex:1;height:38px;border-radius:10px;border:1px solid var(--lineStrong);background:var(--surface3);color:var(--cyan);font-size:11.5px;font-weight:700;letter-spacing:.06em">📥 XUẤT EXCEL ĐỐI SOÁT</button>
+            <button onClick="{{ resetAudit }}" style="height:38px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--txt2);font-size:11.5px;font-weight:600">ĐẶT LẠI</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;backdrop-filter:blur(12px)">
+        <div style="padding:15px 18px;border-bottom:1px solid var(--line);font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2)">CHI TIẾT TRẠNG THÁI TỪNG MÃ</div>
+        <div style="max-height:340px;overflow:auto">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr style="position:sticky;top:0;background:var(--bg2);color:var(--txt2);text-align:left">
+                <th style="font-size:10px;letter-spacing:.12em;font-weight:700">#</th>
+                <th style="font-size:10px;letter-spacing:.12em;font-weight:700">MÃ MỤC TIÊU</th>
+                <th style="font-size:10px;letter-spacing:.12em;font-weight:700">TRẠM ĐO</th>
+                <th style="font-size:10px;letter-spacing:.12em;font-weight:700">KLIPPEL QC</th>
+                <th style="font-size:10px;letter-spacing:.12em;font-weight:700">TRẠNG THÁI ĐỐI SOÁT</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ auditRows }}" as="r" hint-placeholder-count="10">
+                <tr style="border-top:1px solid var(--line)">
+                  <td style="font-family:'JetBrains Mono',monospace;color:var(--txt3)">{{ r.idx }}</td>
+                  <td style="font-family:'JetBrains Mono',monospace;font-weight:600">{{ r.code }}</td>
+                  <td style="color:var(--txt2)">{{ r.station }}</td>
+                  <td><span data-st="{{ r.qcSt }}" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">{{ r.qc }}</span></td>
+                  <td><span data-st="{{ r.st }}" style="padding:3px 10px;border-radius:6px;font-size:10.5px;font-weight:700;background:color-mix(in oklab,currentColor 15%,transparent);border:1px solid color-mix(in oklab,currentColor 36%,transparent)">{{ r.status }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ atQuality }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Phân tích chất lượng" style="display:flex;flex-direction:column;gap:16px;animation:qitRise .3s ease">
+      <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px">
+        <sc-for list="{{ execKpis }}" as="k" hint-placeholder-count="6">
+          <div style="position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 17px;backdrop-filter:blur(12px)">
+            <div style="font-size:9.5px;font-weight:700;letter-spacing:.14em;color:var(--txt2)">{{ k.label }}</div>
+            <div data-st="{{ k.st }}" style="margin-top:10px;font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:800;line-height:1">{{ k.value }}</div>
+            <div style="margin-top:6px;font-size:10px;color:var(--txt3)">{{ k.note }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow-x:auto;backdrop-filter:blur(12px)">
+        <div style="flex:none;font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--txt2)">TOP 5 LỖI LỚN NHẤT</div>
+        <sc-for list="{{ top5 }}" as="t" hint-placeholder-count="5">
+          <div style="flex:none;display:flex;align-items:center;gap:9px;padding:7px 13px;border-radius:10px;background:var(--surface3);border:1px solid var(--line)">
+            <span data-st="fail" style="width:6px;height:6px;border-radius:50%;background:currentColor"></span>
+            <span style="font-size:11.5px;font-weight:600">{{ t.name }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:700;color:var(--cyan)">{{ t.n }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--txt3)">{{ t.pct }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px">
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px 12px;backdrop-filter:blur(12px)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2)">BIỂU ĐỒ PARETO 80/20 · DUAL AXIS</div>
+            <div style="display:flex;gap:14px;font-size:10px;color:var(--txt3);font-family:'JetBrains Mono',monospace">
+              <span>■ SỐ LỖI</span><span style="color:var(--cyan)">— % LUỸ KẾ</span><span style="color:var(--warn)">-- 80%</span>
+            </div>
+          </div>
+          <div style="position:relative;height:268px;margin-top:14px">
+            <div style="position:absolute;left:0;right:0;top:20%;border-top:1px dashed var(--warn);opacity:.55"></div>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;z-index:2;overflow:visible">
+              <polyline points="{{ paretoLine }}" fill="none" stroke="var(--cyan)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"></polyline>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;align-items:flex-end;gap:10px">
+              <sc-for list="{{ paretoBars }}" as="b" hint-placeholder-count="8">
+                <div onClick="{{ b.open }}" style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;cursor:pointer">
+                  <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--txt2);margin-bottom:5px">{{ b.n }}</div>
+                  <div style="width:100%;height:{{ b.h }}%;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--blue),rgba(56,189,248,.18));border-top:2px solid var(--cyan)"></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:8px">
+            <sc-for list="{{ paretoBars }}" as="b" hint-placeholder-count="8">
+              <div style="flex:1;text-align:center;font-size:9.5px;color:var(--txt3);line-height:1.35;min-width:0">{{ b.short }}</div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;backdrop-filter:blur(12px)">
+          <div style="padding:15px 18px;border-bottom:1px solid var(--line);font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2)">BẢNG LỖI · NHẤP ĐỂ DRILLDOWN</div>
+          <div style="max-height:314px;overflow:auto">
+            <table style="width:100%;border-collapse:collapse">
+              <thead>
+                <tr style="position:sticky;top:0;background:var(--bg2);color:var(--txt2);text-align:left">
+                  <th style="font-size:10px;letter-spacing:.1em;font-weight:700">MÃ LỖI</th>
+                  <th style="font-size:10px;letter-spacing:.1em;font-weight:700">SỐ LƯỢNG</th>
+                  <th style="font-size:10px;letter-spacing:.1em;font-weight:700">%</th>
+                  <th style="font-size:10px;letter-spacing:.1em;font-weight:700">LUỸ KẾ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ failRows }}" as="f" hint-placeholder-count="8">
+                  <tr onClick="{{ f.open }}" style="border-top:1px solid var(--line);cursor:pointer">
+                    <td style="font-weight:600">{{ f.name }}</td>
+                    <td style="font-family:'JetBrains Mono',monospace;font-weight:700">{{ f.n }}</td>
+                    <td style="font-family:'JetBrains Mono',monospace;color:var(--txt2)">{{ f.pct }}</td>
+                    <td style="font-family:'JetBrains Mono',monospace;color:var(--cyan)">{{ f.cum }}</td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px;backdrop-filter:blur(12px)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:15px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2)">BẢN ĐỒ NHIỆT TỶ LỆ LỖI THEO CA / KHUNG GIỜ</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:10px;color:var(--txt3)">
+            <span>THẤP</span>
+            <span data-hm="0" style="width:20px;height:11px;border-radius:3px"></span>
+            <span data-hm="1" style="width:20px;height:11px;border-radius:3px"></span>
+            <span data-hm="2" style="width:20px;height:11px;border-radius:3px"></span>
+            <span data-hm="3" style="width:20px;height:11px;border-radius:3px"></span>
+            <span data-hm="4" style="width:20px;height:11px;border-radius:3px"></span>
+            <span>CAO</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div style="display:grid;grid-template-columns:104px repeat(8,minmax(0,1fr));gap:7px">
+            <div></div>
+            <sc-for list="{{ heatCols }}" as="c" hint-placeholder-count="8">
+              <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--txt3)">{{ c }}</div>
+            </sc-for>
+          </div>
+          <sc-for list="{{ heatRows }}" as="row" hint-placeholder-count="3">
+            <div style="display:grid;grid-template-columns:104px repeat(8,minmax(0,1fr));gap:7px;align-items:center">
+              <div style="font-size:11px;font-weight:600;color:var(--txt2)">{{ row.label }}</div>
+              <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="8">
+                <div data-hm="{{ cell.lv }}" style="height:42px;border-radius:8px;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;border:1px solid var(--line)">{{ cell.label }}</div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ atParam }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Thông số và Cpk" style="display:flex;flex-direction:column;gap:16px;animation:qitRise .3s ease">
+      <div style="display:flex;align-items:center;gap:14px;padding:15px 18px;background:var(--surface);border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(12px);flex-wrap:wrap">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2)">THÔNG SỐ ĐO</div>
+        <select value="{{ param }}" onChange="{{ setParam }}" style="height:40px;min-width:290px;padding:0 14px;border-radius:11px;border:1px solid var(--lineStrong);background:var(--surface2);color:var(--txt);font-size:13px;font-weight:600">
+          <option value="re">Re — Điện trở DC (Ω)</option>
+          <option value="fs">fs — Tần số cộng hưởng (Hz)</option>
+          <option value="qts">Qts — Hệ số phẩm chất tổng</option>
+          <option value="spl">SPL Level (dB)</option>
+          <option value="imppt">ImpPt — Điểm trở kháng (Ω)</option>
+          <option value="rmse">RMSE — Sai số bình phương (%)</option>
+        </select>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:18px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--txt2)">
+          <div>n = <span style="color:var(--txt)">{{ paramN }}</span></div>
+          <div>LSL = <span data-st="fail">{{ lsl }}</span></div>
+          <div>USL = <span data-st="fail">{{ usl }}</span></div>
+          <div>NEAR-FAIL BAND = <span data-st="warn">{{ nearFail }}%</span></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px">
+        <sc-for list="{{ capCards }}" as="c" hint-placeholder-count="7">
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:15px 16px;backdrop-filter:blur(12px)">
+            <div style="font-size:9.5px;font-weight:700;letter-spacing:.14em;color:var(--txt2)">{{ c.label }}</div>
+            <div data-st="{{ c.st }}" style="margin-top:9px;font-family:'JetBrains Mono',monospace;font-size:25px;font-weight:800;line-height:1">{{ c.value }}</div>
+            <div style="margin-top:5px;font-size:9.5px;color:var(--txt3)">{{ c.note }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 22px 14px;backdrop-filter:blur(12px)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2)">PHÂN PHỐI HISTOGRAM + ĐƯỜNG CONG GAUSS</div>
+          <div style="display:flex;gap:16px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--txt3)">
+            <span style="color:var(--blue)">■ TẦN SỐ MẪU</span><span style="color:var(--cyan)">— GAUSS N(μ,σ)</span><span style="color:var(--fail)">| LSL / USL</span>
+          </div>
+        </div>
+        <div style="position:relative;height:290px;margin-top:14px">
+          <div style="position:absolute;top:0;bottom:0;left:{{ lslPos }}%;width:2px;background:var(--fail);z-index:3;box-shadow:0 0 12px var(--fail)">
+            <div data-st="fail" style="position:absolute;top:-4px;left:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;white-space:nowrap">LSL {{ lsl }}</div>
+          </div>
+          <div style="position:absolute;top:0;bottom:0;left:{{ uslPos }}%;width:2px;background:var(--fail);z-index:3;box-shadow:0 0 12px var(--fail)">
+            <div data-st="fail" style="position:absolute;top:-4px;right:6px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;white-space:nowrap">USL {{ usl }}</div>
+          </div>
+          <div style="position:absolute;top:0;bottom:0;left:{{ meanPos }}%;width:1px;background:var(--cyan);opacity:.45;z-index:3"></div>
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;z-index:2;overflow:visible">
+            <polyline points="{{ gaussPts }}" fill="none" stroke="var(--cyan)" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"></polyline>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;align-items:flex-end;gap:3px">
+            <sc-for list="{{ histBars }}" as="b" hint-placeholder-count="17">
+              <div style="flex:1;height:{{ b.h }}%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,rgba(56,189,248,.85),rgba(56,189,248,.14))"></div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3)">
+          <span>{{ axisMin }}</span><span>μ = {{ mean }}</span><span>{{ axisMax }}</span>
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;backdrop-filter:blur(12px)">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--line)">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2)">⚠ BẢNG CẢNH BÁO CẬN BIÊN (NEAR-FAIL)</div>
+          <div data-st="warn" style="font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700">{{ nearFailCount }} MẪU TRONG BIÊN {{ nearFail }}%</div>
+        </div>
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="background:var(--bg2);color:var(--txt2);text-align:left">
+              <th style="font-size:10px;letter-spacing:.1em;font-weight:700">SERIAL</th>
+              <th style="font-size:10px;letter-spacing:.1em;font-weight:700">TRẠM</th>
+              <th style="font-size:10px;letter-spacing:.1em;font-weight:700">GIÁ TRỊ ĐO</th>
+              <th style="font-size:10px;letter-spacing:.1em;font-weight:700">GIỚI HẠN GẦN NHẤT</th>
+              <th style="font-size:10px;letter-spacing:.1em;font-weight:700">BIÊN AN TOÀN</th>
+              <th style="font-size:10px;letter-spacing:.1em;font-weight:700">MỨC ĐỘ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ nearRows }}" as="r" hint-placeholder-count="7">
+              <tr style="border-top:1px solid var(--line)">
+                <td style="font-family:'JetBrains Mono',monospace;font-weight:600">{{ r.serial }}</td>
+                <td style="color:var(--txt2)">{{ r.station }}</td>
+                <td style="font-family:'JetBrains Mono',monospace;font-weight:700">{{ r.value }}</td>
+                <td style="font-family:'JetBrains Mono',monospace;color:var(--txt2)">{{ r.limit }}</td>
+                <td><span data-st="{{ r.st }}" style="font-family:'JetBrains Mono',monospace;font-weight:700">{{ r.margin }}</span></td>
+                <td><span data-st="{{ r.st }}" style="padding:3px 10px;border-radius:6px;font-size:10.5px;font-weight:700;background:color-mix(in oklab,currentColor 15%,transparent);border:1px solid color-mix(in oklab,currentColor 36%,transparent)">{{ r.level }}</span></td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ atFiles }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Tệp và trạm đo" style="display:flex;flex-direction:column;gap:16px;animation:qitRise .3s ease">
+      <div style="display:flex;align-items:center;gap:14px;padding:15px 18px;background:var(--surface);border:1px solid var(--line);border-radius:16px;backdrop-filter:blur(12px);flex-wrap:wrap">
+        <div style="font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--txt2)">QUẢN LÝ ĐA TỆP LOG KLIPPEL</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--txt2)">{{ activeFileCount }} / {{ totalFileCount }} TỆP ĐANG BẬT · {{ activeSamples }} MẪU</div>
+        <div style="margin-left:auto;display:flex;gap:9px">
+          <button onClick="{{ enableAllFiles }}" style="height:34px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--txt2);font-size:11.5px;font-weight:600">BẬT TẤT CẢ</button>
+          <button onClick="{{ addFile }}" style="height:34px;padding:0 14px;border-radius:10px;border:1px solid var(--lineStrong);background:var(--surface3);color:var(--cyan);font-size:11.5px;font-weight:700">+ NẠP TỆP LOG</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px">
+        <sc-for list="{{ fileCards }}" as="f" hint-placeholder-count="4">
+          <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:17px 18px;backdrop-filter:blur(12px);display:flex;flex-direction:column;gap:13px">
+            <div style="display:flex;align-items:flex-start;gap:12px">
+              <input type="checkbox" checked="{{ f.on }}" onChange="{{ f.toggle }}" style="width:19px;height:19px;margin-top:2px;accent-color:var(--cyan);cursor:pointer"></input>
+              <div style="min-width:0;flex:1">
+                <div style="font-size:15px;font-weight:700;letter-spacing:.04em">{{ f.station }}</div>
+                <div style="margin-top:3px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ f.file }}</div>
+              </div>
+              <span data-st="brand" style="padding:4px 9px;border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;background:color-mix(in oklab,currentColor 14%,transparent);border:1px solid color-mix(in oklab,currentColor 34%,transparent)">{{ f.cond }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+              <div>
+                <div style="font-size:9px;letter-spacing:.12em;color:var(--txt3);font-weight:700">PASS RATE</div>
+                <div data-st="{{ f.st }}" style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:800">{{ f.pass }}</div>
+              </div>
+              <div>
+                <div style="font-size:9px;letter-spacing:.12em;color:var(--txt3);font-weight:700">SỐ MẪU</div>
+                <div style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:800">{{ f.n }}</div>
+              </div>
+              <div>
+                <div style="font-size:9px;letter-spacing:.12em;color:var(--txt3);font-weight:700">LỖI</div>
+                <div data-st="fail" style="margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:800">{{ f.fails }}</div>
+              </div>
+            </div>
+            <div style="height:6px;border-radius:6px;background:var(--surface3);overflow:hidden">
+              <div style="height:100%;width:{{ f.passPct }}%;border-radius:6px;background:linear-gradient(90deg,var(--cyan),var(--pass))"></div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button onClick="{{ f.solo }}" style="flex:1;height:33px;border-radius:9px;border:1px solid var(--lineStrong);background:var(--surface3);color:var(--cyan);font-size:11px;font-weight:700">CHỈ XEM TỆP NÀY</button>
+              <button onClick="{{ f.remove }}" style="height:33px;padding:0 13px;border-radius:9px;border:1px solid var(--line);background:transparent;color:var(--txt3);font-size:11px;font-weight:600">GỠ</button>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  </main>
+
+  <sc-if value="{{ drillOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeDrill }}" style="position:fixed;inset:0;z-index:60;background:rgba(3,7,14,.72);backdrop-filter:blur(6px);display:grid;place-items:center;padding:40px">
+      <div onClick="{{ stop }}" style="width:min(760px,100%);max-height:82vh;display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--lineStrong);border-radius:20px;overflow:hidden;box-shadow:0 40px 100px -40px #000">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:19px 22px;border-bottom:1px solid var(--line)">
+          <div>
+            <div style="font-size:10px;letter-spacing:.16em;color:var(--txt2);font-weight:700">DRILLDOWN CHI TIẾT LỖI</div>
+            <div data-st="fail" style="margin-top:5px;font-size:20px;font-weight:800">{{ drillName }}</div>
+          </div>
+          <button data-ico="1" onClick="{{ closeDrill }}">✕</button>
+        </div>
+        <div style="display:flex;gap:26px;padding:15px 22px;border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--txt2)">
+          <div>SỐ MẪU: <span style="color:var(--txt);font-weight:700">{{ drillCount }}</span></div>
+          <div>TỶ TRỌNG: <span data-st="fail" style="font-weight:700">{{ drillPct }}</span></div>
+          <div>TRẠM ẢNH HƯỞNG NHIỀU NHẤT: <span style="color:var(--txt);font-weight:700">{{ drillStation }}</span></div>
+        </div>
+        <div style="overflow:auto">
+          <table style="width:100%;border-collapse:collapse">
+            <thead>
+              <tr style="position:sticky;top:0;background:var(--bg2);color:var(--txt2);text-align:left">
+                <th style="font-size:10px;letter-spacing:.1em;font-weight:700">SERIAL</th>
+                <th style="font-size:10px;letter-spacing:.1em;font-weight:700">TRẠM</th>
+                <th style="font-size:10px;letter-spacing:.1em;font-weight:700">THỜI ĐIỂM</th>
+                <th style="font-size:10px;letter-spacing:.1em;font-weight:700">GIÁ TRỊ ĐO</th>
+                <th style="font-size:10px;letter-spacing:.1em;font-weight:700">RETEST</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ drillRows }}" as="d" hint-placeholder-count="8">
+                <tr style="border-top:1px solid var(--line)">
+                  <td style="font-family:'JetBrains Mono',monospace;font-weight:600">{{ d.serial }}</td>
+                  <td style="color:var(--txt2)">{{ d.station }}</td>
+                  <td style="font-family:'JetBrains Mono',monospace;color:var(--txt2)">{{ d.time }}</td>
+                  <td style="font-family:'JetBrains Mono',monospace">{{ d.value }}</td>
+                  <td><span data-st="{{ d.st }}" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">{{ d.retest }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ settingsOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSettings }}" style="position:fixed;inset:0;z-index:70;background:rgba(3,7,14,.74);backdrop-filter:blur(7px);display:grid;place-items:center;padding:36px">
+      <div onClick="{{ stop }}" style="width:min(1080px,100%);height:min(700px,88vh);display:flex;flex-direction:column;background:var(--bg2);border:1px solid var(--lineStrong);border-radius:22px;overflow:hidden;box-shadow:0 50px 120px -45px #000">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:19px 24px;border-bottom:1px solid var(--line)">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--cyan),var(--blue));display:grid;place-items:center;font-size:15px">⚙️</div>
+            <div>
+              <div style="font-size:16px;font-weight:800;letter-spacing:.04em">CÀI ĐẶT NHANH</div>
+              <div style="font-size:10px;color:var(--txt3);font-family:'JetBrains Mono',monospace;letter-spacing:.1em">QIT SCANNER V2 · SYSTEM CONFIGURATION</div>
+            </div>
+          </div>
+          <button data-ico="1" onClick="{{ closeSettings }}">✕</button>
+        </div>
+        <div style="flex:1;min-height:0;display:grid;grid-template-columns:258px minmax(0,1fr)">
+          <div style="border-right:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:4px;background:var(--surface2)">
+            <button data-sset="1" data-active="{{ sDisplay }}" onClick="{{ goSDisplay }}"><span>🎨</span>Hiển thị &amp; Thu phóng</button>
+            <button data-sset="1" data-active="{{ sScan }}" onClick="{{ goSScan }}"><span>🔍</span>Quét mã &amp; Matcher</button>
+            <button data-sset="1" data-active="{{ sSound }}" onClick="{{ goSSound }}"><span>🔊</span>Âm thanh &amp; Giọng nói</button>
+            <button data-sset="1" data-active="{{ sCpk }}" onClick="{{ goSCpk }}"><span>📈</span>Chu kỳ &amp; Ngưỡng Cpk</button>
+            <button data-sset="1" data-active="{{ sAlias }}" onClick="{{ goSAlias }}"><span>🏷️</span>Tên gọi lỗi (Aliases)</button>
+            <button data-sset="1" data-active="{{ sBackup }}" onClick="{{ goSBackup }}"><span>💾</span>Sao lưu &amp; Dữ liệu</button>
+            <div style="margin-top:auto;padding:12px;border-radius:11px;background:var(--surface3);border:1px solid var(--line);font-size:10.5px;color:var(--txt3);line-height:1.6">Nhấn <span style="font-family:'JetBrains Mono',monospace;color:var(--cyan)">ESC</span> để mở/đóng bảng cài đặt. Thay đổi được áp dụng tức thời.</div>
+          </div>
+
+          <div style="overflow:auto;padding:22px 26px">
+            <sc-if value="{{ sDisplay }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-direction:column;gap:20px">
+                <div style="font-size:14px;font-weight:700;letter-spacing:.04em">🎨 Hiển Thị &amp; Thu Phóng</div>
+                <div style="display:flex;flex-direction:column;gap:9px">
+                  <div style="font-size:11.5px;font-weight:600;color:var(--txt2)">Chủ đề giao diện</div>
+                  <div style="display:flex;gap:9px">
+                    <button onClick="{{ setDark }}" data-nav="1" data-active="{{ isDark }}" style="justify-content:center;flex:1">🌙 DEEP SPACE DARK</button>
+                    <button onClick="{{ setLight }}" data-nav="1" data-active="{{ isLight }}" style="justify-content:center;flex:1">☀️ CLEAN OFFICE LIGHT</button>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:9px">
+                  <div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:var(--txt2)"><span>UI Zoom Scale</span><span style="font-family:'JetBrains Mono',monospace;color:var(--cyan)">{{ zoom }}%</span></div>
+                  <input type="range" min="80" max="150" step="5" value="{{ zoom }}" onChange="{{ setZoom }}" style="width:100%;accent-color:var(--cyan)"></input>
+                  <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--txt3)"><span>80%</span><span>115%</span><span>150%</span></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:9px">
+                  <div style="font-size:11.5px;font-weight:600;color:var(--txt2)">Mật độ bảng dữ liệu</div>
+                  <div style="display:flex;gap:9px">
+                    <button onClick="{{ setCompact }}" data-nav="1" data-active="{{ dCompact }}" style="justify-content:center;flex:1">COMPACT</button>
+                    <button onClick="{{ setComfortable }}" data-nav="1" data-active="{{ dComfortable }}" style="justify-content:center;flex:1">COMFORTABLE</button>
+                    <button onClick="{{ setSpacious }}" data-nav="1" data-active="{{ dSpacious }}" style="justify-content:center;flex:1">SPACIOUS</button>
+                  </div>
+                </div>
+                <div style="padding:14px;border-radius:12px;background:var(--surface3);border:1px solid var(--line);font-size:11px;color:var(--txt2);line-height:1.65">Giao diện tự động co giãn theo tỷ lệ Zoom Windows 75%–200%. Zoom Scale nội bộ nhân thêm lên tỷ lệ hệ điều hành mà không phá vỡ layout.</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ sScan }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:20px">
+                <div style="font-size:14px;font-weight:700;letter-spacing:.04em">🔍 Quét Mã &amp; Matcher</div>
+                <div style="display:flex;flex-direction:column;gap:9px">
+                  <div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:var(--txt2)"><span>Độ dài mã tối thiểu</span><span style="font-family:'JetBrains Mono',monospace;color:var(--cyan)">{{ minLen }} ký tự</span></div>
+                  <input type="range" min="3" max="24" step="1" value="{{ minLen }}" onChange="{{ setMinLen }}" style="width:100%;accent-color:var(--cyan)"></input>
+                </div>
+                <sc-for list="{{ scanToggles }}" as="t" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border-radius:12px;background:var(--surface3);border:1px solid var(--line)">
+                    <div style="min-width:0">
+                      <div style="font-size:12.5px;font-weight:600">{{ t.label }}</div>
+                      <div style="margin-top:3px;font-size:10.5px;color:var(--txt3)">{{ t.note }}</div>
+                    </div>
+                    <input type="checkbox" checked="{{ t.on }}" onChange="{{ t.toggle }}" style="width:19px;height:19px;flex:none;accent-color:var(--cyan);cursor:pointer"></input>
+                  </div>
+                </sc-for>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <div style="display:flex;flex-direction:column;gap:7px">
+                    <div style="font-size:11.5px;font-weight:600;color:var(--txt2)">Tiền tố cần lọc bỏ</div>
+                    <input value="{{ prefix }}" onChange="{{ setPrefix }}" placeholder="VD: QIT-" style="height:38px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:12.5px;outline:none"></input>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:7px">
+                    <div style="font-size:11.5px;font-weight:600;color:var(--txt2)">Hậu tố cần lọc bỏ</div>
+                    <input value="{{ suffix }}" onChange="{{ setSuffix }}" placeholder="VD: -R1" style="height:38px;padding:0 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);color:var(--txt);font-family:'JetBrains Mono',monospace;font-size:12.5px;outline:none"></input>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ sSound }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:20px">
+                <div style="font-size:14px;font-weight:700;letter-spacing:.04em">🔊 Âm Thanh &amp; Giọng Nói</div>
+                <div style="display:flex;flex-direction:column;gap:9px">
+                  <div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:var(--txt2)"><span>Âm lượng hệ thống</span><span style="font-family:'JetBrains Mono',monospace;color:var(--cyan)">{{ volume }}%</span></div>
+                  <input type="range" min="0" max="200" step="10" value="{{ volume }}" onChange="{{ setVolume }}" style="width:100%;accent-color:var(--cyan)"></input>
+                  <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--txt3)"><span>0%</span><span>100%</span><span>200% (BOOST)</span></div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border-radius:12px;background:var(--surface3);border:1px solid var(--line)">
+                  <div>
+                    <div style="font-size:12.5px;font-weight:600">Giọng nói Tiếng Việt (TTS)</div>
+                    <div style="margin-top:3px;font-size:10.5px;color:var(--txt3)">Đọc phán định: “Đạt” · “Lỗi” · “Không tìm thấy”</div>
+                  </div>
+                  <input type="checkbox" checked="{{ tts }}" onChange="{{ toggleTts }}" style="width:19px;height:19px;accent-color:var(--cyan);cursor:pointer"></input>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:9px">
+                  <div style="font-size:11.5px;font-weight:600;color:var(--txt2)">Nghe thử</div>
+                  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px">
+                    <button onClick="{{ testPass }}" style="height:40px;border-radius:11px;border:1px solid rgba(16,185,129,.4);background:rgba(16,185,129,.12);color:var(--pass);font-size:11.5px;font-weight:700">▶ ĐẠT</button>
+                    <button onClick="{{ testFail }}" style="height:40px;border-radius:11px;border:1px solid rgba(239,68,68,.4);background:rgba(239,68,68,.12);color:var(--fail);font-size:11.5px;font-weight:700">▶ LỖI</button>
+                    <button onClick="{{ testNf }}" style="height:40px;border-radius:11px;border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.12);color:var(--warn);font-size:11.5px;font-weight:700">▶ KHÔNG TÌM THẤY</button>
+                    <button onClick="{{ testBeep }}" style="height:40px;border-radius:11px;border:1px solid var(--lineStrong);background:var(--surface3);color:var(--cyan);font-size:11.5px;font-weight:700">▶ BEEP QUÉT</button>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ sCpk }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:20px">
+                <div style="font-size:14px;font-weight:700;letter-spacing:.04em">📈 Chu Kỳ &amp; Ngưỡng Cpk</div>
+                <div style="display:flex;flex-direction:column;gap:9px">
+                  <div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:var(--txt2)"><span>Ngưỡng thời gian tách chu kỳ sản xuất</span><span style="font-family:'JetBrains Mono',monospace;color:var(--cyan)">{{ cycleGap }} phút</span></div>
+                  <input type="range" min="5" max="180" step="5" value="{{ cycleGap }}" onChange="{{ setCycleGap }}" style="width:100%;accent-color:var(--cyan)"></input>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <div style="display:flex;flex-direction:column;gap:9px;padding:15px;border-radius:12px;background:var(--surface3);border:1px solid var(--line)">
+                    <div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:var(--txt2)"><span>Cpk “Đạt”</span><span data-st="pass" style="font-family:'JetBrains Mono',monospace;font-weight:700">≥ {{ cpkPass }}</span></div>
+                    <input type="range" min="1" max="2" step="0.01" value="{{ cpkPass }}" onChange="{{ setCpkPass }}" style="width:100%;accent-color:var(--cyan)"></input>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:9px;padding:15px;border-radius:12px;background:var(--surface3);border:1px solid var(--line)">
+                    <div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:var(--txt2)"><span>Cpk “Xuất sắc”</span><span data-st="brand" style="font-family:'JetBrains Mono',monospace;font-weight:700">≥ {{ cpkExcellent }}</span></div>
+                    <input type="range" min="1.2" max="3" step="0.01" value="{{ cpkExcellent }}" onChange="{{ setCpkExcellent }}" style="width:100%;accent-color:var(--cyan)"></input>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:9px">
+                  <div style="display:flex;justify-content:space-between;font-size:11.5px;font-weight:600;color:var(--txt2)"><span>Biên độ cảnh báo cận biên (Near-Fail)</span><span data-st="warn" style="font-family:'JetBrains Mono',monospace;font-weight:700">{{ nearFail }}%</span></div>
+                  <input type="range" min="1" max="25" step="1" value="{{ nearFail }}" onChange="{{ setNearFail }}" style="width:100%;accent-color:var(--cyan)"></input>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;border-radius:12px;background:var(--surface3);border:1px solid var(--line)">
+                  <div>
+                    <div style="font-size:12.5px;font-weight:600">Gộp Combo lỗi (A + B)</div>
+                    <div style="margin-top:3px;font-size:10.5px;color:var(--txt3)">Coi các mẫu dính đồng thời nhiều lỗi là một nhóm Pareto riêng</div>
+                  </div>
+                  <input type="checkbox" checked="{{ combo }}" onChange="{{ toggleCombo }}" style="width:19px;height:19px;accent-color:var(--cyan);cursor:pointer"></input>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ sAlias }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:16px">
+                <div style="font-size:14px;font-weight:700;letter-spacing:.04em">🏷️ Tên Gọi Lỗi (Aliases &amp; Hiding)</div>
+                <input value="{{ aliasQuery }}" onChange="{{ setAliasQuery }}" placeholder="Tìm nhanh mã lỗi hoặc tên gọi… (hỗ trợ / &amp; ( ) Ω °C)" style="height:40px;padding:0 14px;border-radius:11px;border:1px solid var(--line);background:var(--surface2);color:var(--txt);font-size:12.5px;outline:none" style-focus="border-color:var(--cyan)"></input>
+                <div style="border:1px solid var(--line);border-radius:12px;overflow:hidden">
+                  <table style="width:100%;border-collapse:collapse">
+                    <thead>
+                      <tr style="background:var(--surface3);color:var(--txt2);text-align:left">
+                        <th style="font-size:10px;letter-spacing:.1em;font-weight:700">MÃ LỖI GỐC</th>
+                        <th style="font-size:10px;letter-spacing:.1em;font-weight:700">TÊN GỌI TÙY CHỈNH</th>
+                        <th style="font-size:10px;letter-spacing:.1em;font-weight:700">SỐ MẪU</th>
+                        <th style="font-size:10px;letter-spacing:.1em;font-weight:700">ẨN KHỎI FPY</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <sc-for list="{{ aliasRows }}" as="a" hint-placeholder-count="6">
+                        <tr style="border-top:1px solid var(--line)">
+                          <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--txt2)">{{ a.code }}</td>
+                          <td><input value="{{ a.name }}" onChange="{{ a.rename }}" style="width:100%;height:32px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface2);color:var(--txt);font-size:12px;outline:none"></input></td>
+                          <td style="font-family:'JetBrains Mono',monospace;font-weight:700">{{ a.n }}</td>
+                          <td><input type="checkbox" checked="{{ a.hidden }}" onChange="{{ a.toggle }}" style="width:17px;height:17px;accent-color:var(--warn);cursor:pointer"></input></td>
+                        </tr>
+                      </sc-for>
+                    </tbody>
+                  </table>
+                </div>
+                <div style="display:flex;gap:9px">
+                  <button onClick="{{ exportAlias }}" style="flex:1;height:38px;border-radius:10px;border:1px solid var(--lineStrong);background:var(--surface3);color:var(--cyan);font-size:11.5px;font-weight:700">📤 XUẤT ALIAS .JSON</button>
+                  <button onClick="{{ importAlias }}" style="flex:1;height:38px;border-radius:10px;border:1px solid var(--line);background:transparent;color:var(--txt2);font-size:11.5px;font-weight:600">📥 NẠP ALIAS .JSON</button>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ sBackup }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:16px">
+                <div style="font-size:14px;font-weight:700;letter-spacing:.04em">💾 Sao Lưu &amp; Dữ Liệu</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <button onClick="{{ backupJson }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:17px;border-radius:13px;border:1px solid var(--lineStrong);background:var(--surface3);color:var(--txt);text-align:left">
+                    <span style="font-size:19px">📤</span>
+                    <span style="font-size:12.5px;font-weight:700">Tải bản sao lưu cấu hình</span>
+                    <span style="font-size:10.5px;color:var(--txt3)">Xuất toàn bộ thiết lập ra tệp .json</span>
+                  </button>
+                  <button onClick="{{ restoreJson }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:17px;border-radius:13px;border:1px solid var(--line);background:transparent;color:var(--txt);text-align:left">
+                    <span style="font-size:19px">📥</span>
+                    <span style="font-size:12.5px;font-weight:700">Nạp lại cấu hình</span>
+                    <span style="font-size:10.5px;color:var(--txt3)">Khôi phục từ tệp .json đã sao lưu</span>
+                  </button>
+                  <button onClick="{{ clearHistory }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:17px;border-radius:13px;border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.10);color:var(--txt);text-align:left">
+                    <span style="font-size:19px">🧹</span>
+                    <span style="font-size:12.5px;font-weight:700">Xoá lịch sử quét phiên</span>
+                    <span style="font-size:10.5px;color:var(--txt3)">Giữ nguyên cấu hình và dữ liệu tệp log</span>
+                  </button>
+                  <button onClick="{{ factoryReset }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:17px;border-radius:13px;border:1px solid rgba(239,68,68,.42);background:rgba(239,68,68,.10);color:var(--txt);text-align:left">
+                    <span style="font-size:19px">⚠️</span>
+                    <span style="font-size:12.5px;font-weight:700">Khôi phục cài đặt gốc</span>
+                    <span style="font-size:10.5px;color:var(--txt3)">Đặt lại toàn bộ tham số về mặc định nhà máy</span>
+                  </button>
+                </div>
+                <div style="padding:15px;border-radius:12px;background:var(--surface3);border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--txt2);line-height:1.9">
+                  <div>CONFIG VERSION · 2.4.1-qc</div>
+                  <div>SAO LƯU GẦN NHẤT · {{ lastBackup }}</div>
+                  <div>BẢN GHI PHIÊN · {{ historyCount }} lượt quét</div>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#00F2FE&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;options&quot;:[&quot;#00F2FE&quot;,&quot;#38BDF8&quot;,&quot;#A78BFA&quot;,&quot;#34D399&quot;],&quot;section&quot;:&quot;Thương hiệu&quot;}}">
+class Component extends DCLogic {
+  baseFailures = [
+    { code: 'RUB_BUZZ', name: 'Rub & Buzz', n: 184 },
+    { code: 'FS_OOR', name: 'fs vượt ngưỡng', n: 126 },
+    { code: 'RE_HIGH', name: 'Re cao (Ω)', n: 97 },
+    { code: 'SPL_LOW', name: 'SPL Level thấp', n: 64 },
+    { code: 'THD_HIGH', name: 'THD > 3%', n: 41 },
+    { code: 'IMPPT_DEV', name: 'ImpPt lệch', n: 28 },
+    { code: 'POLARITY', name: 'Sai cực tính', n: 12 },
+    { code: 'AIR_LEAK', name: 'Hở khí (Air Leak)', n: 7 }
+  ];
+
+  paramDefs = {
+    re:    { label: 'Re', unit: 'Ω',  mean: 6.42,  sd: 0.108, lsl: 5.90, usl: 6.90, dec: 3, n: 4318 },
+    fs:    { label: 'fs', unit: 'Hz', mean: 612.4, sd: 18.7,  lsl: 550,  usl: 680,  dec: 1, n: 4318 },
+    qts:   { label: 'Qts', unit: '',  mean: 0.712, sd: 0.031, lsl: 0.60, usl: 0.82, dec: 3, n: 4180 },
+    spl:   { label: 'SPL Level', unit: 'dB', mean: 86.9, sd: 0.74, lsl: 84.5, usl: 89.5, dec: 2, n: 4318 },
+    imppt: { label: 'ImpPt', unit: 'Ω', mean: 11.83, sd: 0.42, lsl: 10.4, usl: 13.2, dec: 2, n: 4102 },
+    rmse:  { label: 'RMSE', unit: '%', mean: 1.28, sd: 0.29, lsl: 0, usl: 2.40, dec: 2, n: 4318 }
+  };
+
+  state = {
+    tab: 'scan', theme: 'dark', zoom: 100, density: 'comfortable',
+    settingsOpen: false, settingsTab: 'display',
+    muted: false, lang: 'VN', tts: true, volume: 100,
+    code: '', verdict: null, lastCode: '—', lastStation: '—', lastBadges: [], snapSeed: 3,
+    history: [], seed: 1,
+    auditTargets: '', auditCode: '', auditScanned: [],
+    param: 're', drill: null,
+    minLen: 6, trim: true, reverse: false, stripFix: true, prefix: 'QIT-', suffix: '',
+    cycleGap: 30, cpkPass: 1.33, cpkExcellent: 1.67, nearFailPct: 10, combo: false,
+    aliasQuery: '', aliases: {}, hiddenFails: {},
+    files: [
+      { id: 'f1', station: 'SAS208-01', file: 'QC_SAS208-01_20260818_4V.csv',  pass: 97.8, n: 1284, cond: '4 V',  on: true },
+      { id: 'f2', station: 'SAS208-02', file: 'QC_SAS208-02_20260818_16V.csv', pass: 95.1, n: 1176, cond: '16 V', on: true },
+      { id: 'f3', station: 'SFS203-01', file: 'QC_SFS203-01_20260818_32W.csv', pass: 91.4, n: 968,  cond: '32 W', on: true },
+      { id: 'f4', station: 'SFS203-02', file: 'QC_SFS203-02_20260817_4V.csv',  pass: 98.6, n: 890,  cond: '4 V',  on: false }
+    ],
+    lastBackup: '18/08/2026 07:42',
+    clock: ''
+  };
+
+  rnd(i) { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+  componentDidMount() {
+    this.setState({ history: this.makeHistory(1), auditTargets: this.makeTargets() });
+    this.tick();
+    this.timer = setInterval(() => this.tick(), 1000);
+    this.keyHandler = (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); this.setState(s => ({ settingsOpen: !s.settingsOpen })); }
+    };
+    document.addEventListener('keydown', this.keyHandler);
+    setTimeout(() => { if (this.scanRef && this.scanRef.current) this.scanRef.current.focus(); }, 120);
+  }
+  componentWillUnmount() { clearInterval(this.timer); document.removeEventListener('keydown', this.keyHandler); }
+  tick() { this.setState({ clock: new Date().toLocaleTimeString('vi-VN', { hour12: false }) }); }
+
+  scanRef = React.createRef();
+
+  stations() { return this.state.files.filter(f => f.on).map(f => f.station); }
+
+  makeTargets() {
+    const out = [];
+    for (let i = 0; i < 14; i++) out.push('QIT-' + (2608 + i) + '-' + String(4180 + Math.floor(this.rnd(i + 40) * 800)).padStart(4, '0'));
+    return out.join('\n');
+  }
+
+  makeHistory(seed) {
+    const st = ['SAS208-01', 'SAS208-02', 'SFS203-01'];
+    const rows = [];
+    for (let i = 0; i < 20; i++) {
+      const r = this.rnd(i * 3.7 + seed * 11);
+      const v = r > 0.82 ? 'fail' : (r > 0.77 ? 'nf' : 'pass');
+      const d = new Date(Date.now() - i * 47000);
+      rows.push({
+        idx: 20 - i,
+        time: d.toLocaleTimeString('vi-VN', { hour12: false }),
+        code: 'QIT-2608-' + String(4180 + Math.floor(this.rnd(i + seed) * 800)).padStart(4, '0'),
+        station: st[i % 3],
+        re: (6.42 + (this.rnd(i + 7) - 0.5) * 0.5).toFixed(3),
+        fs: (612 + (this.rnd(i + 13) - 0.5) * 60).toFixed(1),
+        spl: (86.9 + (this.rnd(i + 21) - 0.5) * 2.4).toFixed(2),
+        verdict: v === 'pass' ? 'PASS' : (v === 'fail' ? 'FAIL' : 'NOT FOUND'),
+        st: v === 'pass' ? 'pass' : (v === 'fail' ? 'fail' : 'warn')
+      });
+    }
+    return rows;
+  }
+
+  normalize(raw) {
+    let c = raw;
+    if (this.state.trim) c = c.trim();
+    if (this.state.stripFix) {
+      if (this.state.prefix && c.startsWith(this.state.prefix)) c = c.slice(this.state.prefix.length);
+      if (this.state.suffix && c.endsWith(this.state.suffix)) c = c.slice(0, -this.state.suffix.length);
+    }
+    return c;
+  }
+
+  beep(kind) {
+    if (this.state.muted || this.state.volume === 0) return;
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      this.ac = this.ac || new Ctx();
+      const o = this.ac.createOscillator(), g = this.ac.createGain();
+      const f = kind === 'pass' ? 1180 : kind === 'fail' ? 220 : kind === 'nf' ? 620 : 1600;
+      o.type = kind === 'fail' ? 'sawtooth' : 'sine';
+      o.frequency.value = f;
+      g.gain.value = Math.min(0.28, 0.14 * (this.state.volume / 100));
+      o.connect(g); g.connect(this.ac.destination);
+      o.start();
+      g.gain.exponentialRampToValueAtTime(0.0001, this.ac.currentTime + (kind === 'fail' ? 0.32 : 0.13));
+      o.stop(this.ac.currentTime + 0.34);
+    } catch (e) {}
+  }
+
+  speak(kind) {
+    if (!this.state.tts || this.state.muted) return;
+    try {
+      const t = kind === 'pass' ? 'Đạt' : kind === 'fail' ? 'Lỗi' : 'Không tìm thấy';
+      const u = new SpeechSynthesisUtterance(t);
+      u.lang = 'vi-VN'; u.volume = Math.min(1, this.state.volume / 100);
+      window.speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
+  submit() {
+    const raw = this.state.code;
+    if (!raw.trim()) return;
+    const c = this.normalize(raw);
+    const digits = c.replace(/\D/g, '');
+    let v;
+    if (c.length < this.state.minLen || digits.length < 3) v = 'nf';
+    else v = (parseInt(digits.slice(-1), 10) % 2 === 0) ? 'pass' : 'fail';
+    const sts = this.stations();
+    const station = sts.length ? sts[digits.length % sts.length] : '—';
+    const badges = v === 'fail'
+      ? [this.baseFailures[digits.length % 4].name, this.baseFailures[4 + (digits.length % 4)].name]
+      : [];
+    const seed = this.state.snapSeed + 1;
+    const row = {
+      idx: (this.state.history[0] ? this.state.history[0].idx : 0) + 1,
+      time: new Date().toLocaleTimeString('vi-VN', { hour12: false }),
+      code: c, station,
+      re: (6.42 + (this.rnd(seed) - 0.5) * 0.5).toFixed(3),
+      fs: (612 + (this.rnd(seed + 4) - 0.5) * 60).toFixed(1),
+      spl: (86.9 + (this.rnd(seed + 9) - 0.5) * 2.4).toFixed(2),
+      verdict: v === 'pass' ? 'PASS' : (v === 'fail' ? 'FAIL' : 'NOT FOUND'),
+      st: v === 'pass' ? 'pass' : (v === 'fail' ? 'fail' : 'warn')
+    };
+    this.setState(s => ({
+      verdict: v, lastCode: c, lastStation: station, lastBadges: badges,
+      snapSeed: seed, code: '', history: [row].concat(s.history).slice(0, 20)
+    }));
+    this.beep(v); this.speak(v);
+    if (this.scanRef.current) this.scanRef.current.focus();
+  }
+
+  download(name, text, type) {
+    try {
+      const b = new Blob([text], { type: type || 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(b); a.download = name; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+    } catch (e) {}
+  }
+
+  failList() {
+    return this.baseFailures
+      .filter(f => !this.state.hiddenFails[f.code])
+      .map(f => ({ ...f, name: this.state.aliases[f.code] || f.name }));
+  }
+
+  paramStats() {
+    const p = this.paramDefs[this.state.param];
+    const cp = (p.usl - p.lsl) / (6 * p.sd);
+    const cpu = (p.usl - p.mean) / (3 * p.sd);
+    const cpl = (p.mean - p.lsl) / (3 * p.sd);
+    return { ...p, cp, cpk: Math.min(cpu, cpl) };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const p = this.paramStats();
+    const fails = this.failList();
+    const total = fails.reduce((a, f) => a + f.n, 0) || 1;
+
+    // Pareto
+    const maxN = Math.max.apply(null, fails.map(f => f.n));
+    let cum = 0;
+    const pare = fails.map((f, i) => {
+      cum += f.n;
+      return { ...f, h: (f.n / maxN) * 82, cumPct: (cum / total) * 100, i };
+    });
+    const paretoLine = pare.map((f, i) => {
+      const x = ((i + 0.5) / pare.length) * 100;
+      const y = 100 - f.cumPct;
+      return x.toFixed(2) + ',' + y.toFixed(2);
+    }).join(' ');
+
+    // Histogram + gauss
+    const N = 17, lo = p.mean - 4 * p.sd, hi = p.mean + 4 * p.sd, span = hi - lo;
+    let maxD = 0;
+    const raw = [];
+    for (let i = 0; i < N; i++) {
+      const x = lo + (span * (i + 0.5)) / N;
+      const z = (x - p.mean) / p.sd;
+      const d = Math.exp(-0.5 * z * z) * (0.86 + 0.28 * this.rnd(i + s.seed * 3));
+      raw.push(d); if (d > maxD) maxD = d;
+    }
+    const histBars = raw.map(d => ({ h: (d / maxD) * 88 }));
+    const gaussPts = [];
+    for (let i = 0; i <= 60; i++) {
+      const x = lo + (span * i) / 60;
+      const z = (x - p.mean) / p.sd;
+      const d = Math.exp(-0.5 * z * z);
+      gaussPts.push(((i / 60) * 100).toFixed(2) + ',' + (100 - d * 88).toFixed(2));
+    }
+    const pos = v => Math.max(0, Math.min(100, ((v - lo) / span) * 100));
+
+    // Near-fail
+    const band = s.nearFailPct / 100;
+    const nearRows = [];
+    for (let i = 0; i < 7; i++) {
+      const upper = i % 2 === 0;
+      const lim = upper ? p.usl : p.lsl;
+      const range = p.usl - p.lsl;
+      const off = range * band * (0.18 + 0.7 * this.rnd(i + 5));
+      const val = upper ? lim - off : lim + off;
+      const margin = (Math.abs(val - lim) / range) * 100;
+      const st = margin < band * 100 * 0.4 ? 'fail' : 'warn';
+      nearRows.push({
+        serial: 'QIT-2608-' + String(4210 + i * 37).padStart(4, '0'),
+        station: this.state.files[i % 4].station,
+        value: val.toFixed(p.dec) + (p.unit ? ' ' + p.unit : ''),
+        limit: (upper ? 'USL ' : 'LSL ') + lim.toFixed(p.dec),
+        margin: margin.toFixed(2) + '%',
+        level: st === 'fail' ? 'NGUY CƠ CAO' : 'CẢNH BÁO',
+        st
+      });
+    }
+
+    // Audit
+    const targets = s.auditTargets.split('\n').map(x => x.trim()).filter(Boolean);
+    const scannedSet = s.auditScanned;
+    const matched = targets.filter(t => scannedSet.indexOf(t) >= 0).length;
+    const auditRows = targets.map((t, i) => {
+      const ok = scannedSet.indexOf(t) >= 0;
+      const qcPass = this.rnd(i + 3) > 0.16;
+      return {
+        idx: i + 1, code: t, station: this.state.files[i % 4].station,
+        qc: qcPass ? 'PASS' : 'FAIL', qcSt: qcPass ? 'pass' : 'fail',
+        status: ok ? 'ĐÃ ĐỐI SOÁT' : 'CÒN THIẾU', st: ok ? 'pass' : 'warn'
+      };
+    });
+    const extras = scannedSet.filter(c => targets.indexOf(c) < 0);
+    const auditScannedList = scannedSet.map(c => ({ code: c, st: targets.indexOf(c) >= 0 ? 'pass' : 'fail' }));
+
+    // Heatmap
+    const heatCols = ['H+0', 'H+1', 'H+2', 'H+3', 'H+4', 'H+5', 'H+6', 'H+7'];
+    const shifts = [['Ca A · 06–14', 0], ['Ca B · 14–22', 1], ['Ca C · 22–06', 2]];
+    const heatRows = shifts.map(sh => ({
+      label: sh[0],
+      cells: heatCols.map((c, j) => {
+        const r = 1.2 + this.rnd(sh[1] * 17 + j * 5 + s.seed) * 9.4 + sh[1] * 1.3;
+        const lv = r < 2.5 ? 0 : r < 4.5 ? 1 : r < 6.5 ? 2 : r < 8.5 ? 3 : 4;
+        return { label: r.toFixed(1) + '%', lv: String(lv) };
+      })
+    }));
+
+    // Files
+    const onFiles = s.files.filter(f => f.on);
+    const activeSamples = onFiles.reduce((a, f) => a + f.n, 0);
+    const fileCards = s.files.map(f => ({
+      ...f,
+      pass: f.pass.toFixed(1) + '%',
+      passPct: f.pass,
+      n: f.n.toLocaleString('vi-VN'),
+      fails: Math.round(f.n * (100 - f.pass) / 100),
+      st: f.pass >= 96 ? 'pass' : f.pass >= 93 ? 'warn' : 'fail',
+      toggle: () => this.setState(st => ({ files: st.files.map(x => x.id === f.id ? { ...x, on: !x.on } : x) })),
+      solo: () => this.setState(st => ({ files: st.files.map(x => ({ ...x, on: x.id === f.id })) })),
+      remove: () => this.setState(st => ({ files: st.files.filter(x => x.id !== f.id) }))
+    }));
+
+    // Drill
+    const drill = s.drill;
+    const drillRows = [];
+    if (drill) {
+      for (let i = 0; i < 12; i++) {
+        const rt = this.rnd(i + 11) > 0.68;
+        drillRows.push({
+          serial: 'QIT-2608-' + String(4300 + i * 23).padStart(4, '0'),
+          station: this.state.files[i % 4].station,
+          time: new Date(Date.now() - i * 903000).toLocaleString('vi-VN', { hour12: false }),
+          value: (p.mean + (this.rnd(i + 31) - 0.5) * p.sd * 7).toFixed(p.dec) + (p.unit ? ' ' + p.unit : ''),
+          retest: rt ? 'RETEST ×1' : 'KHÔNG',
+          st: rt ? 'warn' : 'idle'
+        });
+      }
+    }
+
+    const snapVals = [
+      { key: 'Re', v: 6.42 + (this.rnd(s.snapSeed) - 0.5) * 0.5, spec: 'LSL 5.90 · USL 6.90 Ω', d: 3, lsl: 5.9, usl: 6.9 },
+      { key: 'fs', v: 612 + (this.rnd(s.snapSeed + 4) - 0.5) * 70, spec: 'LSL 550 · USL 680 Hz', d: 1, lsl: 550, usl: 680 },
+      { key: 'Qts', v: 0.712 + (this.rnd(s.snapSeed + 8) - 0.5) * 0.13, spec: 'LSL 0.60 · USL 0.82', d: 3, lsl: 0.6, usl: 0.82 },
+      { key: 'SPL LEVEL', v: 86.9 + (this.rnd(s.snapSeed + 12) - 0.5) * 3.2, spec: 'LSL 84.5 · USL 89.5 dB', d: 2, lsl: 84.5, usl: 89.5 },
+      { key: 'IMPPT', v: 11.83 + (this.rnd(s.snapSeed + 16) - 0.5) * 1.6, spec: 'LSL 10.4 · USL 13.2 Ω', d: 2, lsl: 10.4, usl: 13.2 },
+      { key: 'THD', v: 1.28 + (this.rnd(s.snapSeed + 20) - 0.5) * 1.4, spec: 'MAX 3.00 %', d: 2, lsl: 0, usl: 3 }
+    ];
+    const snapshot = s.verdict ? snapVals.map(x => {
+      const range = x.usl - x.lsl;
+      const near = Math.min(Math.abs(x.v - x.lsl), Math.abs(x.usl - x.v)) / range;
+      const st = (x.v < x.lsl || x.v > x.usl) ? 'fail' : near < s.nearFailPct / 100 ? 'warn' : 'pass';
+      return { key: x.key, value: x.v.toFixed(x.d), spec: x.spec, st };
+    }) : snapVals.map(x => ({ key: x.key, value: '—', spec: x.spec, st: 'idle' }));
+
+    const hist = s.history;
+    const passN = hist.filter(h => h.st === 'pass').length;
+    const failN = hist.filter(h => h.st === 'fail').length;
+    const nfN = hist.filter(h => h.st === 'warn').length;
+    const yieldPct = hist.length ? (passN / hist.length) * 100 : 0;
+
+    const cpkVerdict = p.cpk >= s.cpkExcellent ? { t: 'XUẤT SẮC', st: 'brand' }
+      : p.cpk >= s.cpkPass ? { t: 'ĐẠT', st: 'pass' }
+      : { t: 'CẬN BIÊN', st: 'warn' };
+
+    const aliasRows = this.baseFailures
+      .filter(f => {
+        const q = s.aliasQuery.toLowerCase();
+        if (!q) return true;
+        return (f.code + ' ' + (s.aliases[f.code] || f.name)).toLowerCase().indexOf(q) >= 0;
+      })
+      .map(f => ({
+        code: f.code, n: f.n, name: s.aliases[f.code] || f.name,
+        hidden: !!s.hiddenFails[f.code],
+        rename: e => { const v = e.target.value; this.setState(st => ({ aliases: { ...st.aliases, [f.code]: v } })); },
+        toggle: () => this.setState(st => ({ hiddenFails: { ...st.hiddenFails, [f.code]: !st.hiddenFails[f.code] } }))
+      }));
+
+    return {
+      theme: s.theme, density: s.density, zoomFactor: s.zoom / 100, zoom: s.zoom,
+      accent: this.props.accentColor || undefined,
+      lang: s.lang, clock: s.clock, muteIcon: s.muted ? '🔇' : '🔊', themeIcon: s.theme === 'dark' ? '🌙' : '☀️',
+      atScan: s.tab === 'scan', atAudit: s.tab === 'audit', atQuality: s.tab === 'quality',
+      atParam: s.tab === 'param', atFiles: s.tab === 'files',
+      goScan: () => this.setState({ tab: 'scan' }), goAudit: () => this.setState({ tab: 'audit' }),
+      goQuality: () => this.setState({ tab: 'quality' }), goParam: () => this.setState({ tab: 'param' }),
+      goFiles: () => this.setState({ tab: 'files' }),
+      toggleMute: () => this.setState(st => ({ muted: !st.muted })),
+      toggleTheme: () => this.setState(st => ({ theme: st.theme === 'dark' ? 'light' : 'dark' })),
+      openSettings: () => this.setState({ settingsOpen: true }),
+      closeSettings: () => this.setState({ settingsOpen: false }),
+      settingsOpen: s.settingsOpen, stop: e => e.stopPropagation(),
+
+      activeStations: this.stations().join(' · ') || 'KHÔNG CÓ',
+      cycleLabel: 'C-' + String(140 + s.seed) + ' · ' + s.cycleGap + ' phút',
+      rawRecords: (5164).toLocaleString('vi-VN'),
+      limitLabel: p.lsl.toFixed(p.dec) + ' / ' + p.usl.toFixed(p.dec) + (p.unit ? ' ' + p.unit : ''),
+
+      // scan
+      scanRef: this.scanRef, code: s.code, minLen: s.minLen,
+      setCode: e => this.setState({ code: e.target.value }),
+      onScanKey: e => { if (e.key === 'Enter') this.submit(); },
+      submitScan: () => this.submit(),
+      clearCode: () => { this.setState({ code: '', verdict: null }); if (this.scanRef.current) this.scanRef.current.focus(); },
+      isPass: s.verdict === 'pass', isFail: s.verdict === 'fail', isNotFound: s.verdict === 'nf', isIdle: !s.verdict,
+      lastCode: s.lastCode, lastStation: s.lastStation, lastBadges: s.lastBadges,
+      snapshot, history: hist,
+      scanKpis: [
+        { label: 'YIELD PHIÊN QUÉT', value: yieldPct.toFixed(1) + '%', st: yieldPct >= 95 ? 'pass' : yieldPct >= 90 ? 'warn' : 'fail', note: passN + ' PASS / ' + hist.length + ' lượt' },
+        { label: 'LỖI TRONG PHIÊN', value: String(failN), st: failN ? 'fail' : 'idle', note: 'Bao gồm cả mẫu retest' },
+        { label: 'KHÔNG TÌM THẤY', value: String(nfN), st: nfN ? 'warn' : 'idle', note: 'Không khớp tệp log đang bật' },
+        { label: 'NHỊP QUÉT TRUNG BÌNH', value: '4.7s', st: 'brand', note: 'Trên 20 lượt gần nhất' }
+      ],
+
+      // audit
+      auditTargets: s.auditTargets, setTargets: e => this.setState({ auditTargets: e.target.value }),
+      auditCode: s.auditCode, setAuditCode: e => this.setState({ auditCode: e.target.value }),
+      onAuditKey: e => {
+        if (e.key !== 'Enter') return;
+        const c = this.normalize(e.target.value);
+        if (!c) return;
+        this.beep(this.state.auditTargets.indexOf(c) >= 0 ? 'pass' : 'fail');
+        this.setState(st => ({ auditCode: '', auditScanned: st.auditScanned.indexOf(c) >= 0 ? st.auditScanned : st.auditScanned.concat([c]) }));
+      },
+      auditScannedList,
+      auditRows,
+      auditPct: targets.length ? (matched / targets.length) * 100 : 0,
+      auditPctLabel: (targets.length ? (matched / targets.length) * 100 : 0).toFixed(1) + '%',
+      auditCounts: [
+        { label: 'TỔNG MÃ MỤC TIÊU', value: String(targets.length), st: 'brand' },
+        { label: 'ĐÃ QUÉT ĐỐI SOÁT', value: String(matched), st: 'pass' },
+        { label: 'CÒN THIẾU / NGOÀI DS', value: (targets.length - matched) + ' / ' + extras.length, st: (targets.length - matched) ? 'warn' : 'pass' }
+      ],
+      exportAudit: () => this.download('QIT_DoiSoat.csv', 'Ma;Tram;KlippelQC;TrangThai\n' + auditRows.map(r => [r.code, r.station, r.qc, r.status].join(';')).join('\n')),
+      resetAudit: () => this.setState({ auditScanned: [] }),
+
+      // quality
+      execKpis: [
+        { label: 'FPY (FIRST PASS YIELD)', value: '94.2%', st: 'warn', note: 'Mục tiêu ≥ 96.0%' },
+        { label: 'FINAL PASS YIELD', value: '98.6%', st: 'pass', note: 'Sau retest' },
+        { label: 'UNIQUE DUTs', value: '4,318', st: 'brand', note: 'Số DUT duy nhất' },
+        { label: 'RETESTS', value: '312', st: 'warn', note: '7.2% tổng DUT' },
+        { label: 'FAILURES', value: total.toLocaleString('vi-VN'), st: 'fail', note: fails.length + ' mã lỗi hoạt động' },
+        { label: 'RAW RECORDS', value: '5,164', st: 'idle', note: onFiles.length + ' tệp log đang bật' }
+      ],
+      top5: pare.slice(0, 5).map(f => ({ name: f.name, n: f.n, pct: ((f.n / total) * 100).toFixed(1) + '%' })),
+      paretoBars: pare.map(f => ({
+        n: f.n, h: f.h, short: f.name,
+        open: () => this.setState({ drill: f })
+      })),
+      paretoLine,
+      failRows: pare.map(f => ({
+        name: f.name, n: f.n, pct: ((f.n / total) * 100).toFixed(1) + '%', cum: f.cumPct.toFixed(1) + '%',
+        open: () => this.setState({ drill: f })
+      })),
+      heatCols, heatRows,
+      drillOpen: !!drill, drillRows,
+      drillName: drill ? drill.name : '',
+      drillCount: drill ? drill.n : 0,
+      drillPct: drill ? ((drill.n / total) * 100).toFixed(1) + '%' : '',
+      drillStation: 'SFS203-01',
+      closeDrill: () => this.setState({ drill: null }),
+
+      // param
+      param: s.param, setParam: e => this.setState({ param: e.target.value }),
+      paramN: p.n.toLocaleString('vi-VN'),
+      lsl: p.lsl.toFixed(p.dec), usl: p.usl.toFixed(p.dec), mean: p.mean.toFixed(p.dec),
+      nearFail: s.nearFailPct,
+      capCards: [
+        { label: 'Cp', value: p.cp.toFixed(2), st: p.cp >= s.cpkExcellent ? 'brand' : p.cp >= s.cpkPass ? 'pass' : 'warn', note: 'Năng lực tiềm năng' },
+        { label: 'Cpk', value: p.cpk.toFixed(2), st: cpkVerdict.st, note: 'Ngưỡng đạt ≥ ' + s.cpkPass },
+        { label: 'MEAN μ', value: p.mean.toFixed(p.dec), st: 'idle', note: p.label + (p.unit ? ' · ' + p.unit : '') },
+        { label: 'STDDEV σ', value: p.sd.toFixed(p.dec), st: 'idle', note: '6σ = ' + (6 * p.sd).toFixed(p.dec) },
+        { label: 'MIN', value: (p.mean - 3.6 * p.sd).toFixed(p.dec), st: 'idle', note: 'Mẫu nhỏ nhất' },
+        { label: 'MAX', value: (p.mean + 3.4 * p.sd).toFixed(p.dec), st: 'idle', note: 'Mẫu lớn nhất' },
+        { label: 'ĐÁNH GIÁ', value: cpkVerdict.t, st: cpkVerdict.st, note: '6-Sigma capability' }
+      ],
+      histBars, gaussPts: gaussPts.join(' '),
+      lslPos: pos(p.lsl).toFixed(2), uslPos: pos(p.usl).toFixed(2), meanPos: pos(p.mean).toFixed(2),
+      axisMin: lo.toFixed(p.dec), axisMax: hi.toFixed(p.dec),
+      nearRows, nearFailCount: nearRows.length,
+
+      // files
+      fileCards, activeFileCount: onFiles.length, totalFileCount: s.files.length,
+      activeSamples: activeSamples.toLocaleString('vi-VN'),
+      enableAllFiles: () => this.setState(st => ({ files: st.files.map(f => ({ ...f, on: true })) })),
+      addFile: () => this.setState(st => ({
+        files: st.files.concat([{
+          id: 'f' + (st.files.length + 1 + Math.floor(Math.random() * 99)),
+          station: 'SAS208-0' + (st.files.length + 1),
+          file: 'QC_NEW_' + (20260818 + st.files.length) + '_4V.csv',
+          pass: 92 + Math.random() * 7, n: 600 + Math.floor(Math.random() * 900), cond: '4 V', on: true
+        }])
+      })),
+
+      // settings
+      sDisplay: s.settingsTab === 'display', sScan: s.settingsTab === 'scan', sSound: s.settingsTab === 'sound',
+      sCpk: s.settingsTab === 'cpk', sAlias: s.settingsTab === 'alias', sBackup: s.settingsTab === 'backup',
+      goSDisplay: () => this.setState({ settingsTab: 'display' }), goSScan: () => this.setState({ settingsTab: 'scan' }),
+      goSSound: () => this.setState({ settingsTab: 'sound' }), goSCpk: () => this.setState({ settingsTab: 'cpk' }),
+      goSAlias: () => this.setState({ settingsTab: 'alias' }), goSBackup: () => this.setState({ settingsTab: 'backup' }),
+      isDark: s.theme === 'dark', isLight: s.theme === 'light',
+      setDark: () => this.setState({ theme: 'dark' }), setLight: () => this.setState({ theme: 'light' }),
+      setZoom: e => this.setState({ zoom: Number(e.target.value) }),
+      dCompact: s.density === 'compact', dComfortable: s.density === 'comfortable', dSpacious: s.density === 'spacious',
+      setCompact: () => this.setState({ density: 'compact' }),
+      setComfortable: () => this.setState({ density: 'comfortable' }),
+      setSpacious: () => this.setState({ density: 'spacious' }),
+      setMinLen: e => this.setState({ minLen: Number(e.target.value) }),
+      scanToggles: [
+        { label: 'Tự động cắt khoảng trắng', note: 'Trim đầu/cuối chuỗi nhận từ đầu đọc', on: s.trim, toggle: () => this.setState(st => ({ trim: !st.trim })) },
+        { label: 'Cho phép khớp ngược (reverse match)', note: 'So khớp cả khi serial bị đảo chiều đọc', on: s.reverse, toggle: () => this.setState(st => ({ reverse: !st.reverse })) },
+        { label: 'Tự động lọc tiền tố / hậu tố cố định', note: 'Bỏ phần cố định trước khi đối soát', on: s.stripFix, toggle: () => this.setState(st => ({ stripFix: !st.stripFix })) }
+      ],
+      prefix: s.prefix, suffix: s.suffix,
+      setPrefix: e => this.setState({ prefix: e.target.value }),
+      setSuffix: e => this.setState({ suffix: e.target.value }),
+      volume: s.volume, setVolume: e => this.setState({ volume: Number(e.target.value) }),
+      tts: s.tts, toggleTts: () => this.setState(st => ({ tts: !st.tts })),
+      testPass: () => { this.beep('pass'); this.speak('pass'); },
+      testFail: () => { this.beep('fail'); this.speak('fail'); },
+      testNf: () => { this.beep('nf'); this.speak('nf'); },
+      testBeep: () => this.beep('scan'),
+      cycleGap: s.cycleGap, setCycleGap: e => this.setState({ cycleGap: Number(e.target.value) }),
+      cpkPass: s.cpkPass.toFixed(2), cpkExcellent: s.cpkExcellent.toFixed(2),
+      setCpkPass: e => this.setState({ cpkPass: Number(e.target.value) }),
+      setCpkExcellent: e => this.setState({ cpkExcellent: Number(e.target.value) }),
+      setNearFail: e => this.setState({ nearFailPct: Number(e.target.value) }),
+      combo: s.combo, toggleCombo: () => this.setState(st => ({ combo: !st.combo })),
+      aliasQuery: s.aliasQuery, setAliasQuery: e => this.setState({ aliasQuery: e.target.value }),
+      aliasRows,
+      exportAlias: () => this.download('QIT_Aliases.json', JSON.stringify({ aliases: s.aliases, hidden: s.hiddenFails }, null, 2), 'application/json'),
+      importAlias: () => this.setState({ aliases: {}, hiddenFails: {} }),
+      backupJson: () => {
+        this.download('QIT_Scanner_V2_Config.json', JSON.stringify({
+          theme: s.theme, zoom: s.zoom, density: s.density, minLen: s.minLen, trim: s.trim,
+          reverse: s.reverse, stripFix: s.stripFix, prefix: s.prefix, suffix: s.suffix,
+          volume: s.volume, tts: s.tts, cycleGap: s.cycleGap, cpkPass: s.cpkPass,
+          cpkExcellent: s.cpkExcellent, nearFailPct: s.nearFailPct, combo: s.combo,
+          aliases: s.aliases, hiddenFails: s.hiddenFails, files: s.files
+        }, null, 2), 'application/json');
+        this.setState({ lastBackup: new Date().toLocaleString('vi-VN', { hour12: false }) });
+      },
+      restoreJson: () => this.setState({ zoom: 100, density: 'comfortable' }),
+      clearHistory: () => this.setState({ history: [], verdict: null, lastCode: '—' }),
+      factoryReset: () => this.setState({
+        theme: 'dark', zoom: 100, density: 'comfortable', minLen: 6, trim: true, reverse: false,
+        stripFix: true, prefix: 'QIT-', suffix: '', volume: 100, tts: true, cycleGap: 30,
+        cpkPass: 1.33, cpkExcellent: 1.67, nearFailPct: 10, combo: false, aliases: {}, hiddenFails: {}
+      }),
+      lastBackup: s.lastBackup, historyCount: hist.length,
+
+      exportCsv: () => this.download('QIT_Scanner_V2_Export.csv',
+        'STT;ThoiGian;Serial;Tram;Re;fs;SPL;PhanDinh\n' +
+        hist.map(h => [h.idx, h.time, h.code, h.station, h.re, h.fs, h.spl, h.verdict].join(';')).join('\n')),
+      reloadData: () => this.setState(st => ({ seed: st.seed + 1, history: this.makeHistory(st.seed + 1), verdict: null, lastCode: '—' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

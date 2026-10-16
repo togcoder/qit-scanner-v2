@@ -1,0 +1,23 @@
+{
+  "name": "qit-scanner-v2",
+  "version": "2.0.0",
+  "description": "Advanced Klippel QC Log Parser & Acoustic Quality Analytics (Cpk, FPY, Multi-tier Barcode Matcher)",
+  "main": "index.html",
+  "scripts": {
+    "build": "node build-bundle.js",
+    "test": "node test_parser.js"
+  },
+  "keywords": [
+    "klippel",
+    "quality-control",
+    "cpk",
+    "six-sigma",
+    "barcode-scanner",
+    "acoustic-testing",
+    "fpy",
+    "manufacturing",
+    "audio"
+  ],
+  "author": "togcoder",
+  "license": "MIT"
+}

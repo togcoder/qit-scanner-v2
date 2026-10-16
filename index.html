@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QIT Scanner v2 — Klippel Acoustic QC & Analytics Suite</title>
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="scanner.css">
+</head>
+<body>
+
+    <!-- ════════════ GLOBAL SVG GRADIENT DEFINITIONS ════════════ -->
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
+        <defs>
+            <linearGradient id="qGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00f2fe"/>
+                <stop offset="100%" stop-color="#4facfe"/>
+            </linearGradient>
+            <linearGradient id="barGrad1" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#0f2b5c"/>
+                <stop offset="100%" stop-color="#0ea5e9"/>
+            </linearGradient>
+            <linearGradient id="barGrad2" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#2d1363"/>
+                <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+            <linearGradient id="barGrad3" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#093d5c"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+            </linearGradient>
+            <linearGradient id="barGrad4" x1="0%" y1="100%" x2="0%" y2="0%">
+                <stop offset="0%" stop-color="#3b0764"/>
+                <stop offset="100%" stop-color="#a855f7"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <!-- ════════════ QIT ANIMATED SPLASH SCREEN (LOGO SYSTEM V3) ════════════ -->
+    <div id="qit-splash" class="qit-splash">
+        <div class="qit-splash-content">
+            <div class="qit-logo-anim-box">
+                <svg viewBox="50 50 200 200" class="qit-logo-svg qit-logo-analyzing" aria-label="QIT">
+                    <line x1="175" y1="175" x2="230" y2="230" class="q-handle-stroke" stroke="url(#qGrad)" stroke-width="26" stroke-linecap="round"/>
+                    <circle cx="140" cy="140" r="65" class="q-circle-stroke" fill="none" stroke="url(#qGrad)" stroke-width="18"/>
+                    <g>
+                        <rect x="90" y="145" width="14" height="40" class="chart-bar bar-1 qit-bar-bounce-1" fill="url(#barGrad1)"/>
+                        <rect x="118" y="160" width="14" height="25" class="chart-bar bar-2 qit-bar-bounce-2" fill="url(#barGrad2)"/>
+                        <rect x="146" y="125" width="14" height="60" class="chart-bar bar-3 qit-bar-bounce-3" fill="url(#barGrad3)"/>
+                        <rect x="174" y="135" width="14" height="50" class="chart-bar bar-4 qit-bar-bounce-4" fill="url(#barGrad4)"/>
+                    </g>
+                    <polyline points="97,125 125,140 153,105 181,115" class="chart-line" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="97" cy="125" r="5" class="node node-1 qit-node-pulse" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                    <circle cx="125" cy="140" r="5" class="node node-2 qit-node-pulse" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                    <circle cx="153" cy="105" r="5" class="node node-3 qit-node-pulse" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                    <circle cx="181" cy="115" r="5" class="node node-4 qit-node-pulse" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                </svg>
+            </div>
+            <div class="qit-splash-title">QIT SCANNER V2</div>
+            <div class="qit-splash-sub" data-i18n="HỆ THỐNG KIỂM TRA MÃ VẠCH TỰ ĐỘNG">KLIPPEL ACOUSTIC QC · ANALYTICS SUITE</div>
+            <div class="qit-splash-loader">
+                <div class="qit-splash-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════ MAIN APP CONTAINER ════════════ -->
+    <div id="app-container" class="app-container">
+
+        <!-- ── HEADER TOOLBAR (UXUIREF PRECISION) ── -->
+        <header class="app-header">
+            <div class="header-main-bar">
+                <div class="header-brand">
+                    <div class="qit-logo-small" id="mini-logo-trigger" title="Nhấp xem thống kê Lifetime">
+                        <svg class="logo-svg" viewBox="50 50 200 200">
+                            <defs>
+                                <linearGradient id="qGradHeader" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#00f2fe"/>
+                                    <stop offset="100%" stop-color="#4facfe"/>
+                                </linearGradient>
+                                <linearGradient id="barGrad1H" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stop-color="#0f2b5c"/>
+                                    <stop offset="100%" stop-color="#0ea5e9"/>
+                                </linearGradient>
+                                <linearGradient id="barGrad2H" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stop-color="#2d1363"/>
+                                    <stop offset="100%" stop-color="#8b5cf6"/>
+                                </linearGradient>
+                                <linearGradient id="barGrad3H" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stop-color="#093d5c"/>
+                                    <stop offset="100%" stop-color="#06b6d4"/>
+                                </linearGradient>
+                                <linearGradient id="barGrad4H" x1="0%" y1="100%" x2="0%" y2="0%">
+                                    <stop offset="0%" stop-color="#3b0764"/>
+                                    <stop offset="100%" stop-color="#a855f7"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Lens Handle -->
+                            <line x1="175" y1="175" x2="230" y2="230" stroke="url(#qGradHeader)" stroke-width="26" stroke-linecap="round"/>
+                            <!-- Lens Circle -->
+                            <circle cx="140" cy="140" r="65" fill="none" stroke="url(#qGradHeader)" stroke-width="18"/>
+                            <!-- 4 Bars Inside -->
+                            <g>
+                                <rect x="90" y="145" width="14" height="40" fill="url(#barGrad1H)"/>
+                                <rect x="118" y="160" width="14" height="25" fill="url(#barGrad2H)"/>
+                                <rect x="146" y="125" width="14" height="60" fill="url(#barGrad3H)"/>
+                                <rect x="174" y="135" width="14" height="50" fill="url(#barGrad4H)"/>
+                            </g>
+                            <!-- 4-point Line Chart Inside (Aligned with bar centers) -->
+                            <g>
+                                <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                                <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                                <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                                <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="brand-text">
+                        <h1>QIT SCANNER V2</h1>
+                        <span class="brand-sub" data-i18n="HỆ THỐNG KIỂM TRA MÃ VẠCH TỰ ĐỘNG">KLIPPEL ACOUSTIC QC · ANALYTICS SUITE</span>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <select id="lang-select" class="lang-select" onchange="QIT.i18n.setLang(this.value)">
+                        <option value="vi">🇻🇳 VN</option>
+                        <option value="en">🇬🇧 EN</option>
+                        <option value="ja">🇯🇵 JP</option>
+                        <option value="zh">🇨🇳 CN</option>
+                    </select>
+                    <button class="btn-icon" id="audio-toggle-btn" onclick="toggleAudioMute()" title="Bật/Tắt âm thanh thông báo">🔊</button>
+                    <button class="btn-icon" id="theme-toggle-btn" onclick="toggleTheme()" title="Chuyển đổi giao diện Sáng/Tối">
+                        <span id="sun-icon">☀️</span>
+                        <span id="moon-icon" class="hidden">🌙</span>
+                    </button>
+                    <button class="btn-icon" onclick="openSettingsModal()" title="Cài đặt hệ thống (ESC)">⚙️</button>
+                    <button class="btn btn-outline btn-sm" onclick="exportFullExcelReport()" data-i18n="XUẤT BÁO CÁO EXCEL">📥 XUẤT EXCEL TỔNG</button>
+                    <button class="btn btn-primary btn-sm" onclick="resetApp()" data-i18n="NẠP TỆP MỚI">🔄 NẠP MỚI</button>
+                </div>
+            </div>
+
+            <!-- Main Navigation (5 Core Workspaces) -->
+            <div class="header-nav-bar">
+                <nav class="header-nav">
+                    <button class="nav-tab active" id="tab-btn-scan" onclick="switchTab('scan')">
+                        <span data-i18n="QUÉT SẢN XUẤT">⚡ QUÉT SẢN XUẤT</span>
+                    </button>
+                    <button class="nav-tab" id="tab-btn-audit" onclick="switchTab('audit')">
+                        <span data-i18n="KIỂM TRA DANH SÁCH">🎯 KIỂM TRA DANH SÁCH</span>
+                    </button>
+                    <button class="nav-tab" id="tab-btn-analysis" onclick="switchTab('analysis')">
+                        <span data-i18n="PHÂN TÍCH CHẤT LƯỢNG">📊 PHÂN TÍCH CHẤT LƯỢNG</span>
+                    </button>
+                    <button class="nav-tab" id="tab-btn-parametric" onclick="switchTab('parametric')">
+                        <span data-i18n="THÔNG SỐ ĐO & Cpk">📈 THÔNG SỐ &amp; Cpk</span>
+                    </button>
+                    <button class="nav-tab" id="tab-btn-files" onclick="switchTab('files')">
+                        <span data-i18n="QUẢN LÝ TỆP & TRẠM ĐO">📁 TỆP &amp; TRẠM ĐO</span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+
+        <!-- ── REAL-TIME INDUSTRIAL STATUS BAR ── -->
+        <div class="app-statusbar">
+            <div class="sb-item"><span class="sb-dot-pulse"></span>SCANNER ONLINE · READY</div>
+            <div class="sb-item">TRẠM: <span class="sb-val" id="sb-stations">—</span></div>
+            <div class="sb-item">CHU KỲ: <span class="sb-val" id="sb-cycle">30 phút</span></div>
+            <div class="sb-item">BẢN GHI: <span class="sb-val" id="sb-records">0</span></div>
+            <div class="sb-item">LSL/USL: <span class="sb-val" id="sb-limits">BẬT</span></div>
+            <div class="sb-item sb-right">CẬP NHẬT <span class="sb-val" id="sb-clock">00:00:00</span></div>
+        </div>
+
+        <!-- ── MÀN HÌNH NẠP TỆP BAN ĐẦU (SETUP SCREEN) ── -->
+        <section id="setup-screen" class="setup-screen">
+            <div class="setup-card">
+                <div class="setup-header">
+                    <h2>NẠP DỮ LIỆU NHẬT KÝ KIỂM TRA (KLIPPEL LOG FILES)</h2>
+                    <p>Hỗ trợ kéo thả đồng thời nhiều tệp hoặc nạp toàn bộ thư mục chứa các tệp Summary trong các thư mục con.</p>
+                </div>
+
+                <div id="drop-zone" class="drop-zone">
+                    <div class="drop-zone-icon">📁</div>
+                    <div class="drop-zone-text" data-i18n="KÉO & THẢ CÁC TỆP LOG VÀO ĐÂY">KÉO &amp; THẢ CÁC TỆP LOG HOẶC THƯ MỤC VÀO ĐÂY</div>
+                    <div class="drop-zone-sub" data-i18n="hoặc bấm để chọn tệp từ máy tính">hoặc bấm chọn nguồn tệp:</div>
+
+                    <div style="display:flex; justify-content:center; gap:14px; margin-top:16px; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); startFastDirectoryScan()" style="box-shadow:0 0 20px rgba(0,242,254,0.4); padding:10px 24px; font-weight:800; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
+                            <span>📁</span> <span>Chọn Thư Mục (Quét Siêu Tốc File Summary)</span>
+                        </button>
+                        <button type="button" class="btn btn-outline" onclick="event.stopPropagation(); document.getElementById('file-input').click()" style="padding:10px 20px; font-size:13.5px; display:inline-flex; align-items:center; gap:8px;">
+                            <span>📄</span> <span>Chọn Tệp Riêng Lẻ</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); switchTab('audit')" style="padding:10px 20px; font-size:13.5px; font-weight:700; display:inline-flex; align-items:center; gap:8px; border-color:var(--accent-blue); color:var(--text-main); background:rgba(0,242,254,0.08);">
+                            <span>🎯</span> <span>Chỉ Kiểm Tra Danh Sách (Không Cần File Log)</span>
+                        </button>
+                    </div>
+
+                    <div style="margin-top:14px; display:inline-flex; align-items:center; gap:8px; background:rgba(0,0,0,0.15); padding:6px 14px; border-radius:20px; font-size:12px; color:var(--text-sub);" onclick="event.stopPropagation()">
+                        <input type="checkbox" id="chk-filter-summary" checked onchange="CFG.AUTO_FILTER_SUMMARY_ONLY = this.checked">
+                        <label for="chk-filter-summary" style="cursor:pointer; font-weight:600;">Tự động lọc chỉ nạp tệp chứa chữ "Summary" trong thư mục con (Bỏ qua file .kdbx &amp; file rác)</label>
+                    </div>
+
+                    <input type="file" id="file-input" multiple accept=".txt,.csv,.log" class="file-input-hidden">
+                    <input type="file" id="folder-input" webkitdirectory directory multiple class="file-input-hidden">
+                </div>
+
+                <div id="file-list-preview" class="file-list-preview"></div>
+
+                <div class="setup-footer">
+                    <button id="btn-process" class="btn btn-primary btn-lg btn-block" disabled onclick="processFiles()" data-i18n="TIẾN HÀNH XỬ LÝ DỮ LIỆU">
+                        TIẾN HÀNH XỬ LÝ DỮ LIỆU
+                    </button>
+                    <div style="display:flex; justify-content:center; gap:16px; margin-top:10px; font-size:12px;">
+                        <a href="javascript:void(0)" onclick="switchTab('audit')" style="color:var(--accent-blue); text-decoration:none; font-weight:700;">
+                            🎯 Tôi chỉ muốn Kiểm Tra Danh Sách (Bỏ qua nạp file log) &rarr;
+                        </a>
+                        <span style="color:var(--border-color);">|</span>
+                        <a href="javascript:void(0)" onclick="switchTab('scan')" style="color:var(--text-sub); text-decoration:none;">
+                            ⚡ Vào thẳng Quét Sản Xuất &rarr;
+                        </a>
+                    </div>
+                    <div class="setup-hint" style="margin-top:10px;">
+                        💡 Hệ thống V2 tự động bóc tách 100% dữ liệu đo, giới hạn Min/Max, dung sai Cpk, Ma trận đa lượt và phân tách trạm đo thông minh.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── MÀN HÌNH CHÍNH (MAIN APP SCREEN) ── -->
+        <main id="main-app-screen" class="main-app-screen hidden">
+
+            <!-- ── TAB 1: QUÉT SẢN XUẤT ── -->
+            <section id="pane-scan" class="tab-pane active">
+                <div class="scan-stage">
+
+                    <!-- BANNER HƯỚNG DẪN KHI CHƯA NẠP LOG -->
+                    <div id="scan-no-log-banner" class="card" style="padding:10px 16px; margin-bottom:14px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                        <div style="font-size:12px; color:var(--text-main); display:flex; align-items:center; gap:8px;">
+                            <span style="font-size:16px;">💡</span>
+                            <span><strong>Chưa nạp tệp nhật ký Klippel:</strong> Bạn đang ở chế độ quét tự do. Nếu bạn muốn đối soát theo danh sách mã hàng / kiện hàng, vui lòng chuyển sang tab <strong>[🎯 KIỂM TRA DANH SÁCH]</strong>.</span>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn btn-sm btn-primary" onclick="switchTab('audit')">🎯 Sang Kiểm Tra Danh Sách</button>
+                            <button class="btn btn-sm btn-outline" onclick="startFastDirectoryScan()">📁 Nạp Tệp Klippel</button>
+                        </div>
+                    </div>
+
+                    <!-- HÀNG 1: Ô QUÉT MÃ VẠCH & THẺ PHÁN ĐỊNH CỰC LỚN -->
+                    <div style="display:grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 16px;">
+                        <div class="card scan-input-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <label for="scanner-input" class="scan-label" data-i18n="MÁY QUÉT MÃ VẠCH SẴN SÀNG" style="margin:0;">Ô QUÉT MÃ VẠCH · LIVE MATCH</label>
+                                <span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted);">AUTOFOCUS ON</span>
+                            </div>
+                            <div class="input-glow-wrapper">
+                                <input type="text" id="scanner-input" placeholder="QUÉT HOẶC NHẬP SERIAL DUT..." autocomplete="off" autofocus>
+                                <span class="scan-icon-indicator">🔍</span>
+                            </div>
+                            <div style="display:flex; gap:9px; margin-top:12px;">
+                                <button class="btn btn-primary" style="flex:1;" onclick="onScanManualSubmit()">ĐỐI SOÁT NGAY</button>
+                                <button class="btn btn-secondary" onclick="document.getElementById('scanner-input').value=''; document.getElementById('scanner-input').focus();">XOÁ Ô</button>
+                            </div>
+                        </div>
+
+                        <!-- THẺ KẾT LUẬN CỰC LỚN (VERDICT BAND) -->
+                        <div class="verdict-band verdict-idle" id="verdict-band">
+                            <div class="verdict-idle-sweep" id="verdict-idle-sweep">
+                                <div class="verdict-idle-bar"></div>
+                            </div>
+                            <div class="vb-row">
+                                <div class="vb-mark" id="verdict-mark" style="display:none;"></div>
+                                <div class="vb-main">
+                                    <div class="vb-title" id="verdict-title">CHỜ QUÉT…</div>
+                                    <div class="vb-sub" id="verdict-sub">Thẻ phán định sẽ hiển thị ngay khi nhận được serial từ đầu đọc.</div>
+                                </div>
+                            </div>
+                            <div id="verdict-details"></div>
+                        </div>
+                    </div>
+
+                    <!-- HÀNG 2: THÔNG SỐ ĐO NHANH (PARAMETRIC SNAPSHOT) -->
+                    <div id="parametric-snapshot-container" style="display:none;"></div>
+
+                    <!-- HÀNG 3: THỐNG KÊ NHANH & LỊCH SỬ QUÉT -->
+                    <div style="display:grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items:start;">
+                        <!-- Bảng lịch sử 20 lượt quét gần nhất -->
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <h4 style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--text-muted); margin:0;">🕒 LỊCH SỬ 20 LƯỢT QUÉT GẦN NHẤT</h4>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-family:var(--font-mono); font-size:10px; color:var(--text-sub);">FIFO BUFFER</span>
+                                    <button class="btn btn-sm btn-secondary" onclick="exportScanHistoryExcel()">📥 Xuất Lịch Sử</button>
+                                </div>
+                            </div>
+                            <div class="table-wrapper" style="max-height:330px; overflow-y:auto;">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Thời Gian</th>
+                                            <th>Serial Number</th>
+                                            <th>Trạm Đo</th>
+                                            <th>Re (Ω)</th>
+                                            <th>fs (Hz)</th>
+                                            <th>SPL (dB)</th>
+                                            <th>Phán Định</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="scan-history-tbody">
+                                        <tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:20px;">Chưa có lượt quét nào</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Thống kê nhanh phiên -->
+                        <div style="display:flex; flex-direction:column; gap:12px;">
+                            <div class="kpi-card">
+                                <div class="kpi-label">Tổng Dữ Liệu</div>
+                                <div class="kpi-val" id="sc-total-count">0</div>
+                                <div style="font-size:10.5px; color:var(--text-sub);">Bản ghi đang kích hoạt</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Sản Phẩm Đạt</div>
+                                <div class="kpi-val" id="sc-pass-count" style="color:#10b981;">0</div>
+                                <div style="font-size:10.5px; color:var(--text-sub);">Đạt tiêu chuẩn chất lượng</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Sản Phẩm Lỗi</div>
+                                <div class="kpi-val" id="sc-fail-count" style="color:#ef4444;">0</div>
+                                <div style="font-size:10.5px; color:var(--text-sub);">Phát hiện lỗi đo kiểm</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-label">Tỷ Lệ Pass</div>
+                                <div class="kpi-val" id="sc-yield-rate" style="color:#38bdf8;">0%</div>
+                                <div style="font-size:10.5px; color:var(--text-sub);">Tỷ lệ đạt phiên hiện tại</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ── TAB 2: KIỂM TRA DANH SÁCH (AUDIT) ── -->
+            <section id="pane-audit" class="tab-pane hidden">
+                <div style="display:flex; flex-direction:column; gap:var(--space-md);">
+                    
+                    <div style="display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px;">
+                        <div class="card">
+                            <div class="kpi-label">TỔNG SỐ MÃ MỤC TIÊU</div>
+                            <div class="kpi-val" id="audit-total-count" style="color:var(--text-main);">0</div>
+                        </div>
+                        <div class="card">
+                            <div class="kpi-label">ĐÃ QUÉT ĐỐI SOÁT</div>
+                            <div class="kpi-val" id="audit-scanned-count" style="color:#10b981;">0</div>
+                        </div>
+                        <div class="card">
+                            <div class="kpi-label">CÒN THIẾU CHƯA QUÉT</div>
+                            <div class="kpi-val" id="audit-remaining-count" style="color:#f87171;">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Thanh tiến độ đối soát -->
+                    <div class="card" style="padding:18px 20px;">
+                        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:10px;">
+                            <span style="font-size:11px; font-weight:800; color:var(--text-muted); letter-spacing:0.8px;">TIẾN ĐỘ ĐỐI SOÁT</span>
+                            <span id="audit-progress-pct" style="font-family:var(--font-mono); font-size:20px; font-weight:800; color:var(--accent-blue);">0%</span>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.06); height:12px; border-radius:12px; overflow:hidden;">
+                            <div id="audit-progress-bar" style="width:0%; height:100%; border-radius:12px; background:linear-gradient(90deg, #00f2fe, #38bdf8, #10b981); transition:width 0.35s ease;"></div>
+                        </div>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px;">
+                        <div class="card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                                <div style="font-size:11px; font-weight:800; color:var(--text-muted);">DANH SÁCH MÃ MỤC TIÊU (DÁN HOẶC NẠP TỆP)</div>
+                                <div style="display:flex; gap:6px;">
+                                    <button class="btn btn-sm btn-outline" onclick="document.getElementById('audit-file-input').click()" style="font-size:11.5px; padding:3px 10px;">📄 Nạp File (.xlsx, .csv, .txt)</button>
+                                    <input type="file" id="audit-file-input" accept=".xlsx,.xls,.csv,.txt" style="display:none;" onchange="handleAuditFileUpload(this)">
+                                </div>
+                            </div>
+                            <textarea id="audit-target-input" rows="7" style="width:100%; padding:12px; border-radius:var(--radius-sm); background:var(--bg-surface-elevated); color:var(--text-main); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:12px; line-height:1.7; outline:none;" placeholder="Dán danh sách mã Serial / DUT tại đây (mỗi mã 1 dòng), hoặc bấm 'Nạp File' ở trên để nạp từ file Excel/Text..."></textarea>
+                            <div style="display:flex; gap:9px; margin-top:10px;">
+                                <button class="btn btn-primary btn-sm" onclick="loadAuditTargetList()">✓ Nạp Danh Sách</button>
+                                <button class="btn btn-secondary btn-sm" onclick="resetAuditList()">Đặt Lại</button>
+                            </div>
+                        </div>
+
+                        <div class="card" style="display:flex; flex-direction:column;">
+                            <div style="font-size:11px; font-weight:800; color:var(--accent-blue); margin-bottom:10px;">QUÉT ĐỐI SOÁT THỰC TẾ</div>
+                            <div class="input-glow-wrapper">
+                                <input type="text" id="audit-scanner-input" placeholder="QUÉT MÃ THỰC TẾ..." autocomplete="off">
+                                <span class="scan-icon-indicator">🎯</span>
+                            </div>
+                            <div style="margin-top:12px; flex:1; min-height:80px; max-height:140px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start;" id="audit-chips-container"></div>
+                            <div style="display:flex; gap:9px; margin-top:12px;">
+                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditHTML()">📤 Xuất HTML Đối Soát</button>
+                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditReport()">📥 Xuất Excel Đối Soát</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bảng chi tiết danh sách mục tiêu -->
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+                            <div style="font-size:11px; font-weight:800; color:var(--text-muted);">CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU</div>
+                            <div id="audit-log-reference-badge" style="font-size:11px; color:var(--text-sub);"></div>
+                        </div>
+                        <div class="table-wrapper" style="max-height:340px; overflow-y:auto;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50px; text-align:center;">#</th>
+                                        <th>Mã Mục Tiêu (Target ID)</th>
+                                        <th style="text-align:center;">Trạng Thái Đối Soát</th>
+                                        <th style="text-align:center;">Số Lần Quét</th>
+                                        <th>Lần Quét Đầu</th>
+                                        <th>Lần Quét Cuối</th>
+                                        <th style="text-align:center;">Klippel QC</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="audit-table-tbody">
+                                    <tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px;">Chưa nạp danh sách mục tiêu</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ── TAB 3: PHÂN TÍCH CHẤT LƯỢNG (3 UNIFIED WORKSPACES) ── -->
+            <section id="pane-analysis" class="tab-pane hidden">
+                <div id="analysis-subnav-container" class="analysis-subnav-wrapper"></div>
+                <div id="analysis-workspace-content"></div>
+            </section>
+
+            <!-- ── TAB 4: THÔNG SỐ ĐO & Cpk ── -->
+            <section id="pane-parametric" class="tab-pane hidden">
+                <div style="display:flex; flex-direction:column; gap:var(--space-md);">
+                    <div class="card" style="padding:16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                            <div>
+                                <h3 style="font-size:15px; font-weight:900; margin:0;">📈 PHÂN TÍCH THÔNG SỐ ĐO VẬT LÝ & NĂNG LỰC QUY TRÌNH (Cpk)</h3>
+                                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
+                                    Khai thác 100% giá trị đo thực tế, giới hạn Min/Max dung sai và độ lệch chuẩn 6-Sigma
+                                </div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                                <label style="font-size:12px; font-weight:700; color:var(--text-muted);">Chọn Thông Số:</label>
+                                <select id="parametric-metric-select" class="settings-select" style="font-weight:700; min-width:240px;" onchange="onParametricMetricChange(this.value)">
+                                    <option value="">(Đang tải thông số...)</option>
+                                </select>
+                                <button class="btn btn-sm btn-outline" onclick="exportCpkHTML()">📤 Xuất HTML Cpk</button>
+                                <button class="btn btn-sm btn-secondary" onclick="exportCpkExcel()">📥 Xuất Excel Cpk</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="parametric-content-area"></div>
+                </div>
+            </section>
+
+            <!-- ── TAB 5: QUẢN LÝ ĐA TỆP & TRẠM ĐO ── -->
+            <section id="pane-files" class="tab-pane hidden">
+                <div id="files-manager-container"></div>
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- ════════════ MODAL CÀI ĐẶT TOÀN DIỆN (QUICK SETTINGS MODAL) ════════════ -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-card settings-modal-card">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,var(--cyan),var(--blue)); display:grid; place-items:center; font-size:15px;">⚙️</div>
+                    <div>
+                        <h3 style="font-size:16px; font-weight:800; margin:0;">CÀI ĐẶT NHANH</h3>
+                        <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-mono);">QIT SCANNER V2 · SYSTEM CONFIGURATION</div>
+                    </div>
+                </div>
+                <button class="btn-icon" onclick="closeSettingsModal()" title="Đóng (ESC)">✕</button>
+            </div>
+
+            <div class="settings-modal-layout">
+                <!-- Sidebar danh mục cài đặt -->
+                <nav class="settings-sidebar">
+                    <button class="settings-nav-btn active" data-subtab="display" onclick="switchSettingsSubTab('display')">
+                        <span>🎨</span> Hiển thị &amp; Thu phóng
+                    </button>
+                    <button class="settings-nav-btn" data-subtab="shifts" onclick="switchSettingsSubTab('shifts')">
+                        <span>⏱️</span> Ca Sản Xuất
+                    </button>
+                    <button class="settings-nav-btn" data-subtab="matcher" onclick="switchSettingsSubTab('matcher')">
+                        <span>🔍</span> Quét mã &amp; Matcher
+                    </button>
+                    <button class="settings-nav-btn" data-subtab="audio" onclick="switchSettingsSubTab('audio')">
+                        <span>🔊</span> Âm thanh &amp; Giọng nói
+                    </button>
+                    <button class="settings-nav-btn" data-subtab="cpk" onclick="switchSettingsSubTab('cpk')">
+                        <span>📈</span> Chu kỳ &amp; Ngưỡng Cpk
+                    </button>
+                    <button class="settings-nav-btn" data-subtab="aliases" onclick="switchSettingsSubTab('aliases')">
+                        <span>🏷️</span> Tên gọi lỗi (Aliases)
+                    </button>
+                    <button class="settings-nav-btn" data-subtab="backup" onclick="switchSettingsSubTab('backup')">
+                        <span>💾</span> Sao lưu &amp; Dữ liệu
+                    </button>
+                    <div style="margin-top:auto; padding:12px; border-radius:11px; background:var(--surface3); border:1px solid var(--border-color); font-size:10.5px; color:var(--text-sub); line-height:1.6;">
+                        Nhấn <span style="font-family:var(--font-mono); color:var(--accent-blue);">ESC</span> để mở/đóng cài đặt. Thay đổi được lưu tự động.
+                    </div>
+                </nav>
+
+                <!-- Vùng nội dung chi tiết cài đặt -->
+                <div class="settings-content-wrapper" id="settings-modal-body"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary btn-sm" onclick="closeSettingsModal()">✓ Hoàn Tất &amp; Áp Dụng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MODAL DRILLDOWN CHI TIẾT LỖI / MA TRẬN ── -->
+    <div id="drilldown-modal" class="modal hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <div style="font-size:10px; letter-spacing:0.16em; color:var(--text-muted); font-weight:700;">DRILLDOWN CHI TIẾT</div>
+                    <h3 id="drilldown-modal-title" style="font-size:17px; font-weight:800; margin-top:4px; color:#f87171;">Chi Tiết Lỗi</h3>
+                </div>
+                <button class="btn-icon" onclick="closeDrilldownModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width:40px; text-align:center;">#</th>
+                                <th>Serial Number</th>
+                                <th>Thời Gian Đo</th>
+                                <th>Trạm Đo</th>
+                                <th>Tệp Nguồn / Phán Định</th>
+                            </tr>
+                        </thead>
+                        <tbody id="drilldown-modal-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:space-between;">
+                <button class="btn btn-outline-danger btn-sm" onclick="copyAllDefectSNs()">📋 Copy Toàn Bộ Mã</button>
+                <button class="btn btn-secondary btn-sm" onclick="closeDrilldownModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MODAL ROBOT LIFETIME STATS ── -->
+    <div id="robot-stats-modal" class="modal hidden">
+        <div class="modal-card" style="max-width:500px; text-align:center;">
+            <div class="modal-header">
+                <h3 style="font-size:16px; font-weight:900; color:var(--accent-blue);">🤖 THỐNG KÊ TUỔI THỌ ROBOT</h3>
+                <button class="btn-icon" onclick="closeRobotLifetimeModal()">✕</button>
+            </div>
+            <div class="modal-body" style="padding:24px;">
+                <div style="font-size:48px; margin-bottom:12px;">🦾</div>
+                <div style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+                    Tổng số lượt quét mã vạch hệ thống robot đã từng thực hiện:
+                </div>
+                <div class="kpi-grid" style="grid-template-columns: repeat(2, 1fr);">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Tổng Lượt Quét</div>
+                        <div class="kpi-val" id="robot-stat-total" style="color:var(--accent-blue);">0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Đạt Chuẩn (PASS)</div>
+                        <div class="kpi-val" id="robot-stat-pass" style="color:#10b981;">0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Lỗi (FAIL)</div>
+                        <div class="kpi-val" id="robot-stat-fail" style="color:#ef4444;">0</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Không Tìm Thấy</div>
+                        <div class="kpi-val" id="robot-stat-nodata" style="color:#f59e0b;">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="justify-content:center;">
+                <button class="btn btn-primary btn-sm" onclick="closeRobotLifetimeModal()">Tuyệt Vời!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast-container"></div>
+
+    <!-- VENDOR OFFLINE LIBRARIES -->
+    <script src="lib/chart.umd.js"></script>
+    <script src="lib/exceljs.min.js"></script>
+    <script src="lib/confetti.browser.min.js"></script>
+
+    <!-- SCANNER V2 MODULAR SCRIPTS -->
+    <script src="src/00-i18n-dict.js"></script>
+    <script src="src/01-config.js"></script>
+    <script src="src/01b-i18n.js"></script>
+    <script src="src/02-state.js"></script>
+    <script src="src/03-util.js"></script>
+    <script src="src/04-parser.js"></script>
+    <script src="src/05-matcher.js"></script>
+    <script src="src/06-stats.js"></script>
+    <script src="src/07-ui-common.js"></script>
+    <script src="src/08-ui-scan.js"></script>
+    <script src="src/09-ui-audit.js"></script>
+    <script src="src/10-ui-analysis.js"></script>
+    <script src="src/11-ui-parametric.js"></script>
+    <script src="src/12-ui-files.js"></script>
+    <script src="src/13-ui-settings.js"></script>
+    <script src="src/14-egg.js"></script>
+    <script src="src/99-boot.js"></script>
+
+</body>
+</html>
