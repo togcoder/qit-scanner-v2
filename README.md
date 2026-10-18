@@ -1,7 +1,7 @@
 # ⚡ QIT SCANNER V2 — ADVANCED KLIPPEL QC LOG PARSER & QUALITY ANALYTICS
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.1.0%20Pro-blue.svg?style=for-the-badge" alt="Version 2.1.0 Pro" />
+  <img src="https://img.shields.io/badge/version-2.2.0%20Pro-blue.svg?style=for-the-badge" alt="Version 2.2.0 Pro" />
   <img src="https://img.shields.io/badge/architecture-100%25%20Offline%20Standalone%20(Base64%20Fonts)-success.svg?style=for-the-badge" alt="100% Offline Standalone" />
   <img src="https://img.shields.io/badge/standard-Klippel%20QC%20%7C%20dB--Lab-orange.svg?style=for-the-badge" alt="Klippel QC Standard" />
   <img src="https://img.shields.io/badge/analytics-Six%20Sigma%20(Cp%2FCpk)-purple.svg?style=for-the-badge" alt="Six Sigma Cpk" />
@@ -20,6 +20,17 @@ Hệ thống được thiết kế để:
 2. **Đối soát mã vạch siêu tốc dưới 1 mili-giây ($O(1)$)** bằng súng quét USB trong dây chuyền đóng gói, lắp ráp và kiểm tra thành phẩm.
 3. **Phân tích năng lực quy trình sản xuất Six Sigma ($C_p, C_{pk}$)**, vẽ biểu đồ phân phối chuẩn Gauss và cảnh báo sớm sản phẩm **Cận Biên Lỗi (Near-Fail)** trước khi phát sinh hàng phế phẩm hàng loạt.
 4. **Hoạt động 100% Offline (Không cần Internet hay máy chủ)**, có thể chạy trực tiếp trên trình duyệt hoặc đóng gói thành **1 tệp HTML Standalone duy nhất** gửi qua Zalo/Email cho xưởng sản xuất.
+5. **Kiến Trúc Unified Progressive Disclosure (v2.2.0 Pro)**: Giao diện 3 tầng tinh tế phục vụ đồng thời công nhân quét mã (tầm nhìn xa 1.5m, Hero Banner 3 cột, chống chói mắt) và kỹ sư QC (ngăn công cụ thu gọn `Alt + E`, Camera 2D DataMatrix/QR, 4 bộ tách lô tự động, truy vết theo mã vạch).
+
+---
+
+## 🌟 Điểm Mới Trong Phiên Bản 2.2.0 Pro (Unified Progressive Disclosure)
+
+- 🎯 **8 Core Technical Bug Fixes (1.1–1.8)**: Khắc phục triệt để lỗi escape `</script>` trong template HTML, dải thước dung sai vật lý `[LSL ───●─── USL]` cận biên 15%, đồng bộ `--ui-zoom` và `zoom`, bộ đọc Klippel Time-gap 30 phút, bộ lọc ký tự ẩn tàng hình.
+- 🎨 **Industrial Matte Palette (WCAG AAA)**: Bảng màu nhám dịu mắt chống mỏi thị giác cho công nhân nhà xưởng, bỏ hiệu ứng chớp lóa, trạng thái PASS / FAIL / DUP đạt chuẩn tương phản cao.
+- 📷 **Khung Camera Quét 2D Trực Tiếp**: Hỗ trợ quét mã DataMatrix, QR, Code128 trực tiếp trên trình duyệt di động/laptop; hỗ trợ zoom quang 1x/2x/3x, đèn Flash, chế độ đảo màu (tem khắc laser nền đen), cooldown chống quét lặp 1800ms và rung phản hồi (Haptic).
+- 🛡️ **Focus Guard & Scan Velocity Burst**: Tuyệt đối chống cướp trỏ chuột khi người dùng chỉnh sửa dữ liệu; tự động nhận diện tốc độ súng quét (`delta < 45ms`) để gửi kết quả ngay mà không ảnh hưởng thao tác gõ tay.
+- 🌐 **100% i18n 4 Ngôn Ngữ**: 1.027 khóa từ điển dịch trọn vẹn sang Tiếng Việt, English, 日本語, 中文 (0 khóa thiếu).
 
 ---
 
