@@ -988,7 +988,39 @@ function openBucketDrilldown(bucketKey) {
     openCustomRecordsModal(`${_t('Chi Tiết Bản Ghi')} · ${bucket.label} (${bucket.dateStr})`, bucket.records);
 }
 
-function openCustomRecordsModal(title, recordsList) {
+function openCustomRecordsModal(hourOrFilter, optionalRecords) {
+    let title = '';
+    let recordsList = [];
+
+    if (Array.isArray(optionalRecords)) {
+        title = String(hourOrFilter || _t('Chi Tiết Bản Ghi'));
+        recordsList = optionalRecords;
+    } else if (typeof hourOrFilter === 'number' || (typeof hourOrFilter === 'string' && /^\d{1,2}(:00)?$/.test(String(hourOrFilter).trim()))) {
+        const h = typeof hourOrFilter === 'number' ? hourOrFilter : parseInt(hourOrFilter, 10);
+        title = `${_t('Khung Giờ')} ${String(h).padStart(2, '0')}:00 - ${String((h + 1) % 24).padStart(2, '0')}:00`;
+        const pool = (filteredTimelineData && filteredTimelineData.length > 0) ? filteredTimelineData : timelineData;
+        recordsList = pool.filter(r => r.timestamp && r.timestamp.getHours() === h);
+    } else if (typeof hourOrFilter === 'string') {
+        const pool = (filteredTimelineData && filteredTimelineData.length > 0) ? filteredTimelineData : timelineData;
+        const bucket = (productionTimelineData.buckets || []).find(b => b.key === hourOrFilter);
+        if (bucket && bucket.records) {
+            title = `${_t('Chi Tiết Bản Ghi')} · ${bucket.label} (${bucket.dateStr})`;
+            recordsList = bucket.records;
+        } else {
+            const filterName = hourOrFilter;
+            title = `${_t('Bản Ghi Lỗi:')} ${getMappedName(filterName)}`;
+            recordsList = pool.filter(r => r.errors && r.errors.includes(filterName));
+        }
+    } else if (hourOrFilter && typeof hourOrFilter === 'object') {
+        if (hourOrFilter.title) title = hourOrFilter.title;
+        if (Array.isArray(hourOrFilter.records)) recordsList = hourOrFilter.records;
+    }
+
+    if (!recordsList || recordsList.length === 0) {
+        showToast(_t('Không có dữ liệu trong khung giờ này'), 'info');
+        return;
+    }
+
     const modal = document.getElementById('drilldown-modal');
     if (!modal) return;
     const titleEl = document.getElementById('drilldown-modal-title');
@@ -1033,6 +1065,9 @@ function openCustomRecordsModal(title, recordsList) {
         }).join('');
     }
     modal.classList.remove('hidden');
+}
+if (typeof window !== 'undefined') {
+    window.openCustomRecordsModal = openCustomRecordsModal;
 }
 
 /**
@@ -1326,7 +1361,7 @@ function renderHourlyYieldHeatmap() {
 
     let html = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:11px; color:var(--text-muted); flex-wrap:wrap; gap:8px;">
-            <div>${_t('Mức độ tỷ lệ lỗi')}: <span style="color:#10b981;">${_t('0% (Xanh)')}</span> $\\rightarrow$ <span style="color:#ef4444;">${_t('Cao (Đỏ đậm)')}</span></div>
+            <div>${_t('Mức độ tỷ lệ lỗi')}: <span style="color:#10b981;">${_t('0% (Xanh)')}</span> → <span style="color:#ef4444;">${_t('Cao (Đỏ đậm)')}</span></div>
             <div>${_t('Tổng số khung giờ ghi nhận')}: <strong>${activeHours.length} ${_t('giờ')}</strong></div>
         </div>
         <div class="hourly-grid">
@@ -1352,7 +1387,7 @@ function renderHourlyYieldHeatmap() {
         const hStr = `${String(s.hour).padStart(2, '0')}:00`;
 
         html += `
-            <div class="hourly-card" style="background:${bg}; border-color:${border};">
+            <div class="hourly-card" style="background:${bg}; border-color:${border}; cursor:pointer;" onclick="openCustomRecordsModal(${s.hour})" title="${_t('Nhấp để xem danh sách bản ghi khung giờ {0}', hStr)}">
                 <div class="hourly-time">${hStr}</div>
                 <div class="hourly-yield" style="color:${textCol};">${yieldRate.toFixed(1)}%</div>
                 <div class="hourly-counts">${s.pass}P / ${s.fail}F (${s.total})</div>

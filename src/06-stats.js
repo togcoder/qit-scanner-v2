@@ -199,6 +199,14 @@ function calculateMatrixData() {
     const activeFiles = Array.from(loadedFilesMap.values()).filter(f => f.active);
     if (activeFiles.length === 0) return;
 
+    if (typeof extractModelFromFileName !== 'function') {
+        var extractModelFromFileName = function(fn) {
+            return (typeof extractModelFromDbOrFile === 'function')
+                ? extractModelFromDbOrFile('', fn)
+                : (fn || '').replace(/\.[^/.]+$/, '');
+        };
+    }
+
     matrixData.runs = activeFiles.map((f, idx) => {
         const model = f.modelName || (f.records && f.records[0] && f.records[0].modelName) || extractModelFromFileName(f.fileName);
         return {

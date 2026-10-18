@@ -65,17 +65,17 @@
 /* ════════════ QIT SCANNER V2 PRO — INDUSTRIAL ACOUSTIC QC & SPC DESIGN SYSTEM ════════════ */
 
 :root {
-    --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
 
-    /* Theme: Deep Space Industrial Dark (Default) */
-    --bg-base: #070b14;
-    --bg-surface: rgba(15, 23, 42, 0.86);
-    --bg-surface-elevated: #131c31;
-    --bg-card: rgba(15, 23, 42, 0.82);
+    /* Theme: Deep Space Industrial Matte (WCAG AAA) */
+    --bg-base: #0b1120;
+    --bg-surface: #111827;
+    --bg-surface-elevated: #1e293b;
+    --bg-card: #111827;
     --surface3: rgba(148, 163, 184, 0.07);
-    --border-color: rgba(148, 163, 184, 0.14);
-    --border-color-hover: rgba(0, 242, 254, 0.42);
+    --border-color: #1e293b;
+    --border-color-hover: #38bdf8;
 
     --text-main: #f1f5f9;
     --text-muted: #94a3b8;
@@ -728,26 +728,36 @@ body {
 }
 
 .verdict-idle {
-    background: var(--bg-surface-elevated);
-    border: 1.5px dashed var(--border-color);
+    background: #131c31;
+    border: 2px dashed #334155;
+    color: #94a3b8;
+    transition: all 0.2s ease;
 }
 
 .verdict-pass {
-    background: linear-gradient(120deg, rgba(16, 185, 129, 0.22), rgba(16, 185, 129, 0.04));
-    border: 1.5px solid rgba(16, 185, 129, 0.5);
-    box-shadow: 0 0 60px -28px var(--status-pass);
+    background: #0d2821;
+    border: 2px solid #34d399;
+    color: #ecfdf5;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 40px -20px #34d399;
 }
 
 .verdict-fail {
-    background: linear-gradient(120deg, rgba(239, 68, 68, 0.22), rgba(239, 68, 68, 0.04));
-    border: 1.5px solid rgba(239, 68, 68, 0.55);
-    box-shadow: 0 0 60px -28px var(--status-fail);
+    background: #31151b;
+    border: 2px solid #f87171;
+    color: #fef2f2;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 40px -20px #f87171;
 }
 
+.verdict-warn,
+.verdict-dup,
 .verdict-notfound {
-    background: linear-gradient(120deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.04));
-    border: 1.5px solid rgba(245, 158, 11, 0.5);
-    box-shadow: 0 0 60px -28px var(--status-warn);
+    background: #2e210b;
+    border: 2px solid #fbbf24;
+    color: #fffbeb;
+    transition: all 0.2s ease;
+    box-shadow: 0 0 40px -20px #fbbf24;
 }
 
 .vb-row {
@@ -769,9 +779,11 @@ body {
 }
 
 .verdict-idle .vb-mark { display: none; }
-.verdict-pass .vb-mark { border: 3px solid var(--status-pass); color: var(--status-pass); background: rgba(16, 185, 129, 0.12); }
-.verdict-fail .vb-mark { border: 3px solid var(--status-fail); color: var(--status-fail); background: rgba(239, 68, 68, 0.12); }
-.verdict-notfound .vb-mark { border: 3px solid var(--status-warn); color: var(--status-warn); background: rgba(245, 158, 11, 0.12); }
+.verdict-pass .vb-mark { border: 3px solid #34d399; color: #34d399; background: rgba(52, 211, 153, 0.15); }
+.verdict-fail .vb-mark { border: 3px solid #f87171; color: #f87171; background: rgba(248, 113, 113, 0.15); }
+.verdict-warn .vb-mark,
+.verdict-dup .vb-mark,
+.verdict-notfound .vb-mark { border: 3px solid #fbbf24; color: #fbbf24; background: rgba(251, 191, 36, 0.15); }
 
 .vb-title {
     font-size: clamp(22px, 2.2vw, 34px);
@@ -780,10 +792,28 @@ body {
     line-height: 1.1;
 }
 
-.verdict-idle .vb-title { font-size: 24px; color: var(--text-muted); }
-.verdict-pass .vb-title { color: #10b981; }
-.verdict-fail .vb-title { color: #ef4444; }
-.verdict-notfound .vb-title { color: #f59e0b; }
+.verdict-idle .vb-title { font-size: 24px; color: #94a3b8; }
+.verdict-pass .vb-title { color: #ecfdf5; }
+.verdict-fail .vb-title { color: #fef2f2; }
+.verdict-warn .vb-title,
+.verdict-dup .vb-title,
+.verdict-notfound .vb-title { color: #fffbeb; }
+
+.verdict-pass .vm-lbl { color: #6ee7b7; }
+.verdict-fail .vm-lbl { color: #fca5a5; }
+.verdict-warn .vm-lbl,
+.verdict-dup .vm-lbl,
+.verdict-notfound .vm-lbl { color: #fcd34d; }
+
+@keyframes scanReceivePulse {
+    0% { transform: scale(0.995); }
+    50% { transform: scale(1.005); }
+    100% { transform: scale(1); }
+}
+
+.scan-pulse {
+    animation: scanReceivePulse 0.35s ease-out;
+}
 
 .vb-sub {
     font-size: 11.5px;
@@ -1675,6 +1705,509 @@ body {
     box-shadow: 0 0 15px -3px rgba(0, 242, 254, 0.22);
 }
 
+/* ════════════ UNIFIED PROGRESSIVE DISCLOSURE ARCHITECTURE (TAB 2) ════════════ */
+
+/* Tầng 1: Glanceable Primary Zone */
+.audit-top-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.audit-input-wrapper {
+    flex: 1 1 320px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.audit-scanner-input-large {
+    width: 100%;
+    height: 52px !important;
+    padding: 0 46px 0 16px !important;
+    font-size: 18px !important;
+    font-family: var(--font-mono) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-md) !important;
+    background: var(--bg-surface-elevated) !important;
+    color: var(--text-main) !important;
+    border: 1.5px solid var(--border-color) !important;
+    transition: all 0.2s ease;
+}
+
+.audit-scanner-input-large:focus {
+    border-color: var(--accent-cyan) !important;
+    box-shadow: 0 0 20px -4px rgba(0, 242, 254, 0.35) !important;
+}
+
+/* Floating Camera Dock (Part 4) */
+.camera-dock {
+    background: #090e1a;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 4px;
+    transition: all 0.25s ease;
+    box-shadow: 0 14px 40px -10px rgba(0, 0, 0, 0.7);
+}
+
+.camera-dock.hidden {
+    display: none !important;
+}
+
+.camera-dock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+    background: rgba(17, 24, 39, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.camera-dock-tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.camera-dock-viewport {
+    position: relative;
+    height: 240px;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.camera-dock-viewport video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.camera-viewfinder {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.viewfinder-box {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    border: 1.5px dashed rgba(56, 189, 248, 0.5);
+    border-radius: 12px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+    transition: border-color 0.2s ease;
+}
+
+.camera-flash-success .viewfinder-box {
+    border-color: #34d399 !important;
+    box-shadow: 0 0 30px #34d399, 0 0 0 9999px rgba(16, 185, 129, 0.25) !important;
+}
+
+.vf-corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: var(--accent-cyan);
+    border-style: solid;
+}
+.vf-tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; border-top-left-radius: 6px; }
+.vf-tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; border-top-right-radius: 6px; }
+.vf-bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; border-bottom-left-radius: 6px; }
+.vf-br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; border-bottom-right-radius: 6px; }
+
+.vf-laser-line {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ef4444, #ff0000, transparent);
+    box-shadow: 0 0 8px #ef4444;
+    animation: vfLaserScan 2s ease-in-out infinite alternate;
+}
+
+@keyframes vfLaserScan {
+    0% { top: 8%; opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { top: 92%; opacity: 0.3; }
+}
+
+.viewfinder-hint {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.65);
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.03em;
+}
+
+/* Smart Group Routing Hero Banner */
+.audit-hero-banner {
+    min-height: 130px;
+    border-radius: var(--radius-lg);
+    padding: 18px 24px;
+    display: grid;
+    grid-template-columns: 1.3fr 1.5fr 1.2fr;
+    gap: 18px;
+    align-items: center;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+@media (max-width: 960px) {
+    .audit-hero-banner {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 16px;
+    }
+}
+
+.hero-banner-idle {
+    background: #131c31;
+    border: 2px dashed #334155;
+    color: #94a3b8;
+}
+
+.hero-banner-pass {
+    background: #0d2821;
+    border: 2px solid #34d399;
+    color: #ecfdf5;
+    box-shadow: 0 0 40px -20px #34d399;
+}
+
+.hero-banner-warn {
+    background: #2e210b;
+    border: 2px solid #fbbf24;
+    color: #fffbeb;
+    box-shadow: 0 0 40px -20px #fbbf24;
+}
+
+.hero-banner-fail {
+    background: #31151b;
+    border: 2px solid #f87171;
+    color: #fef2f2;
+    box-shadow: 0 0 40px -20px #f87171;
+}
+
+.hero-col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.hero-col-left {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    padding-right: 14px;
+}
+@media (max-width: 960px) {
+    .hero-col-left { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px; }
+}
+
+.hero-col-center {
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    padding-right: 14px;
+}
+@media (max-width: 960px) {
+    .hero-col-center { border-right: none; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 12px; }
+}
+
+.hero-label-top {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+}
+
+.hero-group-title {
+    font-size: clamp(24px, 2.8vw, 36px);
+    font-weight: 800;
+    line-height: 1.15;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hero-status-pill {
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.hero-serial-display {
+    font-family: var(--font-mono);
+    font-size: clamp(17px, 1.8vw, 23px);
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hero-seq-display {
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.85;
+}
+
+.hero-qc-display {
+    margin-top: 4px;
+}
+
+.hero-counts-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.hcd-lbl {
+    font-size: 11px;
+    opacity: 0.75;
+}
+
+.hcd-val-scanned {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 800;
+    margin-left: 4px;
+}
+
+.hcd-val-missing {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 800;
+    margin-left: 4px;
+}
+
+.hero-progress-track {
+    height: 16px;
+    border-radius: 8px;
+    background: rgba(148, 163, 184, 0.16);
+    overflow: hidden;
+}
+
+.hero-progress-bar {
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #00f2fe, #38bdf8, #10b981);
+    transition: width 0.35s ease;
+}
+
+/* Horizontal Multi-Group Strip (Tầng 2) */
+.audit-groups-horizontal-strip {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+}
+
+.audit-group-strip-card {
+    flex: 0 0 220px;
+    background: var(--bg-surface-elevated);
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+}
+
+.audit-group-strip-card:hover {
+    border-color: var(--border-color-hover);
+    transform: translateY(-1px);
+}
+
+.audit-group-strip-card.active-group-card {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 242, 254, 0.08);
+    box-shadow: 0 6px 18px -8px var(--accent-cyan);
+}
+
+.audit-group-strip-card.locked-group-card {
+    border-left: 4px solid #fbbf24;
+}
+
+.audit-group-strip-card.done-group-card {
+    border-left: 4px solid #34d399;
+}
+
+.agsc-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.agsc-title {
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+}
+
+.agsc-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.agsc-popover-menu {
+    position: absolute;
+    right: 8px;
+    top: 36px;
+    z-index: 50;
+    background: #111827;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 4px;
+    box-shadow: var(--shadow-md);
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.agsc-popover-item {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-align: left;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.agsc-popover-item:hover {
+    background: var(--surface3);
+    color: var(--accent-cyan);
+}
+
+.agsc-popover-item.danger-item:hover {
+    color: #f87171;
+}
+
+.agsc-progress-track {
+    height: 6px;
+    border-radius: 6px;
+    background: rgba(148, 163, 184, 0.15);
+    overflow: hidden;
+}
+
+.agsc-progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #00f2fe, #34d399);
+    transition: width 0.3s ease;
+}
+
+.agsc-stats {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: var(--text-muted);
+}
+
+/* Progressive Detail Table (Tầng 2) */
+.audit-adaptive-table th,
+.audit-adaptive-table td {
+    font-size: 13px;
+    padding: 10px 12px;
+}
+
+.audit-table-row {
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.audit-table-row:hover {
+    background: rgba(148, 163, 184, 0.08);
+}
+
+.audit-row-accordion {
+    background: #090e1a !important;
+}
+
+.audit-accordion-content {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-left: 3px solid var(--accent-cyan);
+}
+
+/* Collapsible Engineering Drawer (Tầng 3) */
+.audit-eng-drawer {
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.25s ease;
+    max-height: 1200px;
+    opacity: 1;
+}
+
+.audit-eng-drawer.collapsed {
+    max-height: 0 !important;
+    opacity: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    pointer-events: none;
+}
+
+.eng-drawer-card {
+    padding: 16px 20px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+}
+
+.eng-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.eng-drawer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 900px) {
+    .eng-drawer-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
 
 </style>
 </head>
@@ -2064,150 +2597,115 @@ body {
             <section id="pane-audit" class="tab-pane hidden">
                 <div style="display:flex; flex-direction:column; gap:14px;">
 
-                    <!-- HÀNG 1: 6 THẺ KPI ĐỐI SOÁT TOÀN DIỆN -->
-                    <div class="audit-kpi-grid">
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="TỔNG MÃ MỤC TIÊU">TỔNG MÃ MỤC TIÊU</div>
-                            <div class="kpi-val" id="audit-total-count" style="color:var(--text-main);">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Trong phạm vi Group đang xem">Trong phạm vi Group đang xem</div>
+                    <!-- ════════════ TẦNG 1: VÙNG TÁC NGHIỆP TẦM NHÌN XA 1.5M (GLANCEABLE PRIMARY ZONE) ════════════ -->
+                    
+                    <!-- 1.1. Thanh Nhập Liệu Quét & Cụm Nút Tác Vụ Nhanh (Cao 52px) -->
+                    <div class="audit-top-bar">
+                        <div class="input-glow-wrapper audit-input-wrapper">
+                            <input type="text" id="audit-scanner-input" class="audit-scanner-input-large" placeholder="QUÉT MÃ ĐỐI SOÁT KIỆN HÀNG..." data-i18n-placeholder="QUÉT MÃ ĐỐI SOÁT KIỆN HÀNG..." autocomplete="off">
+                            <span class="scan-icon-indicator">🎯</span>
                         </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="ĐÃ QUÉT ĐỐI SOÁT">ĐÃ QUÉT ĐỐI SOÁT</div>
-                            <div class="kpi-val" id="audit-scanned-count" style="color:#10b981;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Khớp thành công">Khớp thành công</div>
+                        <button class="btn btn-primary" id="audit-submit-btn" onclick="onAuditManualSubmit()" style="height:52px; padding:0 20px; font-weight:800;" data-i18n="⚡ Chốt Mã">⚡ Chốt Mã</button>
+                        <button class="btn btn-outline" id="audit-camera-toggle-btn" onclick="toggleAuditCameraDock()" style="height:52px; padding:0 16px; font-weight:700; white-space:nowrap;">
+                            📷 <span data-i18n="Quét Camera 2D">Quét Camera 2D</span>
+                        </button>
+                        <button class="btn btn-outline" id="audit-scope-toggle-btn" onclick="toggleAuditScanScope()" style="height:52px; padding:0 16px; font-weight:700; white-space:nowrap;" title="Chuyển chế độ phạm vi đối soát 1 chạm" data-i18n-title="Chuyển chế độ phạm vi đối soát 1 chạm">
+                            <span id="audit-scope-btn-icon">🌐</span> <span id="audit-scope-btn-text" data-i18n="Tự Động Định Tuyến Mọi Group">Tự Động Định Tuyến Mọi Group</span>
+                        </button>
+                        <button class="btn btn-secondary" id="audit-drawer-toggle-btn" onclick="toggleAuditEngineeringDrawer()" style="height:52px; padding:0 16px; font-weight:700; white-space:nowrap;" title="Mở ngăn công cụ nạp danh sách, tách lô và báo cáo (Alt + E)" data-i18n-title="Mở ngăn công cụ nạp danh sách, tách lô và báo cáo (Alt + E)">
+                            🛠️ <span data-i18n="Quản lý Lô & Tách Nhóm">Quản lý Lô &amp; Tách Nhóm</span> <span id="audit-drawer-status-dot" class="dot-online"></span> ▾
+                        </button>
+                    </div>
+
+                    <!-- 1.2. Khung Camera Nổi (Floating Compact Camera Dock - Part 4) -->
+                    <div id="audit-camera-dock" class="camera-dock hidden">
+                        <div class="camera-dock-header">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span style="font-size:14px;">📷</span>
+                                <strong style="font-size:12px; letter-spacing:0.04em;" data-i18n="CAMERA QUÉT 2D TRỰC TIẾP (DATAMATRIX / QR / BARCODE)">CAMERA QUÉT 2D TRỰC TIẾP (DATAMATRIX / QR / BARCODE)</strong>
+                                <span id="camera-fps-badge" class="meta-chip">30 FPS</span>
+                            </div>
+                            <div class="camera-dock-tools">
+                                <button class="btn btn-xs btn-outline" id="camera-zoom-1x" onclick="setCameraZoom(1.0)">1x</button>
+                                <button class="btn btn-xs btn-primary" id="camera-zoom-2x" onclick="setCameraZoom(2.0)">2x</button>
+                                <button class="btn btn-xs btn-outline" id="camera-zoom-3x" onclick="setCameraZoom(3.0)">3x</button>
+                                <button class="btn btn-xs btn-outline" id="camera-torch-btn" onclick="toggleCameraTorch()" title="Bật/Tắt Đèn Trợ Sáng" data-i18n-title="Bật/Tắt Đèn Trợ Sáng">🔦 Flash</button>
+                                <button class="btn btn-xs btn-outline" id="camera-invert-btn" onclick="toggleCameraInvert()" title="Đảo màu quét tem khắc laser nền đen" data-i18n-title="Đảo màu quét tem khắc laser nền đen">◐ Đảo màu</button>
+                                <button class="btn btn-xs btn-outline-danger" onclick="stopAuditCamera()" title="Đóng Camera (ESC)" data-i18n-title="Đóng Camera (ESC)">✕ Đóng</button>
+                            </div>
                         </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="CÒN THIẾU CHƯA QUÉT">CÒN THIẾU CHƯA QUÉT</div>
-                            <div class="kpi-val" id="audit-remaining-count" style="color:#f87171;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Cần tiếp tục quét">Cần tiếp tục quét</div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="LƯỢT QUÉT LẶP (DUP)">LƯỢT QUÉT LẶP (DUP)</div>
-                            <div class="kpi-val" id="audit-dup-count" style="color:#f59e0b;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Quét trùng > 1 lần">Quét trùng &gt; 1 lần</div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="MÃ LẠ NGOÀI DS">MÃ LẠ NGOÀI DS</div>
-                            <div class="kpi-val" id="audit-stranger-count" style="color:#a855f7;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Không thuộc danh sách">Không thuộc danh sách</div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="CẢNH BÁO NG KLIPPEL">CẢNH BÁO NG KLIPPEL</div>
-                            <div class="kpi-val" id="audit-qcfail-count" style="color:#ef4444;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Mã trong DS bị lỗi QC">Mã trong DS bị lỗi QC</div>
+                        <div class="camera-dock-viewport">
+                            <video id="audit-camera-video" playsinline muted autoplay></video>
+                            <canvas id="audit-camera-canvas" width="320" height="320" style="display:none;"></canvas>
+                            <div class="camera-viewfinder">
+                                <div class="viewfinder-box" id="viewfinder-box">
+                                    <span class="vf-corner vf-tl"></span>
+                                    <span class="vf-corner vf-tr"></span>
+                                    <span class="vf-corner vf-bl"></span>
+                                    <span class="vf-corner vf-br"></span>
+                                    <div class="vf-laser-line"></div>
+                                </div>
+                                <div class="viewfinder-hint" data-i18n="Đưa mã DataMatrix / QR / Barcode vào giữa khung ngắm">Đưa mã DataMatrix / QR / Barcode vào giữa khung ngắm</div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- HÀNG 2: THANH TIẾN ĐỘ THỜI GIAN THỰC & PHẠM VI GROUP -->
+                    <!-- 1.3. Banner Định Tuyến Nhóm Hàng Cỡ Lớn (Smart Group Routing Hero Banner) -->
+                    <div id="audit-hero-banner" class="audit-hero-banner hero-banner-idle">
+                        <!-- Cột Trái (Định danh Nhóm đích cực lớn) -->
+                        <div class="hero-col hero-col-left">
+                            <div class="hero-label-top" data-i18n="ĐỊNH TUYẾN KIỆN HÀNG">ĐỊNH TUYẾN KIỆN HÀNG</div>
+                            <div class="hero-group-title" id="hero-group-title" data-i18n="CHỜ QUÉT MÃ...">CHỜ QUÉT MÃ...</div>
+                            <div class="hero-status-pill" id="hero-status-pill">
+                                <span class="hero-status-text" data-i18n="Sẵn sàng nhận mã từ súng barcode hoặc camera">Sẵn sàng nhận mã từ súng barcode hoặc camera</span>
+                            </div>
+                        </div>
+                        <!-- Cột Giữa (Thông tin Con hàng vừa quét) -->
+                        <div class="hero-col hero-col-center">
+                            <div class="hero-label-top" data-i18n="SẢN PHẨM VỪA QUÉT">SẢN PHẨM VỪA QUÉT</div>
+                            <div class="hero-serial-display" id="hero-serial-display">—</div>
+                            <div class="hero-seq-display" id="hero-seq-display">
+                                <span data-i18n="Thứ tự trong kiện: —">Thứ tự trong kiện: —</span>
+                            </div>
+                            <div class="hero-qc-display" id="hero-qc-display">
+                                <span class="badge-pill" style="background:rgba(148,163,184,0.12); color:var(--text-muted);" data-i18n="Klippel: Chờ quét">Klippel: Chờ quét</span>
+                            </div>
+                        </div>
+                        <!-- Cột Phải (Tiến độ Kiện hiện tại) -->
+                        <div class="hero-col hero-col-right">
+                            <div class="hero-label-top" data-i18n="TIẾN ĐỘ KIỆN HIỆN TẠI">TIẾN ĐỘ KIỆN HIỆN TẠI</div>
+                            <div class="hero-counts-display">
+                                <div>
+                                    <span class="hcd-lbl" data-i18n="Đã quét:">Đã quét:</span>
+                                    <strong class="hcd-val-scanned" id="hero-scanned-count">0 / 0</strong>
+                                </div>
+                                <div>
+                                    <span class="hcd-lbl" data-i18n="Còn thiếu:">Còn thiếu:</span>
+                                    <strong class="hcd-val-missing" id="hero-missing-count">0</strong>
+                                </div>
+                            </div>
+                            <div class="hero-progress-track">
+                                <div class="hero-progress-bar" id="hero-progress-bar" style="width:0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ════════════ TẦNG 2: DẢI THẺ GROUP ĐỘC LẬP & BẢNG DANH SÁCH THÍCH ỨNG ════════════ -->
+                    
+                    <!-- 2.1. Dải Thẻ Group Ngang (Horizontal Multi-Group Strip) -->
+                    <div class="card" style="padding:12px 16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em;" data-i18n="📦 DẢI THẺ GROUP / KIỆN HÀNG ĐỘC LẬP (CHỌN ĐỂ LỌC RIÊNG)">📦 DẢI THẺ GROUP / KIỆN HÀNG ĐỘC LẬP (CHỌN ĐỂ LỌC RIÊNG)</span>
+                            <span id="audit-groups-count-badge" class="meta-chip" data-i18n="0 Group">0 Group</span>
+                        </div>
+                        <div id="audit-groups-deck" class="audit-groups-horizontal-strip"></div>
+                    </div>
+
+                    <!-- 2.2. Bảng Danh Sách Thích Ứng (Progressive Detail Table 5 cột + Inline Row Accordion) -->
                     <div class="card" style="padding:14px 18px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-                            <div id="audit-active-scope-title" style="font-size:12px; font-weight:800; color:var(--text-main);">
-                                <span data-i18n="🌐 TỔNG HỢP TOÀN BỘ GROUP ĐỐI SOÁT">🌐 TỔNG HỢP TOÀN BỘ GROUP ĐỐI SOÁT</span>
-                            </div>
-                            <span id="audit-progress-pct" style="font-family:var(--font-mono); font-size:20px; font-weight:900; color:var(--accent-cyan);">0.0%</span>
-                        </div>
-                        <div style="background:rgba(148,163,184,0.14); height:11px; border-radius:11px; overflow:hidden;">
-                            <div id="audit-progress-bar" style="width:0%; height:100%; border-radius:11px; background:linear-gradient(90deg, #00f2fe, #38bdf8, #10b981); transition:width 0.35s ease;"></div>
-                        </div>
-                    </div>
-
-                    <!-- HÀNG 3: BẢNG ĐIỀU KHIỂN CÁC GROUP ĐỘC LẬP (MULTI-GROUP CONTROL DECK) -->
-                    <div class="card" style="padding:16px 18px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
-                            <div>
-                                <div style="font-size:12px; font-weight:900; color:var(--accent-cyan); text-transform:uppercase; letter-spacing:0.06em;">
-                                    <span data-i18n="📦 BẢNG ĐIỀU KHIỂN & PHÂN TÁCH CÁC GROUP KIỂM SOÁT RIÊNG">📦 BẢNG ĐIỀU KHIỂN &amp; PHÂN TÁCH CÁC GROUP KIỂM SOÁT RIÊNG</span>
-                                </div>
-                                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                                    <span data-i18n="Nhấp chọn bất kỳ Group/Kiện hàng nào để kiểm soát riêng, Khóa bảo vệ khi đóng đủ thùng, hoặc dùng công cụ Chia Tách Group Tự Động bên phải.">Nhấp chọn bất kỳ Group/Kiện hàng nào để kiểm soát riêng, Khóa bảo vệ khi đóng đủ thùng, hoặc dùng công cụ Chia Tách Group Tự Động bên phải.</span>
-                                </div>
-                            </div>
-
-                            <!-- Thanh công cụ tách Group tự động 1-Click -->
-                            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                                <div style="display:inline-flex; align-items:center; gap:4px; background:var(--bg-surface-elevated); padding:3px 8px; border-radius:8px; border:1px solid var(--border-color);">
-                                    <span style="font-size:11px; color:var(--text-muted); font-weight:700;" data-i18n="Quy cách:">Quy cách:</span>
-                                    <input type="number" id="audit-batch-size-input" min="1" max="500" value="6" class="settings-input" style="width:52px; padding:3px 6px; font-size:11.5px; font-weight:800; text-align:center;">
-                                    <button class="btn btn-sm btn-outline" style="padding:4px 9px; font-size:11px;" onclick="splitAuditIntoGroups('BATCH_SIZE')" title="Chia danh sách hiện tại thành các Thùng/Group theo số lượng PCS mỗi thùng" data-i18n-title="Chia danh sách hiện tại thành các Thùng/Group theo số lượng PCS mỗi thùng" data-i18n="📦 Chia Theo Thùng">📦 Chia Theo Thùng</button>
-                                </div>
-                                <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('MODEL_PREFIX')" title="Tự động tách thành các Group riêng theo Mã Model hoặc Tiền tố" data-i18n-title="Tự động tách thành các Group riêng theo Mã Model hoặc Tiền tố" data-i18n="🏷️ Tách Theo Model">🏷️ Tách Theo Model</button>
-                                <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('KLIPPEL_STATUS')" title="Tách riêng Group Đạt (PASS), Group Lỗi (FAIL) và Group Chưa Đo" data-i18n-title="Tách riêng Group Đạt (PASS), Group Lỗi (FAIL) và Group Chưa Đo" data-i18n="🔬 Tách Theo KQ Klippel">🔬 Tách Theo KQ Klippel</button>
-                                <button class="btn btn-sm btn-secondary" style="border-color:var(--status-pass); color:#34d399;" onclick="loadDemoMultiGroupAudit()" title="Nạp danh sách mẫu gồm 3 Kiện hàng độc lập để kiểm thử ngay" data-i18n-title="Nạp danh sách mẫu gồm 3 Kiện hàng độc lập để kiểm thử ngay" data-i18n="🧪 Nạp Mẫu 3 Group">🧪 Nạp Mẫu 3 Group</button>
-                            </div>
-                        </div>
-
-                        <!-- Lưới hiển thị các thẻ Group -->
-                        <div id="audit-groups-deck"></div>
-                    </div>
-
-                    <!-- HÀNG 4: KHUNG NẠP / TẠO GROUP MỚI & KHUNG QUÉT ĐỐI SOÁT THỰC TẾ -->
-                    <div class="audit-io-grid">
-                        <!-- Cột Trái: Nạp Danh Sách / Tạo Group Mới -->
-                        <div class="card" style="display:flex; flex-direction:column; gap:10px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                                <div style="font-size:11.5px; font-weight:800; color:var(--text-main);" data-i18n="📋 NẠP DANH SÁCH MÃ HOẶC TẠO GROUP MỚI">📋 NẠP DANH SÁCH MÃ HOẶC TẠO GROUP MỚI</div>
-                                <div style="display:flex; gap:6px;">
-                                    <button class="btn btn-sm btn-outline" onclick="document.getElementById('audit-file-input').click()" style="font-size:11px; padding:4px 10px;" data-i18n="📄 Nạp File (.xlsx, .csv, .txt)">📄 Nạp File (.xlsx, .csv, .txt)</button>
-                                    <input type="file" id="audit-file-input" accept=".xlsx,.xls,.csv,.txt" style="display:none;" onchange="handleAuditFileUpload(this)">
-                                </div>
-                            </div>
-
-                            <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:8px;">
-                                <input type="text" id="audit-group-name-input" class="settings-input" placeholder="📦 Tên Group (VD: Kiện #01 - Pallet A)..." data-i18n-placeholder="📦 Tên Group (VD: Kiện #01 - Pallet A)...">
-                                <input type="text" id="audit-group-note-input" class="settings-input" placeholder="📝 Ghi chú (PO / Khách hàng / Ca)..." data-i18n-placeholder="📝 Ghi chú (PO / Khách hàng / Ca)...">
-                            </div>
-
-                            <textarea id="audit-target-input" rows="5" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); background:var(--bg-surface-elevated); color:var(--text-main); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:12px; line-height:1.6; outline:none;" placeholder="Dán danh sách mã Serial / DUT tại đây (mỗi mã 1 dòng).&#10;💡 Mẹo tách nhiều Group cùng lúc: Gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!" data-i18n-placeholder="Dán danh sách mã Serial / DUT tại đây (mỗi mã 1 dòng).&#10;💡 Mẹo tách nhiều Group cùng lúc: Gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!"></textarea>
-
-                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <button class="btn btn-primary btn-sm" style="flex:1;" onclick="loadAuditTargetList(false)" data-i18n="✓ Nạp Mới (Thay Thế)">✓ Nạp Mới (Thay Thế)</button>
-                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="loadAuditTargetList(true)" data-i18n="➕ Thêm Thành Group Riêng">➕ Thêm Thành Group Riêng</button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="resetAuditList()" data-i18n="🗑️ Xóa Hết">🗑️ Xóa Hết</button>
-                            </div>
-                        </div>
-
-                        <!-- Cột Phải: Quét Đối Soát Thực Tế Theo Phạm Vi Group -->
-                        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
-                            <div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-                                    <span style="font-size:11.5px; font-weight:800; color:var(--accent-cyan);" data-i18n="🎯 QUÉT ĐỐI SOÁT THỰC TẾ THEO GROUP">🎯 QUÉT ĐỐI SOÁT THỰC TẾ THEO GROUP</span>
-                                    <div style="display:flex; gap:6px; align-items:center;">
-                                        <select class="settings-select" style="padding:3px 8px; font-size:11px; font-weight:700;" onchange="setAuditScanScope(this.value)" title="Chọn chế độ kiểm soát phạm vi Group khi quét" data-i18n-title="Chọn chế độ kiểm soát phạm vi Group khi quét">
-                                            <option value="GLOBAL" data-i18n="🌐 Tự Động Định Tuyến Mọi Group">🌐 Tự Động Định Tuyến Mọi Group</option>
-                                            <option value="ACTIVE" data-i18n="🎯 Khóa Quét Trong Group Đang Chọn">🎯 Khóa Quét Trong Group Đang Chọn</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="input-glow-wrapper">
-                                    <input type="text" id="audit-scanner-input" placeholder="QUÉT MÃ THỰC TẾ ĐỂ KIỂM SOÁT GROUP..." data-i18n-placeholder="QUÉT MÃ THỰC TẾ ĐỂ KIỂM SOÁT GROUP..." autocomplete="off">
-                                    <span class="scan-icon-indicator">🎯</span>
-                                </div>
-
-                                <div style="display:flex; gap:8px; margin-top:8px;">
-                                    <button class="btn btn-primary btn-sm" style="flex:1;" onclick="onAuditManualSubmit()" data-i18n="⚡ Quét Khớp Ngay">⚡ Quét Khớp Ngay</button>
-                                    <label style="display:inline-flex; align-items:center; gap:5px; font-size:11px; color:var(--text-muted); cursor:pointer;">
-                                        <input type="checkbox" checked onchange="toggleAuditAutoSwitchGroup(this.checked)"> <span data-i18n="Tự chuyển sang Group vừa quét">Tự chuyển sang Group vừa quét</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Vùng hiển thị Chip các lượt quét đối soát -->
-                            <div style="min-height:76px; max-height:125px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start; padding:8px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-color);" id="audit-chips-container"></div>
-
-                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <button class="btn btn-secondary btn-sm" onclick="copyMissingAuditTargets()" data-i18n="📋 Copy Mã Còn Thiếu">📋 Copy Mã Còn Thiếu</button>
-                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditHTML()" data-i18n="📤 Xuất Báo Cáo HTML">📤 Xuất Báo Cáo HTML</button>
-                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditReport()" data-i18n="📥 Xuất Excel Đa Group">📥 Xuất Excel Đa Group</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HÀNG 5: BẢNG CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU -->
-                    <div class="card">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
                             <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                                <div style="font-size:11.5px; font-weight:800; color:var(--text-main);" data-i18n="📋 CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU">📋 CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU</div>
+                                <div style="font-size:12px; font-weight:800; color:var(--text-main);" data-i18n="📋 DANH SÁCH KIỂM ĐẾM & TRUY VẾT CHI TIẾT">📋 DANH SÁCH KIỂM ĐẾM &amp; TRUY VẾT CHI TIẾT</div>
                                 <span id="audit-filtered-count-label" class="meta-chip" data-i18n="0 mã">0 mã</span>
                                 <div id="audit-log-reference-badge"></div>
                             </div>
@@ -2225,26 +2723,119 @@ body {
                             </div>
                         </div>
 
-                        <div class="table-wrapper" style="max-height:420px; overflow-y:auto;">
-                            <table class="data-table">
+                        <div class="table-wrapper" style="max-height:480px; overflow-y:auto;">
+                            <table class="data-table audit-adaptive-table">
                                 <thead>
                                     <tr>
-                                        <th style="width:45px; text-align:center;">#</th>
-                                        <th data-i18n="Group / Kiện">Group / Kiện</th>
-                                        <th data-i18n="Mã Mục Tiêu (Target ID)">Mã Mục Tiêu (Target ID)</th>
-                                        <th data-i18n="Model · Serial Tách">Model · Serial Tách</th>
-                                        <th style="text-align:center;" data-i18n="Trạng Thái Đối Soát">Trạng Thái Đối Soát</th>
-                                        <th style="text-align:center;" data-i18n="Lượt Quét">Lượt Quét</th>
-                                        <th data-i18n="Giờ Quét (Đầu → Cuối)">Giờ Quét (Đầu → Cuối)</th>
-                                        <th style="text-align:center;">Klippel QC</th>
-                                        <th data-i18n="Thông Số Đo & Cảnh Báo Lỗi">Thông Số Đo &amp; Cảnh Báo Lỗi</th>
-                                        <th style="text-align:center;" data-i18n="Thao Tác">Thao Tác</th>
+                                        <th style="width:45px; text-align:center;">#STT</th>
+                                        <th data-i18n="Nhóm / Kiện">Nhóm / Kiện</th>
+                                        <th data-i18n="Mã Serial (DUT)">Mã Serial (DUT)</th>
+                                        <th data-i18n="Trạng Thái Quét (Thời gian)">Trạng Thái Quét (Thời gian)</th>
+                                        <th data-i18n="Phán Định Klippel QC">Phán Định Klippel QC</th>
                                     </tr>
                                 </thead>
                                 <tbody id="audit-table-tbody">
-                                    <tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:24px;" data-i18n="Chưa nạp danh sách mục tiêu">Chưa nạp danh sách mục tiêu</td></tr>
+                                    <tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:24px;" data-i18n="Chưa nạp danh sách mục tiêu">Chưa nạp danh sách mục tiêu</td></tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <!-- ════════════ TẦNG 3: NGĂN CÔNG CỤ KỸ SƯ THU GỌN (COLLAPSIBLE ENGINEERING DRAWER) ════════════ -->
+                    <div id="audit-eng-drawer" class="audit-eng-drawer collapsed">
+                        <div class="card eng-drawer-card">
+                            <div class="eng-drawer-header">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <span style="font-size:16px;">🛠️</span>
+                                    <strong style="font-size:13px; color:var(--accent-cyan); letter-spacing:0.04em;" data-i18n="NGĂN CÔNG CỤ KỸ SƯ: QUẢN LÝ LÔ, TÁCH NHÓM & BÁO CÁO">NGĂN CÔNG CỤ KỸ SƯ: QUẢN LÝ LÔ, TÁCH NHÓM &amp; BÁO CÁO</strong>
+                                    <span class="meta-chip" data-i18n="Phím tắt: Alt + E">Phím tắt: Alt + E</span>
+                                </div>
+                                <button class="btn btn-sm btn-outline" onclick="toggleAuditEngineeringDrawer()" data-i18n="▲ Thu Gọn">▲ Thu Gọn</button>
+                            </div>
+
+                            <div class="eng-drawer-grid">
+                                <!-- Khu vực A: Nạp & Soạn thảo Danh sách Đa Group -->
+                                <div class="eng-area eng-area-a">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                        <span style="font-size:11.5px; font-weight:800; color:var(--text-main);" data-i18n="📋 NẠP & SOẠN THẢO DANH SÁCH ĐA GROUP">📋 NẠP &amp; SOẠN THẢO DANH SÁCH ĐA GROUP</span>
+                                        <button class="btn btn-sm btn-outline" onclick="document.getElementById('audit-file-input').click()" style="font-size:11px; padding:3px 8px;" data-i18n="📄 Nạp Excel / CSV">📄 Nạp Excel / CSV</button>
+                                        <input type="file" id="audit-file-input" accept=".xlsx,.xls,.csv,.txt" style="display:none;" onchange="handleAuditFileUpload(this)">
+                                    </div>
+
+                                    <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:8px; margin-bottom:8px;">
+                                        <input type="text" id="audit-group-name-input" class="settings-input" placeholder="📦 Tên Group (VD: Kiện #01 - Pallet A)..." data-i18n-placeholder="📦 Tên Group (VD: Kiện #01 - Pallet A)...">
+                                        <input type="text" id="audit-group-note-input" class="settings-input" placeholder="📝 Ghi chú (PO / Khách hàng / Ca)..." data-i18n-placeholder="📝 Ghi chú (PO / Khách hàng / Ca)...">
+                                    </div>
+
+                                    <textarea id="audit-target-input" rows="4" style="width:100%; padding:9px 11px; border-radius:var(--radius-sm); background:var(--bg-surface-elevated); color:var(--text-main); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:12px; line-height:1.5; outline:none;" placeholder="Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).&#10;💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!" data-i18n-placeholder="Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).&#10;💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!"></textarea>
+
+                                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+                                        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="loadAuditTargetList(false)" data-i18n="✓ Nạp Mới (Thay Thế)">✓ Nạp Mới (Thay Thế)</button>
+                                        <button class="btn btn-outline btn-sm" style="flex:1;" onclick="loadAuditTargetList(true)" data-i18n="➕ Thêm Thành Group Riêng">➕ Thêm Thành Group Riêng</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="loadDemoMultiGroupAudit()" data-i18n="🧪 Nạp Mẫu 3 Group">🧪 Nạp Mẫu 3 Group</button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="resetAuditList()" data-i18n="🗑️ Xóa Hết">🗑️ Xóa Hết</button>
+                                    </div>
+                                </div>
+
+                                <!-- Khu vực B: 4 Công cụ Chia tách Group & 6 thẻ KPI mở rộng -->
+                                <div class="eng-area eng-area-b">
+                                    <div style="font-size:11.5px; font-weight:800; color:var(--text-main); margin-bottom:8px;" data-i18n="⚡ 4 CÔNG CỤ CHIA TÁCH GROUP & BÁO CÁO TỔNG HỢP">⚡ 4 CÔNG CỤ CHIA TÁCH GROUP &amp; BÁO CÁO TỔNG HỢP</div>
+
+                                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+                                        <div style="display:inline-flex; align-items:center; gap:4px; background:var(--bg-surface-elevated); padding:3px 8px; border-radius:8px; border:1px solid var(--border-color);">
+                                            <span style="font-size:11px; color:var(--text-muted); font-weight:700;" data-i18n="Quy cách:">Quy cách:</span>
+                                            <input type="number" id="audit-batch-size-input" min="1" max="500" value="6" class="settings-input" style="width:48px; padding:3px 5px; font-size:11px; font-weight:800; text-align:center;">
+                                            <button class="btn btn-sm btn-outline" style="padding:3px 8px; font-size:11px;" onclick="splitAuditIntoGroups('BATCH_SIZE')" data-i18n="📦 Chia Theo Thùng">📦 Chia Theo Thùng</button>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('MODEL_PREFIX')" data-i18n="🏷️ Tách Theo Model">🏷️ Tách Theo Model</button>
+                                        <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('KLIPPEL_STATUS')" data-i18n="🔬 Tách Theo KQ Klippel">🔬 Tách Theo KQ Klippel</button>
+                                    </div>
+
+                                    <!-- 6 thẻ KPI Đối soát toàn diện -->
+                                    <div class="audit-kpi-grid" style="margin-bottom:12px;">
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="TỔNG MÃ MỤC TIÊU">TỔNG MÃ MỤC TIÊU</div>
+                                            <div class="kpi-val" id="audit-total-count" style="color:var(--text-main); font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="ĐÃ QUÉT ĐỐI SOÁT">ĐÃ QUÉT ĐỐI SOÁT</div>
+                                            <div class="kpi-val" id="audit-scanned-count" style="color:#10b981; font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="CÒN THIẾU CHƯA QUÉT">CÒN THIẾU CHƯA QUÉT</div>
+                                            <div class="kpi-val" id="audit-remaining-count" style="color:#f87171; font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="LƯỢT QUÉT LẶP (DUP)">LƯỢT QUÉT LẶP (DUP)</div>
+                                            <div class="kpi-val" id="audit-dup-count" style="color:#f59e0b; font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="MÃ LẠ NGOÀI DS">MÃ LẠ NGOÀI DS</div>
+                                            <div class="kpi-val" id="audit-stranger-count" style="color:#a855f7; font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="CẢNH BÁO NG KLIPPEL">CẢNH BÁO NG KLIPPEL</div>
+                                            <div class="kpi-val" id="audit-qcfail-count" style="color:#ef4444; font-size:20px;">0</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Vùng chip các lượt quét đối soát trong ngăn kỹ sư -->
+                                    <div style="min-height:56px; max-height:85px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:4px; align-content:flex-start; padding:6px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-color); margin-bottom:10px;" id="audit-chips-container"></div>
+
+                                    <!-- Tiến độ ẩn cho các bộ kiểm thử và thanh hiển thị -->
+                                    <div style="display:none;">
+                                        <div id="audit-active-scope-title"></div>
+                                        <div id="audit-progress-pct">0.0%</div>
+                                        <div id="audit-progress-bar"></div>
+                                    </div>
+
+                                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                        <button class="btn btn-secondary btn-sm" onclick="copyMissingAuditTargets()" data-i18n="📋 Copy Mã Còn Thiếu">📋 Copy Mã Còn Thiếu</button>
+                                        <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditHTML()" data-i18n="📤 Xuất Báo Cáo HTML">📤 Xuất Báo Cáo HTML</button>
+                                        <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditReport()" data-i18n="📥 Xuất Excel Đa Group">📥 Xuất Excel Đa Group</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -2503,7 +3094,7 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 /* ════════════ TỪ ĐIỂN ĐA NGÔN NGỮ TOÀN DIỆN (VI, EN, JA, ZH) ════════════ */
 // Tự động biên dịch từ hệ thống kiểm tra chất lượng Klippel QC & SPC Six Sigma
 var I18N_DICT = {
-    vi: {
+    "vi": {
         "# Kiện #01 · Pallet A (Chuyền SAS208-01)": "# Kiện #01 · Pallet A (Chuyền SAS208-01)",
         "# Kiện #02 · Pallet B (Chuyền SAS208-02)": "# Kiện #02 · Pallet B (Chuyền SAS208-02)",
         "# Kiện #03 · Lô Loa Woofer (Chuyền SFS203-01)": "# Kiện #03 · Lô Loa Woofer (Chuyền SFS203-01)",
@@ -3449,10 +4040,90 @@ var I18N_DICT = {
         "🧪 Nạp Dữ Liệu Mẫu Đa Trạm &rarr;": "🧪 Nạp Dữ Liệu Mẫu Đa Trạm &rarr;",
         "🧪 Nạp Mẫu 3 Group": "🧪 Nạp Mẫu 3 Group",
         "🧪 Quét thử nhanh:": "🧪 Quét thử nhanh:",
-        "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!": "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!"
+        "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!": "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!",
+        "QUÉT MÃ ĐỐI SOÁT KIỆN HÀNG...": "QUÉT MÃ ĐỐI SOÁT KIỆN HÀNG...",
+        "⚡ Chốt Mã": "⚡ Chốt Mã",
+        "Quét Camera 2D": "Quét Camera 2D",
+        "Chuyển chế độ phạm vi đối soát 1 chạm": "Chuyển chế độ phạm vi đối soát 1 chạm",
+        "Tự Động Định Tuyến Mọi Group": "Tự Động Định Tuyến Mọi Group",
+        "Mở ngăn công cụ nạp danh sách, tách lô và báo cáo (Alt + E)": "Mở ngăn công cụ nạp danh sách, tách lô và báo cáo (Alt + E)",
+        "Quản lý Lô & Tách Nhóm": "Quản lý Lô & Tách Nhóm",
+        "CAMERA QUÉT 2D TRỰC TIẾP (DATAMATRIX / QR / BARCODE)": "CAMERA QUÉT 2D TRỰC TIẾP (DATAMATRIX / QR / BARCODE)",
+        "Bật/Tắt Đèn Trợ Sáng": "Bật/Tắt Đèn Trợ Sáng",
+        "Đảo màu quét tem khắc laser nền đen": "Đảo màu quét tem khắc laser nền đen",
+        "Đóng Camera (ESC)": "Đóng Camera (ESC)",
+        "Đưa mã DataMatrix / QR / Barcode vào giữa khung ngắm": "Đưa mã DataMatrix / QR / Barcode vào giữa khung ngắm",
+        "ĐỊNH TUYẾN KIỆN HÀNG": "ĐỊNH TUYẾN KIỆN HÀNG",
+        "CHỜ QUÉT MÃ...": "CHỜ QUÉT MÃ...",
+        "Sẵn sàng nhận mã từ súng barcode hoặc camera": "Sẵn sàng nhận mã từ súng barcode hoặc camera",
+        "SẢN PHẨM VỪA QUÉT": "SẢN PHẨM VỪA QUÉT",
+        "Thứ tự trong kiện: —": "Thứ tự trong kiện: —",
+        "Klippel: Chờ quét": "Klippel: Chờ quét",
+        "TIẾN ĐỘ KIỆN HIỆN TẠI": "TIẾN ĐỘ KIỆN HIỆN TẠI",
+        "📦 DẢI THẺ GROUP / KIỆN HÀNG ĐỘC LẬP (CHỌN ĐỂ LỌC RIÊNG)": "📦 DẢI THẺ GROUP / KIỆN HÀNG ĐỘC LẬP (CHỌN ĐỂ LỌC RIÊNG)",
+        "0 Group": "0 Group",
+        "📋 DANH SÁCH KIỂM ĐẾM & TRUY VẾT CHI TIẾT": "📋 DANH SÁCH KIỂM ĐẾM & TRUY VẾT CHI TIẾT",
+        "Nhóm / Kiện": "Nhóm / Kiện",
+        "Mã Serial (DUT)": "Mã Serial (DUT)",
+        "Trạng Thái Quét (Thời gian)": "Trạng Thái Quét (Thời gian)",
+        "Phán Định Klippel QC": "Phán Định Klippel QC",
+        "NGĂN CÔNG CỤ KỸ SƯ: QUẢN LÝ LÔ, TÁCH NHÓM & BÁO CÁO": "NGĂN CÔNG CỤ KỸ SƯ: QUẢN LÝ LÔ, TÁCH NHÓM & BÁO CÁO",
+        "Phím tắt: Alt + E": "Phím tắt: Alt + E",
+        "▲ Thu Gọn": "▲ Thu Gọn",
+        "📋 NẠP & SOẠN THẢO DANH SÁCH ĐA GROUP": "📋 NẠP & SOẠN THẢO DANH SÁCH ĐA GROUP",
+        "📄 Nạp Excel / CSV": "📄 Nạp Excel / CSV",
+        "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).\n💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!": "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).\n💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!",
+        "⚡ 4 CÔNG CỤ CHIA TÁCH GROUP & BÁO CÁO TỔNG HỢP": "⚡ 4 CÔNG CỤ CHIA TÁCH GROUP & BÁO CÁO TỔNG HỢP",
+        "⚠️ Không có dữ liệu log để xuất báo cáo. Bạn có thể bấm ": "⚠️ Không có dữ liệu log để xuất báo cáo. Bạn có thể bấm ",
+        "Vị trí giá trị đo trong dải dung sai [LSL - USL]": "Vị trí giá trị đo trong dải dung sai [LSL - USL]",
+        "Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này": "Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này",
+        "Lô ": "Lô ",
+        "Khóa Riêng Group Này": "Khóa Riêng Group Này",
+        "Thứ tự trong kiện:": "Thứ tự trong kiện:",
+        "NG KLIPPEL: MÃ KHỚP NHƯNG LỖI THÔNG SỐ QC": "NG KLIPPEL: MÃ KHỚP NHƯNG LỖI THÔNG SỐ QC",
+        "ĐỐI SOÁT HỢP LỆ — ĐÚNG KIỆN HÀNG": "ĐỐI SOÁT HỢP LỆ — ĐÚNG KIỆN HÀNG",
+        "QUÉT LẶP LẦN {0} TRONG KIỆN": "QUÉT LẶP LẦN {0} TRONG KIỆN",
+        "⚠️ LẶP ×{0}": "⚠️ LẶP ×{0}",
+        "NHẦM KIỆN: THUỘC [{0}]": "NHẦM KIỆN: THUỘC [{0}]",
+        "🚨 SAI GROUP": "🚨 SAI GROUP",
+        "TỪ CHỐI: KIỆN [{0}] ĐÃ KHÓA NIÊM PHONG": "TỪ CHỐI: KIỆN [{0}] ĐÃ KHÓA NIÊM PHONG",
+        "🔒 ĐÃ KHÓA": "🔒 ĐÃ KHÓA",
+        "NHẬP NHẰNG NHIỀU MÃ TRÙNG KHỚP": "NHẬP NHẰNG NHIỀU MÃ TRÙNG KHỚP",
+        "⚠️ NHẬP NHẰNG": "⚠️ NHẬP NHẰNG",
+        "MÃ LẠ: KHÔNG NẰM TRONG MỤC TIÊU": "MÃ LẠ: KHÔNG NẰM TRONG MỤC TIÊU",
+        "✕ MÃ LẠ": "✕ MÃ LẠ",
+        "Chưa có Group kiểm soát nào. Hãy dán danh sách mã trong Ngăn Kỹ Sư hoặc bấm [🧪 Nạp Mẫu 3 Group].": "Chưa có Group kiểm soát nào. Hãy dán danh sách mã trong Ngăn Kỹ Sư hoặc bấm [🧪 Nạp Mẫu 3 Group].",
+        "Tổng hợp toàn bộ lô đối soát": "Tổng hợp toàn bộ lô đối soát",
+        "Đặt lại riêng tiến độ": "Đặt lại riêng tiến độ",
+        "⚠️ LẶP (×{0})": "⚠️ LẶP (×{0})",
+        "❓ Chưa có log": "❓ Chưa có log",
+        "Mã vạch gốc:": "Mã vạch gốc:",
+        "Serial tách:": "Serial tách:",
+        "Số lần quét:": "Số lần quét:",
+        "Thời gian:": "Thời gian:",
+        "Trạm đo:": "Trạm đo:",
+        "Lỗi Klippel:": "Lỗi Klippel:",
+        "Xem Chi Tiết Klippel": "Xem Chi Tiết Klippel",
+        "↩ Hoàn tác quét": "↩ Hoàn tác quét",
+        "✓ Đánh dấu đã quét": "✓ Đánh dấu đã quét",
+        "⚠️ Trình duyệt hoặc thiết bị của bạn không hỗ trợ camera.": "⚠️ Trình duyệt hoặc thiết bị của bạn không hỗ trợ camera.",
+        "📷 Camera 2D đã sẵn sàng. Hướng khung ngắm vào mã DataMatrix / QR / Barcode.": "📷 Camera 2D đã sẵn sàng. Hướng khung ngắm vào mã DataMatrix / QR / Barcode.",
+        "❌ Không thể mở camera: {0}": "❌ Không thể mở camera: {0}",
+        "⚠️ Thiết bị không hỗ trợ đèn trợ sáng Flash.": "⚠️ Thiết bị không hỗ trợ đèn trợ sáng Flash.",
+        "◐ Đã bật chế độ đảo màu (Đọc tem laser đen)": "◐ Đã bật chế độ đảo màu (Đọc tem laser đen)",
+        "◑ Đã tắt chế độ đảo màu": "◑ Đã tắt chế độ đảo màu",
+        "Hiển thị chi tiết từng lỗi phát sinh (Defect Breakdown Tag Cloud). Nhấp vào bất kỳ mã lỗi nào để lọc biểu đồ hoặc bấm ": "Hiển thị chi tiết từng lỗi phát sinh (Defect Breakdown Tag Cloud). Nhấp vào bất kỳ mã lỗi nào để lọc biểu đồ hoặc bấm ",
+        "Bản Ghi Lỗi:": "Bản Ghi Lỗi:",
+        "Nhấp để xem danh sách bản ghi khung giờ {0}": "Nhấp để xem danh sách bản ghi khung giờ {0}",
+        "Nhấp để xem biểu đồ phân phối Gauss & danh sách cận biên của thông số này": "Nhấp để xem biểu đồ phân phối Gauss & danh sách cận biên của thông số này",
+        "Ví dụ bỏ tiền tố ": "Ví dụ bỏ tiền tố ",
+        "ℹ️ Đã quét xong nhưng không tìm thấy tệp chứa chữ ": "ℹ️ Đã quét xong nhưng không tìm thấy tệp chứa chữ ",
+        "Cách 1: Sử dụng nút ": "Cách 1: Sử dụng nút ",
+        "Bấm nút ": "Bấm nút ",
+        "ℹ️ Không tìm thấy chữ ": "ℹ️ Không tìm thấy chữ ",
+        "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).&#10;💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!": "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).&#10;💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!"
     },
-
-    en: {
+    "en": {
         "# Kiện #01 · Pallet A (Chuyền SAS208-01)": "# Package #01 · Pallet A (Line SAS208-01)",
         "# Kiện #02 · Pallet B (Chuyền SAS208-02)": "# Package #02 · Pallet B (Line SAS208-02)",
         "# Kiện #03 · Lô Loa Woofer (Chuyền SFS203-01)": "# Package #03 · Woofer Lot (Line SFS203-01)",
@@ -4398,10 +5069,90 @@ var I18N_DICT = {
         "🧪 Nạp Dữ Liệu Mẫu Đa Trạm &rarr;": "🧪 Load Multi-Station Demo Dataset &rarr;",
         "🧪 Nạp Mẫu 3 Group": "🧪 Load Demo 3 Groups",
         "🧪 Quét thử nhanh:": "🧪 Quick test scan:",
-        "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!": "🧪 Successfully loaded Klippel QC Demo Data (3 Stations · 3 Shifts · Full Cpk & Multi-Group Audit)!"
+        "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!": "🧪 Successfully loaded Klippel QC Demo Data (3 Stations · 3 Shifts · Full Cpk & Multi-Group Audit)!",
+        "QUÉT MÃ ĐỐI SOÁT KIỆN HÀNG...": "SCAN AUDIT BARCODE...",
+        "⚡ Chốt Mã": "⚡ Submit Code",
+        "Quét Camera 2D": "2D Camera Scan",
+        "Chuyển chế độ phạm vi đối soát 1 chạm": "Toggle audit scope with 1-click",
+        "Tự Động Định Tuyến Mọi Group": "Auto Route Across All Groups",
+        "Mở ngăn công cụ nạp danh sách, tách lô và báo cáo (Alt + E)": "Open engineering drawer for import, splitting & reports (Alt + E)",
+        "Quản lý Lô & Tách Nhóm": "Lot Management & Splitting",
+        "CAMERA QUÉT 2D TRỰC TIẾP (DATAMATRIX / QR / BARCODE)": "LIVE 2D CAMERA SCAN (DATAMATRIX / QR / BARCODE)",
+        "Bật/Tắt Đèn Trợ Sáng": "Toggle Flash / Torch",
+        "Đảo màu quét tem khắc laser nền đen": "Invert colors for black background laser labels",
+        "Đóng Camera (ESC)": "Close Camera (ESC)",
+        "Đưa mã DataMatrix / QR / Barcode vào giữa khung ngắm": "Center DataMatrix / QR / Barcode in viewfinder",
+        "ĐỊNH TUYẾN KIỆN HÀNG": "PACKAGE ROUTING",
+        "CHỜ QUÉT MÃ...": "WAITING FOR SCAN...",
+        "Sẵn sàng nhận mã từ súng barcode hoặc camera": "Ready to receive code from scanner gun or camera",
+        "SẢN PHẨM VỪA QUÉT": "SCANNED DUT",
+        "Thứ tự trong kiện: —": "Seq in package: —",
+        "Klippel: Chờ quét": "Klippel: Waiting",
+        "TIẾN ĐỘ KIỆN HIỆN TẠI": "PACKAGE PROGRESS",
+        "📦 DẢI THẺ GROUP / KIỆN HÀNG ĐỘC LẬP (CHỌN ĐỂ LỌC RIÊNG)": "📦 INDEPENDENT GROUP CARDS STRIP (SELECT TO FILTER)",
+        "0 Group": "0 Groups",
+        "📋 DANH SÁCH KIỂM ĐẾM & TRUY VẾT CHI TIẾT": "📋 AUDIT COUNT & TRACEABILITY LIST",
+        "Nhóm / Kiện": "Group / Lot",
+        "Mã Serial (DUT)": "Serial / DUT ID",
+        "Trạng Thái Quét (Thời gian)": "Scan Status (Timestamp)",
+        "Phán Định Klippel QC": "Klippel QC Verdict",
+        "NGĂN CÔNG CỤ KỸ SƯ: QUẢN LÝ LÔ, TÁCH NHÓM & BÁO CÁO": "ENGINEER DRAWER: LOT MGMT, SPLITTING & REPORTS",
+        "Phím tắt: Alt + E": "Shortcut: Alt + E",
+        "▲ Thu Gọn": "▲ Collapse",
+        "📋 NẠP & SOẠN THẢO DANH SÁCH ĐA GROUP": "📋 IMPORT & EDIT MULTI-GROUP TARGETS",
+        "📄 Nạp Excel / CSV": "📄 Import Excel / CSV",
+        "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).\n💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!": "Paste Serial / DUT ID list (1 per line).\n💡 Split groups: type '# Group Name' on separate line or paste 2 cols 'Group_Name [Tab] Serial' from Excel!",
+        "⚡ 4 CÔNG CỤ CHIA TÁCH GROUP & BÁO CÁO TỔNG HỢP": "⚡ 4 GROUP SPLIT TOOLS & MASTER REPORTS",
+        "⚠️ Không có dữ liệu log để xuất báo cáo. Bạn có thể bấm ": "⚠️ No log data available for export. You can click ",
+        "Vị trí giá trị đo trong dải dung sai [LSL - USL]": "Measured value location in tolerance track [LSL - USL]",
+        "Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này": "Click to view full inspection record for this scan",
+        "Lô ": "Lot ",
+        "Khóa Riêng Group Này": "Lock To Active Group Only",
+        "Thứ tự trong kiện:": "Seq in package:",
+        "NG KLIPPEL: MÃ KHỚP NHƯNG LỖI THÔNG SỐ QC": "KLIPPEL NG: MATCHED BUT QC PARAMETER FAILED",
+        "ĐỐI SOÁT HỢP LỆ — ĐÚNG KIỆN HÀNG": "VALID RECONCILIATION — CORRECT PACKAGE",
+        "QUÉT LẶP LẦN {0} TRONG KIỆN": "DUPLICATE SCAN #{0} IN PACKAGE",
+        "⚠️ LẶP ×{0}": "⚠️ DUP ×{0}",
+        "NHẦM KIỆN: THUỘC [{0}]": "WRONG PACKAGE: BELONGS TO [{0}]",
+        "🚨 SAI GROUP": "🚨 WRONG GROUP",
+        "TỪ CHỐI: KIỆN [{0}] ĐÃ KHÓA NIÊM PHONG": "REJECTED: PACKAGE [{0}] IS SEALED & LOCKED",
+        "🔒 ĐÃ KHÓA": "🔒 LOCKED",
+        "NHẬP NHẰNG NHIỀU MÃ TRÙNG KHỚP": "AMBIGUOUS MATCH (MULTIPLE TARGETS)",
+        "⚠️ NHẬP NHẰNG": "⚠️ AMBIGUOUS",
+        "MÃ LẠ: KHÔNG NẰM TRONG MỤC TIÊU": "STRANGER ID: NOT IN TARGET LIST",
+        "✕ MÃ LẠ": "✕ STRANGER",
+        "Chưa có Group kiểm soát nào. Hãy dán danh sách mã trong Ngăn Kỹ Sư hoặc bấm [🧪 Nạp Mẫu 3 Group].": "No control groups yet. Paste target list in Engineer Drawer or click [🧪 Load 3-Group Demo].",
+        "Tổng hợp toàn bộ lô đối soát": "Aggregated overview of all groups",
+        "Đặt lại riêng tiến độ": "Reset Progress For This Group",
+        "⚠️ LẶP (×{0})": "⚠️ DUP (×{0})",
+        "❓ Chưa có log": "❓ No Log",
+        "Mã vạch gốc:": "Raw Barcode:",
+        "Serial tách:": "Parsed Serial:",
+        "Số lần quét:": "Scan Count:",
+        "Thời gian:": "Time:",
+        "Trạm đo:": "Station:",
+        "Lỗi Klippel:": "Klippel Defect:",
+        "Xem Chi Tiết Klippel": "View Klippel Details",
+        "↩ Hoàn tác quét": "↩ Undo Scan",
+        "✓ Đánh dấu đã quét": "✓ Mark as Scanned",
+        "⚠️ Trình duyệt hoặc thiết bị của bạn không hỗ trợ camera.": "⚠️ Your browser or device does not support camera access.",
+        "📷 Camera 2D đã sẵn sàng. Hướng khung ngắm vào mã DataMatrix / QR / Barcode.": "📷 2D Camera ready. Aim viewfinder at DataMatrix / QR / Barcode.",
+        "❌ Không thể mở camera: {0}": "❌ Unable to start camera: {0}",
+        "⚠️ Thiết bị không hỗ trợ đèn trợ sáng Flash.": "⚠️ Device does not support flash torch.",
+        "◐ Đã bật chế độ đảo màu (Đọc tem laser đen)": "◐ Invert color mode enabled (Black background laser labels)",
+        "◑ Đã tắt chế độ đảo màu": "◑ Invert color mode disabled",
+        "Hiển thị chi tiết từng lỗi phát sinh (Defect Breakdown Tag Cloud). Nhấp vào bất kỳ mã lỗi nào để lọc biểu đồ hoặc bấm ": "Shows defect breakdown tag cloud. Click any error code to filter charts or click ",
+        "Bản Ghi Lỗi:": "Defect Records:",
+        "Nhấp để xem danh sách bản ghi khung giờ {0}": "Click to view records for hour {0}",
+        "Nhấp để xem biểu đồ phân phối Gauss & danh sách cận biên của thông số này": "Click to view Gaussian distribution & marginal list for this metric",
+        "Ví dụ bỏ tiền tố ": "Example strip prefix ",
+        "ℹ️ Đã quét xong nhưng không tìm thấy tệp chứa chữ ": "ℹ️ Scan complete but no file found containing ",
+        "Cách 1: Sử dụng nút ": "Method 1: Use button ",
+        "Bấm nút ": "Click button ",
+        "ℹ️ Không tìm thấy chữ ": "ℹ️ Not found text ",
+        "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).&#10;💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!": "Paste Serial / DUT ID list (1 per line).&#10;💡 Split groups: type '# Group Name' on separate line or paste 2 cols 'Group_Name [Tab] Serial' from Excel!"
     },
-
-    ja: {
+    "ja": {
         "# Kiện #01 · Pallet A (Chuyền SAS208-01)": "# 梱包#01・パレットA (ラインSAS208-01)",
         "# Kiện #02 · Pallet B (Chuyền SAS208-02)": "# 梱包#02・パレットB (ラインSAS208-02)",
         "# Kiện #03 · Lô Loa Woofer (Chuyền SFS203-01)": "# 梱包#03・ウーファーロット (ラインSFS203-01)",
@@ -5347,10 +6098,90 @@ var I18N_DICT = {
         "🧪 Nạp Dữ Liệu Mẫu Đa Trạm &rarr;": "🧪 複数局サンプルデータ読込 &rarr;",
         "🧪 Nạp Mẫu 3 Group": "🧪 サンプル3グループ読込",
         "🧪 Quét thử nhanh:": "🧪 クイックテストスキャン:",
-        "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!": "🧪 Klippel QCサンプルデータを読み込みました (3局・3直・Cpk＆複数グループ照合完全対応)！"
+        "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!": "🧪 Klippel QCサンプルデータを読み込みました (3局・3直・Cpk＆複数グループ照合完全対応)！",
+        "QUÉT MÃ ĐỐI SOÁT KIỆN HÀNG...": "照合バーコードをスキャン...",
+        "⚡ Chốt Mã": "⚡ 確定",
+        "Quét Camera 2D": "2Dカメラスキャン",
+        "Chuyển chế độ phạm vi đối soát 1 chạm": "ワンタップで照合範囲を切り替え",
+        "Tự Động Định Tuyến Mọi Group": "全グループ自動ルーティング",
+        "Mở ngăn công cụ nạp danh sách, tách lô và báo cáo (Alt + E)": "リスト読込・分割・レポートツールを開く (Alt + E)",
+        "Quản lý Lô & Tách Nhóm": "ロット管理とグループ分割",
+        "CAMERA QUÉT 2D TRỰC TIẾP (DATAMATRIX / QR / BARCODE)": "リアルタイム2Dカメラスキャン (DATAMATRIX / QR / BARCODE)",
+        "Bật/Tắt Đèn Trợ Sáng": "フラッシュ点灯/消灯",
+        "Đảo màu quét tem khắc laser nền đen": "黒背景レーザー刻印用反転スキャン",
+        "Đóng Camera (ESC)": "カメラを閉じる (ESC)",
+        "Đưa mã DataMatrix / QR / Barcode vào giữa khung ngắm": "DataMatrix / QR / バーコードを枠内に合わせてください",
+        "ĐỊNH TUYẾN KIỆN HÀNG": "パッケージルーティング",
+        "CHỜ QUÉT MÃ...": "スキャン待機中...",
+        "Sẵn sàng nhận mã từ súng barcode hoặc camera": "スキャナーまたはカメラからの読取準備完了",
+        "SẢN PHẨM VỪA QUÉT": "直近スキャン製品",
+        "Thứ tự trong kiện: —": "パッケージ内順序: —",
+        "Klippel: Chờ quét": "Klippel: 待機中",
+        "TIẾN ĐỘ KIỆN HIỆN TẠI": "現在パッケージ進捗",
+        "📦 DẢI THẺ GROUP / KIỆN HÀNG ĐỘC LẬP (CHỌN ĐỂ LỌC RIÊNG)": "📦 個別グループ/荷姿カード帯 (選択して個別フィルタ)",
+        "0 Group": "0 グループ",
+        "📋 DANH SÁCH KIỂM ĐẾM & TRUY VẾT CHI TIẾT": "📋 照合・追跡詳細リスト",
+        "Nhóm / Kiện": "グループ/荷姿",
+        "Mã Serial (DUT)": "シリアル番号 (DUT)",
+        "Trạng Thái Quét (Thời gian)": "スキャン状態 (日時)",
+        "Phán Định Klippel QC": "Klippel QC 判定",
+        "NGĂN CÔNG CỤ KỸ SƯ: QUẢN LÝ LÔ, TÁCH NHÓM & BÁO CÁO": "エンジニアツール引出し: ロット管理・分割・レポート",
+        "Phím tắt: Alt + E": "ショートカット: Alt + E",
+        "▲ Thu Gọn": "▲ 折りたたむ",
+        "📋 NẠP & SOẠN THẢO DANH SÁCH ĐA GROUP": "📋 マルチグループリスト読込・編集",
+        "📄 Nạp Excel / CSV": "📄 Excel / CSV 読込",
+        "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).\n💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!": "Serial / DUT ID リストを貼り付け (1行1件)。\n💡 グループ分割: 別行に '# グループ名' を入力するか、Excelから 'グループ名 [Tab] Serial' の2列を貼り付けてください!",
+        "⚡ 4 CÔNG CỤ CHIA TÁCH GROUP & BÁO CÁO TỔNG HỢP": "⚡ 4つのグループ分割ツールと総合レポート",
+        "⚠️ Không có dữ liệu log để xuất báo cáo. Bạn có thể bấm ": "⚠️ エクスポートするログデータがありません。クリックできます ",
+        "Vị trí giá trị đo trong dải dung sai [LSL - USL]": "公差範囲 [LSL - USL] 内の測定値位置",
+        "Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này": "クリックしてこのスキャンの完全な測定レコードを表示",
+        "Lô ": "ロット ",
+        "Khóa Riêng Group Này": "このグループに固定",
+        "Thứ tự trong kiện:": "パッケージ内順序:",
+        "NG KLIPPEL: MÃ KHỚP NHƯNG LỖI THÔNG SỐ QC": "KLIPPEL NG: 一致したがQCパラメータ不合格",
+        "ĐỐI SOÁT HỢP LỆ — ĐÚNG KIỆN HÀNG": "照合合格 — 正しいパッケージ",
+        "QUÉT LẶP LẦN {0} TRONG KIỆN": "パッケージ内重複スキャン {0}回目",
+        "⚠️ LẶP ×{0}": "⚠️ 重複 ×{0}",
+        "NHẦM KIỆN: THUỘC [{0}]": "荷姿誤り: [{0}] に所属",
+        "🚨 SAI GROUP": "🚨 誤グループ",
+        "TỪ CHỐI: KIỆN [{0}] ĐÃ KHÓA NIÊM PHONG": "拒絶: パッケージ [{0}] は封印・ロック済み",
+        "🔒 ĐÃ KHÓA": "🔒 ロック中",
+        "NHẬP NHẰNG NHIỀU MÃ TRÙNG KHỚP": "曖昧な一致 (複数候補あり)",
+        "⚠️ NHẬP NHẰNG": "⚠️ 曖昧",
+        "MÃ LẠ: KHÔNG NẰM TRONG MỤC TIÊU": "未登録コード: 対象リストにありません",
+        "✕ MÃ LẠ": "✕ 未登録",
+        "Chưa có Group kiểm soát nào. Hãy dán danh sách mã trong Ngăn Kỹ Sư hoặc bấm [🧪 Nạp Mẫu 3 Group].": "管理グループがまだありません。エンジニアツールでリストを貼り付けるか、[🧪 3グループサンプル読込] をクリックしてください。",
+        "Tổng hợp toàn bộ lô đối soát": "全照合ロットの総合概要",
+        "Đặt lại riêng tiến độ": "このグループの進捗をリセット",
+        "⚠️ LẶP (×{0})": "⚠️ 重複 (×{0})",
+        "❓ Chưa có log": "❓ ログ未測定",
+        "Mã vạch gốc:": "元バーコード:",
+        "Serial tách:": "抽出シリアル:",
+        "Số lần quét:": "スキャン回数:",
+        "Thời gian:": "時刻:",
+        "Trạm đo:": "測定ステーション:",
+        "Lỗi Klippel:": "Klippel 不良:",
+        "Xem Chi Tiết Klippel": "Klippel詳細を表示",
+        "↩ Hoàn tác quét": "↩ スキャン取消",
+        "✓ Đánh dấu đã quét": "✓ スキャン済みにマーク",
+        "⚠️ Trình duyệt hoặc thiết bị của bạn không hỗ trợ camera.": "⚠️ ブラウザまたはデバイスがカメラに対応していません。",
+        "📷 Camera 2D đã sẵn sàng. Hướng khung ngắm vào mã DataMatrix / QR / Barcode.": "📷 2Dカメラの準備ができました。照準枠をDataMatrix / QR / バーコードに向けてください。",
+        "❌ Không thể mở camera: {0}": "❌ カメラを起動できません: {0}",
+        "⚠️ Thiết bị không hỗ trợ đèn trợ sáng Flash.": "⚠️ デバイスがフラッシュ点灯をサポートしていません。",
+        "◐ Đã bật chế độ đảo màu (Đọc tem laser đen)": "◐ 色反転モード有効 (黒地レーザー刻印用)",
+        "◑ Đã tắt chế độ đảo màu": "◑ 色反転モード無効",
+        "Hiển thị chi tiết từng lỗi phát sinh (Defect Breakdown Tag Cloud). Nhấp vào bất kỳ mã lỗi nào để lọc biểu đồ hoặc bấm ": "発生不良の詳細タグクラウドを表示。エラーコードをクリックしてグラフを絞り込むか、次をクリック ",
+        "Bản Ghi Lỗi:": "不良レコード:",
+        "Nhấp để xem danh sách bản ghi khung giờ {0}": "クリックして {0} 時台のレコードリストを表示",
+        "Nhấp để xem biểu đồ phân phối Gauss & danh sách cận biên của thông số này": "クリックしてこのパラメータの正規分布と境界リストを表示",
+        "Ví dụ bỏ tiền tố ": "接頭辞除外の例 ",
+        "ℹ️ Đã quét xong nhưng không tìm thấy tệp chứa chữ ": "ℹ️ スキャン完了しましたが、次の文字列を含むファイルは見つかりませんでした: ",
+        "Cách 1: Sử dụng nút ": "方法 1: 次のボタンを使用 ",
+        "Bấm nút ": "ボタンをクリック ",
+        "ℹ️ Không tìm thấy chữ ": "ℹ️ 次の文字列が見つかりません: ",
+        "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).&#10;💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!": "Serial / DUT ID リストを貼り付け (1行1件)。&#10;💡 グループ分割: 別行に '# グループ名' を入力するか、Excelから 'グループ名 [Tab] Serial' の2列を貼り付けてください!"
     },
-
-    zh: {
+    "zh": {
         "# Kiện #01 · Pallet A (Chuyền SAS208-01)": "# 包装件 #01 · 托盘 A (产线 SAS208-01)",
         "# Kiện #02 · Pallet B (Chuyền SAS208-02)": "# 包装件 #02 · 托盘 B (产线 SAS208-02)",
         "# Kiện #03 · Lô Loa Woofer (Chuyền SFS203-01)": "# 包装件 #03 · 低音喇叭批次 (产线 SFS203-01)",
@@ -6296,13 +7127,90 @@ var I18N_DICT = {
         "🧪 Nạp Dữ Liệu Mẫu Đa Trạm &rarr;": "🧪 加载多工位演示数据集 &rarr;",
         "🧪 Nạp Mẫu 3 Group": "🧪 加载 3 组示例包装箱",
         "🧪 Quét thử nhanh:": "🧪 快速模拟扫码：",
-        "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!": "🧪 已成功加载 Klippel QC 演示数据集 (3 工位 · 3 班次 · 完整 Cpk 统计与多批次组核对)！"
+        "🧪 Đã nạp Bộ Dữ Liệu Mẫu Klippel QC (3 Trạm · 3 Ca · Đầy đủ Cpk & Multi-Group Audit)!": "🧪 已成功加载 Klippel QC 演示数据集 (3 工位 · 3 班次 · 完整 Cpk 统计与多批次组核对)！",
+        "QUÉT MÃ ĐỐI SOÁT KIỆN HÀNG...": "扫描核对条码...",
+        "⚡ Chốt Mã": "⚡ 提交条码",
+        "Quét Camera 2D": "2D相机扫描",
+        "Chuyển chế độ phạm vi đối soát 1 chạm": "一键切换核对范围模式",
+        "Tự Động Định Tuyến Mọi Group": "自动路由所有组",
+        "Mở ngăn công cụ nạp danh sách, tách lô và báo cáo (Alt + E)": "打开工程抽屉（导入、分批与报告）(Alt + E)",
+        "Quản lý Lô & Tách Nhóm": "批次管理与分组",
+        "CAMERA QUÉT 2D TRỰC TIẾP (DATAMATRIX / QR / BARCODE)": "实时2D相机扫描 (DATAMATRIX / QR / BARCODE)",
+        "Bật/Tắt Đèn Trợ Sáng": "开启/关闭手电筒",
+        "Đảo màu quét tem khắc laser nền đen": "反色扫描黑色激光雕刻标签",
+        "Đóng Camera (ESC)": "关闭相机 (ESC)",
+        "Đưa mã DataMatrix / QR / Barcode vào giữa khung ngắm": "请将 DataMatrix / QR / 条码置于取景框中",
+        "ĐỊNH TUYẾN KIỆN HÀNG": "包装路由",
+        "CHỜ QUÉT MÃ...": "等待扫描...",
+        "Sẵn sàng nhận mã từ súng barcode hoặc camera": "准备接收扫码枪或相机条码",
+        "SẢN PHẨM VỪA QUÉT": "最近扫描产品",
+        "Thứ tự trong kiện: —": "箱内序号: —",
+        "Klippel: Chờ quét": "Klippel: 等待扫描",
+        "TIẾN ĐỘ KIỆN HIỆN TẠI": "当前包装进度",
+        "📦 DẢI THẺ GROUP / KIỆN HÀNG ĐỘC LẬP (CHỌN ĐỂ LỌC RIÊNG)": "📦 独立组/包装卡片栏 (点击单独过滤)",
+        "0 Group": "0 组",
+        "📋 DANH SÁCH KIỂM ĐẾM & TRUY VẾT CHI TIẾT": "📋 核对与追溯明细列表",
+        "Nhóm / Kiện": "组 / 包装",
+        "Mã Serial (DUT)": "序列号 (DUT)",
+        "Trạng Thái Quét (Thời gian)": "扫描状态 (时间)",
+        "Phán Định Klippel QC": "Klippel QC 判定",
+        "NGĂN CÔNG CỤ KỸ SƯ: QUẢN LÝ LÔ, TÁCH NHÓM & BÁO CÁO": "工程师抽屉：批次管理、分批与报告",
+        "Phím tắt: Alt + E": "快捷键: Alt + E",
+        "▲ Thu Gọn": "▲ 收起",
+        "📋 NẠP & SOẠN THẢO DANH SÁCH ĐA GROUP": "📋 导入与编辑多组目标列表",
+        "📄 Nạp Excel / CSV": "📄 导入 Excel / CSV",
+        "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).\n💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!": "粘贴序列号 / DUT 列表 (每行一个)。\n💡 多组分割：在单独行输入 '# 组名称' 或从 Excel 粘贴两列 '组名称 [Tab] 序列号'！",
+        "⚡ 4 CÔNG CỤ CHIA TÁCH GROUP & BÁO CÁO TỔNG HỢP": "⚡ 4个分组拆分工具与综合报告",
+        "⚠️ Không có dữ liệu log để xuất báo cáo. Bạn có thể bấm ": "⚠️ 没有可导出的日志数据。您可以点击 ",
+        "Vị trí giá trị đo trong dải dung sai [LSL - USL]": "公差范围 [LSL - USL] 内的实测值位置",
+        "Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này": "点击查看本次扫描的完整测量记录",
+        "Lô ": "批次 ",
+        "Khóa Riêng Group Này": "仅锁定当前组",
+        "Thứ tự trong kiện:": "包装内序号:",
+        "NG KLIPPEL: MÃ KHỚP NHƯNG LỖI THÔNG SỐ QC": "KLIPPEL NG: 条码匹配但QC参数不合格",
+        "ĐỐI SOÁT HỢP LỆ — ĐÚNG KIỆN HÀNG": "有效核对 — 包装匹配正确",
+        "QUÉT LẶP LẦN {0} TRONG KIỆN": "包装内第 {0} 次重复扫描",
+        "⚠️ LẶP ×{0}": "⚠️ 重复 ×{0}",
+        "NHẦM KIỆN: THUỘC [{0}]": "包装错误：属于 [{0}]",
+        "🚨 SAI GROUP": "🚨 组别错误",
+        "TỪ CHỐI: KIỆN [{0}] ĐÃ KHÓA NIÊM PHONG": "拒绝：包装 [{0}] 已锁定封箱",
+        "🔒 ĐÃ KHÓA": "🔒 已锁定",
+        "NHẬP NHẰNG NHIỀU MÃ TRÙNG KHỚP": "模糊匹配（多个候选条码）",
+        "⚠️ NHẬP NHẰNG": "⚠️ 模糊",
+        "MÃ LẠ: KHÔNG NẰM TRONG MỤC TIÊU": "外来条码：不在目标列表中",
+        "✕ MÃ LẠ": "✕ 外来条码",
+        "Chưa có Group kiểm soát nào. Hãy dán danh sách mã trong Ngăn Kỹ Sư hoặc bấm [🧪 Nạp Mẫu 3 Group].": "尚无管控组。请在工程师抽屉中粘贴条码列表，或点击 [🧪 加载3组示例]。",
+        "Tổng hợp toàn bộ lô đối soát": "所有核对批次的汇总视图",
+        "Đặt lại riêng tiến độ": "单独重置此组进度",
+        "⚠️ LẶP (×{0})": "⚠️ 重复 (×{0})",
+        "❓ Chưa có log": "❓ 暂无日志",
+        "Mã vạch gốc:": "原始条码:",
+        "Serial tách:": "解析序列号:",
+        "Số lần quét:": "扫描次数:",
+        "Thời gian:": "时间:",
+        "Trạm đo:": "测试工位:",
+        "Lỗi Klippel:": "Klippel 缺陷:",
+        "Xem Chi Tiết Klippel": "查看 Klippel 详情",
+        "↩ Hoàn tác quét": "↩ 撤销扫描",
+        "✓ Đánh dấu đã quét": "✓ 标记已扫描",
+        "⚠️ Trình duyệt hoặc thiết bị của bạn không hỗ trợ camera.": "⚠️ 您的浏览器或设备不支持相机访问。",
+        "📷 Camera 2D đã sẵn sàng. Hướng khung ngắm vào mã DataMatrix / QR / Barcode.": "📷 2D 相机就绪。请将取景框对准 DataMatrix / QR / 条码。",
+        "❌ Không thể mở camera: {0}": "❌ 无法打开相机: {0}",
+        "⚠️ Thiết bị không hỗ trợ đèn trợ sáng Flash.": "⚠️ 设备不支持闪光灯手电筒。",
+        "◐ Đã bật chế độ đảo màu (Đọc tem laser đen)": "◐ 已开启反色模式 (用于黑色激光标签)",
+        "◑ Đã tắt chế độ đảo màu": "◑ 已关闭反色模式",
+        "Hiển thị chi tiết từng lỗi phát sinh (Defect Breakdown Tag Cloud). Nhấp vào bất kỳ mã lỗi nào để lọc biểu đồ hoặc bấm ": "显示各项不良明细标签云。点击任意不良代码可过滤图表或点击 ",
+        "Bản Ghi Lỗi:": "不良记录:",
+        "Nhấp để xem danh sách bản ghi khung giờ {0}": "点击查看 {0} 点时段的记录列表",
+        "Nhấp để xem biểu đồ phân phối Gauss & danh sách cận biên của thông số này": "点击查看此参数的高斯正态分布图与临界边缘清单",
+        "Ví dụ bỏ tiền tố ": "去除前缀示例 ",
+        "ℹ️ Đã quét xong nhưng không tìm thấy tệp chứa chữ ": "ℹ️ 扫描完成，但未找到包含以下内容的日志文件: ",
+        "Cách 1: Sử dụng nút ": "方法 1：使用按钮 ",
+        "Bấm nút ": "点击按钮 ",
+        "ℹ️ Không tìm thấy chữ ": "ℹ️ 未找到文字 ",
+        "Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).&#10;💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!": "粘贴序列号 / DUT 列表 (每行一个)。&#10;💡 多组分割：在单独行输入 '# 组名称' 或从 Excel 粘贴两列 '组名称 [Tab] 序列号'！"
     }
 };
-
-if (typeof module !== "undefined" && module.exports) {
-    module.exports = I18N_DICT;
-}
 
 
 /* ── Module: 01-config.js ── */
@@ -6344,7 +7252,7 @@ var CFG = {
     CPK_EXCELLENT: 1.67,       // Cpk >= 1.67: Xuất sắc (6-Sigma)
     CPK_CAPABLE: 1.33,         // Cpk >= 1.33: Đạt năng lực
     CPK_MARGINAL: 1.00,        // 1.00 <= Cpk < 1.33: Cận biên / Cần kiểm soát
-    NEAR_FAIL_MARGIN_PCT: 10,  // Ngưỡng cảnh báo cận biên sai số (% sát mép LSL/USL)
+    NEAR_FAIL_MARGIN_PCT: 15,  // Ngưỡng cảnh báo cận biên sai số (% sát mép LSL/USL)
     HISTOGRAM_BINS_COUNT: 16,  // Số cột bin trong biểu đồ phân phối
 
     // --- Nạp tệp & Thư mục (Fast Multi-Million File Scanner) ---
@@ -7570,6 +8478,9 @@ function extractModelFromDbOrFile(dbPath, fileName) {
 function extractModelFromFileName(fileName) {
     return extractModelFromDbOrFile('', fileName);
 }
+if (typeof window !== 'undefined') {
+    window.extractModelFromFileName = extractModelFromFileName;
+}
 
 /**
  * Trích xuất tên trạm đo từ đường dẫn Database (VD: "SAS208-01" từ D:\SAS208-01\...)
@@ -7773,7 +8684,7 @@ var MATCH_TIER_NAME = new Proxy({}, {
  */
 function preprocessRawScan(rawScan) {
     if (rawScan == null) return '';
-    let s = String(rawScan);
+    let s = String(rawScan).replace(/[\u200B-\u200D\uFEFF\x00-\x1F\x7F]/g, '').replace(/\u00A0/g, ' ');
     if (CFG.TRIM_SCAN_WHITESPACE !== false) {
         s = s.trim();
     }
@@ -8170,6 +9081,14 @@ function calculateMatrixData() {
 
     const activeFiles = Array.from(loadedFilesMap.values()).filter(f => f.active);
     if (activeFiles.length === 0) return;
+
+    if (typeof extractModelFromFileName !== 'function') {
+        var extractModelFromFileName = function(fn) {
+            return (typeof extractModelFromDbOrFile === 'function')
+                ? extractModelFromDbOrFile('', fn)
+                : (fn || '').replace(/\.[^/.]+$/, '');
+        };
+    }
 
     matrixData.runs = activeFiles.map((f, idx) => {
         const model = f.modelName || (f.records && f.records[0] && f.records[0].modelName) || extractModelFromFileName(f.fileName);
@@ -9055,10 +9974,17 @@ function toggleTheme() {
 function applyUiZoom(zoomPct) {
     const cleanZoom = Math.min(150, Math.max(80, parseInt(zoomPct, 10) || 100));
     const scale = cleanZoom / 100;
-    document.documentElement.style.fontSize = `${16 * scale}px`;
+    if (document.documentElement && document.documentElement.style) {
+        if (typeof document.documentElement.style.setProperty === 'function') {
+            document.documentElement.style.setProperty('--ui-zoom', scale);
+        } else {
+            document.documentElement.style['--ui-zoom'] = scale;
+        }
+        document.documentElement.style.fontSize = `${16 * scale}px`;
+    }
     const appContainer = document.getElementById('app-container');
     if (appContainer && appContainer.style) {
-        appContainer.style.zoom = String(scale);
+        appContainer.style.zoom = scale;
     }
     CFG.UI_ZOOM = cleanZoom;
     saveCustomConfig();
@@ -9806,9 +10732,8 @@ function renderParametricSnapshotBand(container, record) {
             statusLabel = _t('HIGH (Vượt USL)');
             pctPos = 96;
         } else if (hasMin && hasMax && (m.maxLimit - m.minLimit) > 0) {
-            const span = m.maxLimit - m.minLimit;
-            pctPos = Math.max(5, Math.min(95, ((m.value - m.minLimit) / span) * 100));
-            const margin = span * ((CFG.NEAR_FAIL_MARGIN_PCT || 10) / 100);
+            const marginPct = (window.CFG && CFG.NEAR_FAIL_MARGIN_PCT) ? CFG.NEAR_FAIL_MARGIN_PCT : 15;
+            const margin = span * (marginPct / 100);
             if ((m.value - m.minLimit) <= margin || (m.maxLimit - m.value) <= margin) {
                 stateClass = 'warn';
                 statusLabel = _t('CẬN BIÊN');
@@ -10672,6 +11597,45 @@ function setAuditScanScope(scope) {
     focusActiveScanInput();
 }
 
+function toggleAuditScanScope() {
+    const newScope = auditState.scanScope === 'ACTIVE' ? 'GLOBAL' : 'ACTIVE';
+    setAuditScanScope(newScope);
+    updateAuditScopeButtonUI();
+}
+
+function updateAuditScopeButtonUI() {
+    const iconEl = document.getElementById('audit-scope-btn-icon');
+    const textEl = document.getElementById('audit-scope-btn-text');
+    if (!iconEl || !textEl) return;
+    if (auditState.scanScope === 'ACTIVE') {
+        iconEl.textContent = '🎯';
+        textEl.textContent = _t('Khóa Riêng Group Này');
+    } else {
+        iconEl.textContent = '🌐';
+        textEl.textContent = _t('Tự Động Định Tuyến Mọi Group');
+    }
+}
+
+function toggleAuditEngineeringDrawer() {
+    const drawer = document.getElementById('audit-eng-drawer');
+    if (!drawer) return;
+    drawer.classList.toggle('collapsed');
+    const isOpen = !drawer.classList.contains('collapsed');
+    try {
+        localStorage.setItem('qit_eng_drawer_open', isOpen ? '1' : '0');
+    } catch (e) {}
+    updateEngineeringDrawerButtonUI();
+}
+
+function updateEngineeringDrawerButtonUI() {
+    const drawer = document.getElementById('audit-eng-drawer');
+    const btn = document.getElementById('audit-drawer-toggle-btn');
+    if (!drawer || !btn) return;
+    const isOpen = !drawer.classList.contains('collapsed');
+    btn.classList.toggle('btn-primary', isOpen);
+    btn.classList.toggle('btn-secondary', !isOpen);
+}
+
 function toggleAuditAutoSwitchGroup(checked) {
     auditState.autoSwitchGroup = !!checked;
     CFG.AUDIT_AUTO_SWITCH_GROUP = !!checked;
@@ -10845,6 +11809,8 @@ function handleAuditScan(rawBarcode) {
             logEntry.groupName = owningGroup.name;
             logEntry.targetItem = item;
             auditState.scanLog.unshift(logEntry);
+            updateAuditHeroBanner(logEntry);
+            saveAuditStateToStorage();
             renderAuditDashboard();
             showToast(_t('🔒 TỪ CHỐI: [{0}] đã khóa hoàn tất, không nhận thêm mã quét!', owningGroup.name), 'error');
             return;
@@ -10909,6 +11875,7 @@ function handleAuditScan(rawBarcode) {
                 logEntry.groupName = otherGroup ? otherGroup.name : _t('Group khác');
                 logEntry.targetItem = otherItem;
                 auditState.scanLog.unshift(logEntry);
+                updateAuditHeroBanner(logEntry);
                 saveAuditStateToStorage();
                 renderAuditDashboard();
                 showToast(_t('🚨 NHẦM KIỆN HÀNG: Mã [{0}] thuộc [{1}], KHÔNG thuộc [{2}]!', otherItem.rawId, logEntry.groupName, activeGrp.name), 'error');
@@ -10929,8 +11896,134 @@ function handleAuditScan(rawBarcode) {
     auditState.scanLog.unshift(logEntry);
     if (auditState.scanLog.length > 200) auditState.scanLog.pop();
 
+    updateAuditHeroBanner(logEntry);
     saveAuditStateToStorage();
     renderAuditDashboard();
+}
+
+/**
+ * Cập nhật Banner Định Tuyến Nhóm Hàng Cỡ Lớn (Smart Group Routing Hero Banner)
+ * Hỗ trợ các trạng thái PASS, DUPLICATE, KLIPPEL_FAIL, WRONG_GROUP, GROUP_LOCKED, UNKNOWN
+ */
+function updateAuditHeroBanner(logEntry = null) {
+    const banner = document.getElementById('audit-hero-banner');
+    if (!banner) return;
+
+    const grpTitleEl = document.getElementById('hero-group-title');
+    const statusPillEl = document.getElementById('hero-status-pill');
+    const serialEl = document.getElementById('hero-serial-display');
+    const seqEl = document.getElementById('hero-seq-display');
+    const qcEl = document.getElementById('hero-qc-display');
+    const scannedEl = document.getElementById('hero-scanned-count');
+    const missingEl = document.getElementById('hero-missing-count');
+    const progressEl = document.getElementById('hero-progress-bar');
+
+    // Kích hoạt hiệu ứng xung nhịp khi nhận mã quét
+    banner.classList.remove('scan-receive-pulse');
+    if (typeof banner.offsetWidth !== 'undefined') void banner.offsetWidth;
+    banner.classList.add('scan-receive-pulse');
+
+    banner.classList.remove('hero-banner-idle', 'hero-banner-pass', 'hero-banner-fail', 'hero-banner-warn');
+
+    if (!logEntry) {
+        banner.classList.add('hero-banner-idle');
+        const activeGrp = auditState.activeGroupId !== 'ALL'
+            ? auditState.groups.find(g => g.id === auditState.activeGroupId)
+            : null;
+        if (grpTitleEl) grpTitleEl.textContent = activeGrp ? activeGrp.name : _t('CHỜ QUÉT MÃ...');
+        if (statusPillEl) statusPillEl.innerHTML = `<span class="hero-status-text">${_t('Sẵn sàng nhận mã từ súng barcode hoặc camera')}</span>`;
+        if (serialEl) serialEl.textContent = '—';
+        if (seqEl) seqEl.innerHTML = `<span>${_t('Thứ tự trong kiện: —')}</span>`;
+        if (qcEl) qcEl.innerHTML = `<span class="badge-pill" style="background:rgba(148,163,184,0.12); color:var(--text-muted);">${_t('Klippel: Chờ quét')}</span>`;
+
+        const viewItems = getActiveAuditViewItems();
+        const tot = viewItems.length;
+        const sc = viewItems.filter(i => (i.scanCount || 0) > 0).length;
+        const rem = Math.max(0, tot - sc);
+        const p = tot > 0 ? (sc / tot) * 100 : 0;
+        if (scannedEl) scannedEl.textContent = `${sc} / ${tot}`;
+        if (missingEl) missingEl.textContent = `${rem}`;
+        if (progressEl) progressEl.style.width = `${p.toFixed(1)}%`;
+        return;
+    }
+
+    // Xác định Group mục tiêu & tiến độ
+    let targetGroup = null;
+    if (logEntry.targetItem && logEntry.targetItem.groupId) {
+        targetGroup = auditState.groups.find(g => g.id === logEntry.targetItem.groupId);
+    } else if (auditState.activeGroupId !== 'ALL') {
+        targetGroup = auditState.groups.find(g => g.id === auditState.activeGroupId);
+    }
+
+    const groupName = targetGroup ? targetGroup.name : (logEntry.groupName || _t('Toàn bộ'));
+    if (grpTitleEl) grpTitleEl.textContent = groupName;
+
+    let gTot = targetGroup ? targetGroup.targetList.length : auditState.targetList.length;
+    let gSc = targetGroup ? targetGroup.scannedCount : auditState.scannedCount;
+    let gRem = Math.max(0, gTot - gSc);
+    let gPct = gTot > 0 ? (gSc / gTot) * 100 : 0;
+
+    if (scannedEl) scannedEl.textContent = `${gSc} / ${gTot}`;
+    if (missingEl) missingEl.textContent = `${gRem}`;
+    if (progressEl) progressEl.style.width = `${gPct.toFixed(1)}%`;
+
+    if (serialEl) serialEl.textContent = logEntry.rawScan || '—';
+
+    if (seqEl) {
+        if (logEntry.targetItem) {
+            seqEl.innerHTML = `<span>${_t('Thứ tự trong kiện:')} <strong>#${logEntry.targetItem.index} / ${gTot}</strong></span>`;
+        } else {
+            seqEl.innerHTML = `<span>${_t('Thứ tự trong kiện: —')}</span>`;
+        }
+    }
+
+    let pillHtml = '';
+    let qcHtml = '';
+
+    switch (logEntry.result) {
+        case 'MATCH':
+            if (logEntry.klippelVerdict === 'FAIL') {
+                banner.classList.add('hero-banner-fail');
+                pillHtml = `<span class="hero-status-text" style="color:#f87171;">🚨 ${_t('NG KLIPPEL: MÃ KHỚP NHƯNG LỖI THÔNG SỐ QC')}</span>`;
+                qcHtml = `<span class="badge-pill badge-fail" style="font-weight:800; cursor:pointer;" onclick="inspectRecordInModal('${escapeHtml(logEntry.targetItem.rawId)}')">✕ KLIPPEL FAIL 🔍</span>`;
+            } else {
+                banner.classList.add('hero-banner-pass');
+                pillHtml = `<span class="hero-status-text" style="color:#34d399;">✓ ${_t('ĐỐI SOÁT HỢP LỆ — ĐÚNG KIỆN HÀNG')}</span>`;
+                qcHtml = logEntry.klippelVerdict === 'PASS'
+                    ? `<span class="badge-pill badge-pass" style="font-weight:800; cursor:pointer;" onclick="inspectRecordInModal('${escapeHtml(logEntry.targetItem.rawId)}')">✓ KLIPPEL PASS 🔍</span>`
+                    : `<span class="badge-pill badge-pass">${_t('✓ ĐÃ QUÉT')}</span>`;
+            }
+            break;
+        case 'DUPLICATE':
+            banner.classList.add('hero-banner-warn');
+            const dupTimes = logEntry.targetItem ? logEntry.targetItem.scanCount : 2;
+            pillHtml = `<span class="hero-status-text" style="color:#fbbf24;">⚠️ ${_t('QUÉT LẶP LẦN {0} TRONG KIỆN', dupTimes)}</span>`;
+            qcHtml = `<span class="badge-pill badge-warn">${_t('⚠️ LẶP ×{0}', dupTimes)}</span>`;
+            break;
+        case 'WRONG_GROUP':
+            banner.classList.add('hero-banner-fail');
+            pillHtml = `<span class="hero-status-text" style="color:#f87171;">🚨 ${_t('NHẦM KIỆN: THUỘC [{0}]', escapeHtml(logEntry.groupName))}</span>`;
+            qcHtml = `<span class="badge-pill badge-fail">${_t('🚨 SAI GROUP')}</span>`;
+            break;
+        case 'GROUP_LOCKED':
+            banner.classList.add('hero-banner-warn');
+            pillHtml = `<span class="hero-status-text" style="color:#fbbf24;">🔒 ${_t('TỪ CHỐI: KIỆN [{0}] ĐÃ KHÓA NIÊM PHONG', escapeHtml(logEntry.groupName))}</span>`;
+            qcHtml = `<span class="badge-pill badge-warn">${_t('🔒 ĐÃ KHÓA')}</span>`;
+            break;
+        case 'AMBIGUOUS':
+            banner.classList.add('hero-banner-warn');
+            pillHtml = `<span class="hero-status-text" style="color:#fbbf24;">⚠️ ${_t('NHẬP NHẰNG NHIỀU MÃ TRÙNG KHỚP')}</span>`;
+            qcHtml = `<span class="badge-pill badge-warn">${_t('⚠️ NHẬP NHẰNG')}</span>`;
+            break;
+        default: // NOT_FOUND / STRANGER
+            banner.classList.add('hero-banner-fail');
+            pillHtml = `<span class="hero-status-text" style="color:#f87171;">✕ ${_t('MÃ LẠ: KHÔNG NẰM TRONG MỤC TIÊU')}</span>`;
+            qcHtml = `<span class="badge-pill badge-fail">${_t('✕ MÃ LẠ')}</span>`;
+            break;
+    }
+
+    if (statusPillEl) statusPillEl.innerHTML = pillHtml;
+    if (qcEl) qcEl.innerHTML = qcHtml;
 }
 
 /**
@@ -11040,6 +12133,25 @@ function renderAuditDashboard() {
         }
     }
 
+    updateAuditScopeButtonUI();
+    updateEngineeringDrawerButtonUI();
+    updateAuditHeroBanner(auditState.scanLog[0] || null);
+
+    // Auto open/close engineering drawer based on state if not manually set
+    const drawer = document.getElementById('audit-eng-drawer');
+    if (drawer) {
+        let storedDrawer = null;
+        try { storedDrawer = localStorage.getItem('qit_eng_drawer_open'); } catch (e) {}
+        if (storedDrawer === null) {
+            if (auditState.groups.length === 0) {
+                drawer.classList.remove('collapsed');
+            } else {
+                drawer.classList.add('collapsed');
+            }
+            updateEngineeringDrawerButtonUI();
+        }
+    }
+
     // Render danh sách thẻ Group (Group Control Cards)
     renderAuditGroupsPanel();
 
@@ -11103,13 +12215,18 @@ function renderAuditDashboard() {
  */
 function renderAuditGroupsPanel() {
     const container = document.getElementById('audit-groups-deck');
+    const countBadge = document.getElementById('audit-groups-count-badge');
     if (!container) return;
 
     const groups = auditState.groups || [];
+    if (countBadge) {
+        countBadge.textContent = `${groups.length} Group`;
+    }
+
     if (groups.length === 0) {
         container.innerHTML = `
-            <div style="text-align:center; padding:18px; color:var(--text-muted); border:1px dashed var(--border-color); border-radius:12px;">
-                ${_t('Chưa có Group kiểm soát nào. Hãy dán danh sách mã bên dưới hoặc bấm [🧪 Nạp Mẫu 3 Group Kiện Hàng] để bắt đầu.')}
+            <div style="text-align:center; padding:18px; color:var(--text-muted); border:1px dashed var(--border-color); border-radius:12px; width:100%;">
+                ${_t('Chưa có Group kiểm soát nào. Hãy dán danh sách mã trong Ngăn Kỹ Sư hoặc bấm [🧪 Nạp Mẫu 3 Group].')}
             </div>
         `;
         return;
@@ -11121,25 +12238,24 @@ function renderAuditGroupsPanel() {
     const isAllActive = auditState.activeGroupId === 'ALL';
 
     let html = `
-        <div class="audit-groups-grid">
-            <!-- Thẻ Tổng Hợp Tất Cả Các Group -->
-            <div class="audit-group-card ${isAllActive ? 'active-group-card' : ''}" onclick="selectAuditGroup('ALL')">
-                <div class="agc-header">
-                    <div>
-                        <div class="agc-title">${_t('🌐 TẤT CẢ CÁC GROUP ({0})', groups.length)}</div>
-                        <div class="agc-sub">${_t('Xem tổng hợp toàn bộ lô đối soát')}</div>
-                    </div>
-                    <span class="agc-pct" style="color:var(--accent-cyan);">${pctAll}%</span>
+        <!-- Thẻ Tổng Hợp Tất Cả Các Group -->
+        <div class="audit-group-card ${isAllActive ? 'active-group-card' : ''}" onclick="selectAuditGroup('ALL')" style="min-width:240px; flex:0 0 auto;">
+            <div class="agc-header">
+                <div>
+                    <div class="agc-title">${_t('🌐 TẤT CẢ CÁC GROUP ({0})', groups.length)}</div>
+                    <div class="agc-sub">${_t('Tổng hợp toàn bộ lô đối soát')}</div>
                 </div>
-                <div class="agc-progress-track">
-                    <div class="agc-progress-fill" style="width:${pctAll}%;"></div>
-                </div>
-                <div class="agc-stats-row">
-                    <span>${_t('Tổng:')} <strong>${totalAll}</strong></span>
-                    <span style="color:#10b981;">${_t('Đã quét:')} <strong>${scannedAll}</strong></span>
-                    <span style="color:#f87171;">${_t('Thiếu:')} <strong>${Math.max(0, totalAll - scannedAll)}</strong></span>
-                </div>
+                <span class="agc-pct" style="color:var(--accent-cyan); font-weight:800;">${pctAll}%</span>
             </div>
+            <div class="agc-progress-track">
+                <div class="agc-progress-fill" style="width:${pctAll}%;"></div>
+            </div>
+            <div class="agc-stats-row">
+                <span>${_t('Tổng:')} <strong>${totalAll}</strong></span>
+                <span style="color:#10b981;">${_t('Đã quét:')} <strong>${scannedAll}</strong></span>
+                <span style="color:#f87171;">${_t('Thiếu:')} <strong>${Math.max(0, totalAll - scannedAll)}</strong></span>
+            </div>
+        </div>
     `;
 
     groups.forEach((g, idx) => {
@@ -11159,7 +12275,7 @@ function renderAuditGroupsPanel() {
         }
 
         html += `
-            <div class="audit-group-card ${isSelected ? 'active-group-card' : ''} ${isDone ? 'done-group-card' : ''} ${g.locked ? 'locked-group-card' : ''}" onclick="selectAuditGroup('${escapeHtml(g.id)}')">
+            <div class="audit-group-card ${isSelected ? 'active-group-card' : ''} ${isDone ? 'done-group-card' : ''} ${g.locked ? 'locked-group-card' : ''}" onclick="selectAuditGroup('${escapeHtml(g.id)}')" style="min-width:240px; flex:0 0 auto;">
                 <div class="agc-header">
                     <div style="min-width:0; flex:1;">
                         <div class="agc-title" title="${escapeHtml(g.name)}">
@@ -11167,7 +12283,7 @@ function renderAuditGroupsPanel() {
                         </div>
                         <div class="agc-sub">${escapeHtml(g.note || _t('Group #{0} · Tạo lúc {1}', idx + 1, g.createdAt))}</div>
                     </div>
-                    <span class="agc-pct" style="color:${isDone ? '#10b981' : 'var(--accent-blue)'};">${gPct.toFixed(0)}%</span>
+                    <span class="agc-pct" style="color:${isDone ? '#10b981' : 'var(--accent-blue)'}; font-weight:800;">${gPct.toFixed(0)}%</span>
                 </div>
                 <div class="agc-progress-track">
                     <div class="agc-progress-fill ${isDone ? 'fill-done' : ''}" style="width:${gPct.toFixed(1)}%;"></div>
@@ -11182,21 +12298,34 @@ function renderAuditGroupsPanel() {
                     <button class="agc-btn" onclick="toggleLockAuditGroup('${escapeHtml(g.id)}', event)" title="${g.locked ? _t('Mở khóa Group này') : _t('Khóa bảo vệ Group này')}">
                         ${g.locked ? _t('🔓 Mở') : _t('🔒 Khóa')}
                     </button>
-                    <button class="agc-btn" onclick="renameAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đổi tên Group')}">✏️ ${_t('Tên')}</button>
-                    <button class="agc-btn" onclick="exportAuditReport('${escapeHtml(g.id)}')" title="${_t('Xuất Excel riêng Group này')}">📥 Excel</button>
-                    <button class="agc-btn" onclick="resetSingleAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đặt lại riêng tiến độ của Group này')}">🔄 Reset</button>
+                    <button class="agc-btn" onclick="renameAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đổi tên Group')}">✏️</button>
+                    <button class="agc-btn" onclick="exportAuditReport('${escapeHtml(g.id)}')" title="${_t('Xuất Excel riêng Group này')}">📥</button>
+                    <button class="agc-btn" onclick="resetSingleAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đặt lại riêng tiến độ')}">🔄</button>
                     <button class="agc-btn agc-btn-danger" onclick="deleteSingleAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Xóa Group này')}">✕</button>
                 </div>
             </div>
         `;
     });
 
-    html += `</div>`;
     container.innerHTML = html;
 }
 
 /**
- * Render Bảng Chi Tiết Từng Mã Mục Tiêu (9 Cột đầy đủ thông tin đối soát & thông số Klippel QC)
+ * Đóng / Mở hàng chi tiết kỹ thuật Accordion trong bảng đối soát
+ */
+function toggleAuditRowAccordion(itemIndex) {
+    const row = document.getElementById(`audit-accordion-${itemIndex}`);
+    const icon = document.getElementById(`audit-acc-icon-${itemIndex}`);
+    if (!row) return;
+    const willShow = row.classList.contains('hidden');
+    row.classList.toggle('hidden');
+    if (icon) {
+        icon.textContent = willShow ? '▾' : '▸';
+    }
+}
+
+/**
+ * Render Bảng Danh Sách Thích Ứng 5 Cột + Hàng Accordion Mở Rộng
  */
 function renderAuditTable() {
     const tbody = document.getElementById('audit-table-tbody');
@@ -11205,7 +12334,7 @@ function renderAuditTable() {
 
     const viewItems = getActiveAuditViewItems();
     if (viewItems.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:28px;">${_t('Chưa nạp danh sách mục tiêu. Hãy dán danh sách mã vạch, nạp tệp Excel/CSV hoặc bấm [🧪 Nạp Mẫu 3 Group Kiện Hàng].')}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:28px;">${_t('Chưa nạp danh sách mục tiêu. Hãy dán danh sách mã vạch, nạp tệp Excel/CSV hoặc bấm [🧪 Nạp Mẫu 3 Group Kiện Hàng].')}</td></tr>`;
         if (countBadge) countBadge.textContent = _t('0 mã');
         return;
     }
@@ -11239,7 +12368,7 @@ function renderAuditTable() {
     }
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:24px;">${_t('Không có mã mục tiêu nào khớp với bộ lọc hiện tại.')}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:24px;">${_t('Không có mã mục tiêu nào khớp với bộ lọc hiện tại.')}</td></tr>`;
         return;
     }
 
@@ -11247,74 +12376,109 @@ function renderAuditTable() {
     filtered.forEach(item => {
         const isDone = (item.scanCount || 0) > 0;
         const isDup = (item.scanCount || 0) > 1;
-        const statusBadge = isDone
-            ? `<span class="badge-pill badge-pass">${_t('✓ ĐÃ QUÉT')} ${isDup ? `(×${item.scanCount})` : ''}</span>`
-            : `<span class="badge-pill badge-notfound">${_t('⏳ CHƯA QUÉT')}</span>`;
 
-        let klippelCol = `<td style="text-align:center; color:var(--text-muted); font-size:11px;">—</td>`;
-        let metricsCol = `<td style="font-size:11px; color:var(--text-muted);">—</td>`;
+        let statusBadge = '';
+        if (isDone) {
+            statusBadge = isDup
+                ? `<span class="badge-pill badge-warn">${_t('⚠️ LẶP (×{0})', item.scanCount)}</span>`
+                : `<span class="badge-pill badge-pass">${_t('✓ ĐÃ QUÉT')}</span>`;
+        } else {
+            statusBadge = `<span class="badge-pill badge-notfound">${_t('⏳ CHƯA QUÉT')}</span>`;
+        }
+
+        let timeStr = '';
+        if (item.firstScanTime) {
+            timeStr = item.firstScanTime;
+            if (item.lastScanTime && item.lastScanTime !== item.firstScanTime) {
+                timeStr += ` → ${item.lastScanTime}`;
+            }
+        }
+
+        let klippelCol = `<span style="color:var(--text-muted); font-size:11px;">—</span>`;
+        let rec = null;
+        let isPass = false;
+        let reVal = '', fsVal = '', splVal = '';
+        let errs = '';
 
         if (loadedFilesMap.size > 0) {
             const matchRec = findRecordByBarcode(item.rawId);
             if (matchRec && matchRec.record) {
-                const rec = matchRec.record;
-                const isPass = isRecordPass(rec);
-                klippelCol = `
-                    <td style="text-align:center;">
-                        <span class="badge-pill ${isPass ? 'badge-pass' : 'badge-fail'}" style="font-size:10.5px; font-weight:700; cursor:pointer;" onclick="inspectRecordInModal('${escapeHtml(rec.id)}')">
-                            ${isPass ? '✓ PASS' : '✕ FAIL'} 🔍
-                        </span>
-                    </td>
-                `;
-
-                let reStr = '', fsStr = '', splStr = '';
+                rec = matchRec.record;
+                isPass = isRecordPass(rec);
                 if (rec.metrics) {
                     for (let mk in rec.metrics) {
                         const low = mk.toLowerCase();
-                        if (low.startsWith('re')) reStr = `Re:${rec.metrics[mk].value.toFixed(2)}Ω`;
-                        else if (low.startsWith('fs')) fsStr = `fs:${rec.metrics[mk].value.toFixed(1)}Hz`;
-                        else if (low.includes('level') || low.includes('spl')) splStr = `SPL:${rec.metrics[mk].value.toFixed(1)}dB`;
+                        if (low.startsWith('re')) reVal = `${rec.metrics[mk].value.toFixed(2)} Ω`;
+                        else if (low.startsWith('fs')) fsVal = `${rec.metrics[mk].value.toFixed(1)} Hz`;
+                        else if (low.includes('level') || low.includes('spl')) splVal = `${rec.metrics[mk].value.toFixed(1)} dB`;
                     }
                 }
-                const errs = !isPass ? activeErrors(rec.errors).map(getMappedName).join(', ') : '';
-                metricsCol = `
-                    <td style="font-family:var(--font-mono); font-size:11px;">
-                        <span style="color:var(--accent-blue); font-weight:700;">${escapeHtml(rec.stationName)}</span>
-                        ${reStr || fsStr || splStr ? ` · <span>${[reStr, fsStr, splStr].filter(Boolean).join(' · ')}</span>` : ''}
-                        ${errs ? `<div style="color:#f87171; font-size:10px; font-weight:700;">⚠️ ${_t('Lỗi:')} ${escapeHtml(errs)}</div>` : ''}
-                    </td>
+                errs = !isPass ? activeErrors(rec.errors).map(getMappedName).join(', ') : '';
+
+                klippelCol = `
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="badge-pill ${isPass ? 'badge-pass' : 'badge-fail'}" style="font-size:10.5px; font-weight:800; cursor:pointer;" onclick="event.stopPropagation(); inspectRecordInModal('${escapeHtml(rec.id)}')">
+                            ${isPass ? '✓ PASS' : '✕ FAIL'} 🔍
+                        </span>
+                        <span style="font-family:var(--font-mono); font-size:11px; color:var(--accent-blue); font-weight:700;">${escapeHtml(rec.stationName)}</span>
+                    </div>
                 `;
             } else {
-                klippelCol = `<td style="text-align:center;"><span class="badge-pill badge-warn" style="font-size:10px;">${_t('❓ Chưa đo')}</span></td>`;
-                metricsCol = `<td style="font-size:11px; color:var(--text-muted);">${_t('Chưa có bản ghi trong Log')}</td>`;
+                klippelCol = `<span class="badge-pill badge-warn" style="font-size:10px;">${_t('❓ Chưa có log')}</span>`;
             }
         }
 
         html += `
-            <tr class="${isDone ? 'row-scanned' : ''}">
-                <td style="text-align:center; color:var(--text-muted); font-weight:700; font-family:var(--font-mono);">#${item.index}</td>
+            <tr class="${isDone ? 'row-scanned' : ''} audit-main-row" onclick="toggleAuditRowAccordion(${item.index})" style="cursor:pointer;">
+                <td style="text-align:center; font-family:var(--font-mono); font-weight:700;">
+                    <span id="audit-acc-icon-${item.index}" style="font-size:10.5px; color:var(--text-muted); margin-right:4px;">▸</span>#${item.index}
+                </td>
                 <td>
-                    <span class="meta-chip meta-chip-cyan" style="cursor:pointer;" onclick="selectAuditGroup('${escapeHtml(item.groupId)}')">
+                    <span class="meta-chip meta-chip-cyan" onclick="event.stopPropagation(); selectAuditGroup('${escapeHtml(item.groupId)}')">
                         📦 ${escapeHtml(item.groupName || 'Group #1')}
                     </span>
                 </td>
                 <td style="font-weight:700; font-family:var(--font-mono); color:var(--text-main);">
                     ${escapeHtml(item.rawId)}
+                    ${item.modelHint ? `<div style="font-size:10.5px; font-weight:normal; color:var(--text-muted);">${escapeHtml(item.modelHint)}</div>` : ''}
                 </td>
-                <td style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">
-                    ${item.modelHint ? `<strong style="color:var(--text-main);">${escapeHtml(item.modelHint)}</strong> · ` : ''}${escapeHtml(item.serialOnly || item.cleanId)}
+                <td>
+                    ${statusBadge}
+                    ${timeStr ? `<div style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted); margin-top:2px;">${escapeHtml(timeStr)}</div>` : ''}
                 </td>
-                <td style="text-align:center;">${statusBadge}</td>
-                <td style="text-align:center; font-family:var(--font-mono); font-weight:700;">${item.scanCount || 0}</td>
-                <td style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">
-                    ${item.firstScanTime ? `${item.firstScanTime}${item.lastScanTime && item.lastScanTime !== item.firstScanTime ? ' → ' + item.lastScanTime : ''}` : '—'}
+                <td>
+                    ${klippelCol}
                 </td>
-                ${klippelCol}
-                ${metricsCol}
-                <td style="text-align:center;">
-                    <button class="btn btn-sm ${isDone ? 'btn-secondary' : 'btn-outline'}" style="padding:3px 8px; font-size:10.5px;" onclick="toggleManualAuditItemScan('${escapeHtml(item.groupId)}', ${item.index})" title="${_t('Đánh dấu hoặc hoàn tác trạng thái quét của mã này')}">
-                        ${isDone ? _t('↩ Hoàn tác') : _t('✓ Đánh dấu')}
-                    </button>
+            </tr>
+            <tr id="audit-accordion-${item.index}" class="audit-accordion-row hidden">
+                <td colspan="5" style="background:var(--bg-surface-elevated); padding:10px 16px; border-bottom:1px solid var(--border-color);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                        <div style="display:flex; flex-direction:column; gap:4px; font-size:11.5px;">
+                            <div>
+                                <span style="color:var(--text-muted);">${_t('Mã vạch gốc:')}</span> <strong style="font-family:var(--font-mono); color:var(--text-main);">${escapeHtml(item.rawId)}</strong>
+                                ${item.serialOnly ? ` &nbsp;·&nbsp; <span style="color:var(--text-muted);">${_t('Serial tách:')}</span> <span style="font-family:var(--font-mono); color:var(--accent-cyan); font-weight:700;">${escapeHtml(item.serialOnly)}</span>` : ''}
+                            </div>
+                            <div>
+                                <span style="color:var(--text-muted);">${_t('Số lần quét:')}</span> <strong>${item.scanCount || 0}</strong>
+                                ${timeStr ? ` &nbsp;·&nbsp; <span style="color:var(--text-muted);">${_t('Thời gian:')}</span> <span style="font-family:var(--font-mono);">${escapeHtml(timeStr)}</span>` : ''}
+                            </div>
+                            ${rec ? `
+                                <div style="display:flex; align-items:center; gap:8px; margin-top:2px; font-family:var(--font-mono); font-size:11px;">
+                                    <span style="color:var(--text-muted);">${_t('Trạm đo:')}</span> <strong>${escapeHtml(rec.stationName)}</strong>
+                                    ${reVal ? `· <span>Re: <strong>${reVal}</strong></span>` : ''}
+                                    ${fsVal ? `· <span>fs: <strong>${fsVal}</strong></span>` : ''}
+                                    ${splVal ? `· <span>SPL: <strong>${splVal}</strong></span>` : ''}
+                                </div>
+                                ${errs ? `<div style="color:#f87171; font-weight:700; font-size:11px;">⚠️ ${_t('Lỗi Klippel:')} ${escapeHtml(errs)}</div>` : ''}
+                            ` : ''}
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            ${rec ? `<button class="btn btn-sm btn-outline" style="padding:4px 10px; font-size:11px;" onclick="event.stopPropagation(); inspectRecordInModal('${escapeHtml(rec.id)}')">🔍 ${_t('Xem Chi Tiết Klippel')}</button>` : ''}
+                            <button class="btn btn-sm ${isDone ? 'btn-secondary' : 'btn-primary'}" style="padding:4px 10px; font-size:11px;" onclick="event.stopPropagation(); toggleManualAuditItemScan('${escapeHtml(item.groupId)}', ${item.index})">
+                                ${isDone ? _t('↩ Hoàn tác quét') : _t('✓ Đánh dấu đã quét')}
+                            </button>
+                        </div>
+                    </div>
                 </td>
             </tr>
         `;
@@ -11583,6 +12747,255 @@ function exportAuditHTML() {
 
     downloadBlobFile(htmlContent, `QIT_MultiGroup_Audit_Report_${toLocalDateStr(new Date())}.html`, 'text/html;charset=utf-8');
     showToast(_t('✅ Đã xuất Báo Cáo Đối Soát Đa Group HTML thành công!'), 'success');
+}
+
+/* ════════════ CAMERA 2D AUDIT SCANNER (DATAMATRIX / QR / BARCODE) ════════════ */
+
+let cameraStream = null;
+let cameraAnimationId = null;
+let cameraTrack = null;
+let cameraZoomLevel = 2.0;
+let cameraTorchActive = false;
+let cameraInvertActive = false;
+let cameraFpsCounter = 0;
+let cameraFpsLastTime = Date.now();
+let lastCameraScannedCode = '';
+let lastCameraScannedTime = 0;
+let cameraBarcodeDetector = null;
+
+async function toggleAuditCameraDock() {
+    const dock = document.getElementById('audit-camera-dock');
+    if (!dock) return;
+    if (dock.classList.contains('hidden')) {
+        await initAuditCamera();
+    } else {
+        stopAuditCamera();
+    }
+}
+
+async function initAuditCamera() {
+    const dock = document.getElementById('audit-camera-dock');
+    const video = document.getElementById('audit-camera-video');
+    if (!dock || !video) return;
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showToast(_t('⚠️ Trình duyệt hoặc thiết bị của bạn không hỗ trợ camera.'), 'error');
+        return;
+    }
+
+    try {
+        dock.classList.remove('hidden');
+        const constraints = {
+            video: {
+                facingMode: { ideal: 'environment' },
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        };
+
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = cameraStream;
+        await video.play();
+
+        const tracks = cameraStream.getVideoTracks();
+        if (tracks.length > 0) {
+            cameraTrack = tracks[0];
+            await setCameraZoom(cameraZoomLevel);
+        }
+
+        // Initialize BarcodeDetector if available
+        if ('BarcodeDetector' in window) {
+            try {
+                cameraBarcodeDetector = new window.BarcodeDetector({
+                    formats: ['data_matrix', 'qr_code', 'code_128', 'code_39', 'code_93', 'ean_13', 'itf']
+                });
+            } catch (e) {
+                try {
+                    cameraBarcodeDetector = new window.BarcodeDetector();
+                } catch (e2) {
+                    cameraBarcodeDetector = null;
+                }
+            }
+        }
+
+        startCameraScanLoop();
+        showToast(_t('📷 Camera 2D đã sẵn sàng. Hướng khung ngắm vào mã DataMatrix / QR / Barcode.'), 'info');
+    } catch (err) {
+        console.error('Lỗi khởi động camera:', err);
+        dock.classList.add('hidden');
+        showToast(_t('❌ Không thể mở camera: {0}', err.message || err.name), 'error');
+    }
+}
+
+function stopAuditCamera() {
+    if (cameraAnimationId) {
+        cancelAnimationFrame(cameraAnimationId);
+        cameraAnimationId = null;
+    }
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+        cameraTrack = null;
+    }
+    const video = document.getElementById('audit-camera-video');
+    if (video) video.srcObject = null;
+
+    const dock = document.getElementById('audit-camera-dock');
+    if (dock) dock.classList.add('hidden');
+
+    focusActiveScanInput();
+}
+
+async function setCameraZoom(val) {
+    cameraZoomLevel = Number(val) || 1.0;
+    ['1x', '2x', '3x'].forEach(z => {
+        const btn = document.getElementById(`camera-zoom-${z}`);
+        if (btn) {
+            const btnVal = parseFloat(z);
+            if (Math.abs(btnVal - cameraZoomLevel) < 0.1) {
+                btn.classList.add('btn-primary');
+                btn.classList.remove('btn-outline');
+            } else {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline');
+            }
+        }
+    });
+
+    if (cameraTrack && typeof cameraTrack.getCapabilities === 'function') {
+        const caps = cameraTrack.getCapabilities();
+        if (caps.zoom) {
+            const targetZoom = Math.max(caps.zoom.min || 1, Math.min(caps.zoom.max || 1, cameraZoomLevel));
+            try {
+                await cameraTrack.applyConstraints({
+                    advanced: [{ zoom: targetZoom }]
+                });
+            } catch (e) {
+                console.warn('Hardware zoom not accepted:', e);
+            }
+        }
+    }
+}
+
+async function toggleCameraTorch() {
+    if (!cameraTrack) return;
+    cameraTorchActive = !cameraTorchActive;
+    const btn = document.getElementById('camera-torch-btn');
+    if (cameraTrack.getCapabilities) {
+        const caps = cameraTrack.getCapabilities();
+        if (caps.torch) {
+            try {
+                await cameraTrack.applyConstraints({
+                    advanced: [{ torch: cameraTorchActive }]
+                });
+                if (btn) btn.classList.toggle('btn-primary', cameraTorchActive);
+                return;
+            } catch (e) {
+                console.warn('Torch constraint failed:', e);
+            }
+        }
+    }
+    showToast(_t('⚠️ Thiết bị không hỗ trợ đèn trợ sáng Flash.'), 'warning');
+}
+
+function toggleCameraInvert() {
+    cameraInvertActive = !cameraInvertActive;
+    const btn = document.getElementById('camera-invert-btn');
+    const video = document.getElementById('audit-camera-video');
+    if (btn) btn.classList.toggle('btn-primary', cameraInvertActive);
+    if (video) {
+        video.style.filter = cameraInvertActive ? 'invert(1) contrast(1.4)' : 'none';
+    }
+    showToast(cameraInvertActive ? _t('◐ Đã bật chế độ đảo màu (Đọc tem laser đen)') : _t('◑ Đã tắt chế độ đảo màu'), 'info');
+}
+
+function startCameraScanLoop() {
+    const video = document.getElementById('audit-camera-video');
+    const canvas = document.getElementById('audit-camera-canvas');
+    const fpsBadge = document.getElementById('camera-fps-badge');
+    if (!video || !canvas) return;
+
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+    async function scanFrame() {
+        if (!cameraStream || video.readyState < 2) {
+            cameraAnimationId = requestAnimationFrame(scanFrame);
+            return;
+        }
+
+        // FPS counter calculation
+        cameraFpsCounter++;
+        const now = Date.now();
+        if (now - cameraFpsLastTime >= 1000) {
+            if (fpsBadge) fpsBadge.textContent = `${cameraFpsCounter} FPS`;
+            cameraFpsCounter = 0;
+            cameraFpsLastTime = now;
+        }
+
+        // Detect barcodes
+        try {
+            if (cameraBarcodeDetector) {
+                let detected = [];
+                if (cameraInvertActive) {
+                    canvas.width = 320;
+                    canvas.height = 320;
+                    const cropSize = Math.min(video.videoWidth, video.videoHeight) * 0.7;
+                    const sx = (video.videoWidth - cropSize) / 2;
+                    const sy = (video.videoHeight - cropSize) / 2;
+                    ctx.drawImage(video, sx, sy, cropSize, cropSize, 0, 0, 320, 320);
+
+                    // Software pixel invert (iOS safe without ctx.filter)
+                    const imgData = ctx.getImageData(0, 0, 320, 320);
+                    const d = imgData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        d[i] = 255 - d[i];
+                        d[i + 1] = 255 - d[i + 1];
+                        d[i + 2] = 255 - d[i + 2];
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    detected = await cameraBarcodeDetector.detect(canvas);
+                } else {
+                    detected = await cameraBarcodeDetector.detect(video);
+                }
+
+                if (detected && detected.length > 0) {
+                    const rawValue = detected[0].rawValue;
+                    if (rawValue) {
+                        onCameraBarcodeDetected(rawValue);
+                    }
+                }
+            }
+        } catch (scanErr) {
+            // Frame detection error, continue next frame
+        }
+
+        cameraAnimationId = requestAnimationFrame(scanFrame);
+    }
+
+    cameraAnimationId = requestAnimationFrame(scanFrame);
+}
+
+function onCameraBarcodeDetected(rawCode) {
+    if (!rawCode) return;
+    const cleanCode = String(rawCode).trim();
+    if (!cleanCode) return;
+
+    const now = Date.now();
+    // 1800ms cooldown for identical codes, 0ms for new codes
+    if (cleanCode === lastCameraScannedCode && (now - lastCameraScannedTime) < 1800) {
+        return;
+    }
+
+    lastCameraScannedCode = cleanCode;
+    lastCameraScannedTime = now;
+
+    // Haptic feedback
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        try { navigator.vibrate([40]); } catch (e) {}
+    }
+
+    handleAuditScan(cleanCode);
 }
 
 
@@ -12577,7 +13990,39 @@ function openBucketDrilldown(bucketKey) {
     openCustomRecordsModal(`${_t('Chi Tiết Bản Ghi')} · ${bucket.label} (${bucket.dateStr})`, bucket.records);
 }
 
-function openCustomRecordsModal(title, recordsList) {
+function openCustomRecordsModal(hourOrFilter, optionalRecords) {
+    let title = '';
+    let recordsList = [];
+
+    if (Array.isArray(optionalRecords)) {
+        title = String(hourOrFilter || _t('Chi Tiết Bản Ghi'));
+        recordsList = optionalRecords;
+    } else if (typeof hourOrFilter === 'number' || (typeof hourOrFilter === 'string' && /^\d{1,2}(:00)?$/.test(String(hourOrFilter).trim()))) {
+        const h = typeof hourOrFilter === 'number' ? hourOrFilter : parseInt(hourOrFilter, 10);
+        title = `${_t('Khung Giờ')} ${String(h).padStart(2, '0')}:00 - ${String((h + 1) % 24).padStart(2, '0')}:00`;
+        const pool = (filteredTimelineData && filteredTimelineData.length > 0) ? filteredTimelineData : timelineData;
+        recordsList = pool.filter(r => r.timestamp && r.timestamp.getHours() === h);
+    } else if (typeof hourOrFilter === 'string') {
+        const pool = (filteredTimelineData && filteredTimelineData.length > 0) ? filteredTimelineData : timelineData;
+        const bucket = (productionTimelineData.buckets || []).find(b => b.key === hourOrFilter);
+        if (bucket && bucket.records) {
+            title = `${_t('Chi Tiết Bản Ghi')} · ${bucket.label} (${bucket.dateStr})`;
+            recordsList = bucket.records;
+        } else {
+            const filterName = hourOrFilter;
+            title = `${_t('Bản Ghi Lỗi:')} ${getMappedName(filterName)}`;
+            recordsList = pool.filter(r => r.errors && r.errors.includes(filterName));
+        }
+    } else if (hourOrFilter && typeof hourOrFilter === 'object') {
+        if (hourOrFilter.title) title = hourOrFilter.title;
+        if (Array.isArray(hourOrFilter.records)) recordsList = hourOrFilter.records;
+    }
+
+    if (!recordsList || recordsList.length === 0) {
+        showToast(_t('Không có dữ liệu trong khung giờ này'), 'info');
+        return;
+    }
+
     const modal = document.getElementById('drilldown-modal');
     if (!modal) return;
     const titleEl = document.getElementById('drilldown-modal-title');
@@ -12622,6 +14067,9 @@ function openCustomRecordsModal(title, recordsList) {
         }).join('');
     }
     modal.classList.remove('hidden');
+}
+if (typeof window !== 'undefined') {
+    window.openCustomRecordsModal = openCustomRecordsModal;
 }
 
 /**
@@ -12915,7 +14363,7 @@ function renderHourlyYieldHeatmap() {
 
     let html = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:11px; color:var(--text-muted); flex-wrap:wrap; gap:8px;">
-            <div>${_t('Mức độ tỷ lệ lỗi')}: <span style="color:#10b981;">${_t('0% (Xanh)')}</span> $\\rightarrow$ <span style="color:#ef4444;">${_t('Cao (Đỏ đậm)')}</span></div>
+            <div>${_t('Mức độ tỷ lệ lỗi')}: <span style="color:#10b981;">${_t('0% (Xanh)')}</span> → <span style="color:#ef4444;">${_t('Cao (Đỏ đậm)')}</span></div>
             <div>${_t('Tổng số khung giờ ghi nhận')}: <strong>${activeHours.length} ${_t('giờ')}</strong></div>
         </div>
         <div class="hourly-grid">
@@ -12941,7 +14389,7 @@ function renderHourlyYieldHeatmap() {
         const hStr = `${String(s.hour).padStart(2, '0')}:00`;
 
         html += `
-            <div class="hourly-card" style="background:${bg}; border-color:${border};">
+            <div class="hourly-card" style="background:${bg}; border-color:${border}; cursor:pointer;" onclick="openCustomRecordsModal(${s.hour})" title="${_t('Nhấp để xem danh sách bản ghi khung giờ {0}', hStr)}">
                 <div class="hourly-time">${hStr}</div>
                 <div class="hourly-yield" style="color:${textCol};">${yieldRate.toFixed(1)}%</div>
                 <div class="hourly-counts">${s.pass}P / ${s.fail}F (${s.total})</div>
@@ -15222,6 +16670,73 @@ let isFastScanRunning = false;
 let isFastScanAborted = false;
 let currentFastScanFoundFiles = [];
 
+/**
+ * Bộ bảo vệ vùng nhập liệu (Focus Guard)
+ * Ngăn chặn việc cướp con trỏ khi người dùng đang thao tác trên các form/bảng/tìm kiếm
+ */
+function isUserInteractingWithUI() {
+    const el = document.activeElement;
+    if (el) {
+        if (el.id === 'scanner-input' || el.id === 'audit-scanner-input') return false;
+        const tag = el.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable) {
+            return true; // Đang gõ ở ô Tên Group, Ghi chú, Tìm kiếm, Batch Size... -> CẤM cướp focus!
+        }
+    }
+    // Nếu người dùng đang bôi đen văn bản trong bảng để copy -> CẤM cướp focus!
+    const sel = (typeof window !== 'undefined' && window.getSelection) ? window.getSelection().toString() : '';
+    if (sel && sel.length > 0) return true;
+    // Nếu đang mở Modal cấu hình hoặc Dialog -> CẤM cướp focus!
+    if (typeof document !== 'undefined') {
+        const openModal = document.querySelector('.modal:not(.hidden), .modal-backdrop:not(.hidden)');
+        if (openModal) return true;
+    }
+    return false;
+}
+
+/**
+ * Bộ đo vận tốc phím & Phân loại: Súng Quét (Scanner Burst / Paste) vs Gõ Tay (Manual Typing)
+ */
+const scanInputState = {
+    lastKeyTime: 0,
+    fastStreakCount: 0,
+    autoSubmitTimer: null
+};
+
+function onScanInputEvent(e, inputEl, submitCallback) {
+    const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    const delta = now - scanInputState.lastKeyTime;
+    scanInputState.lastKeyTime = now;
+
+    if (delta < 45) {
+        scanInputState.fastStreakCount++;
+    } else if (delta > 150) {
+        // Khoảng nghỉ dài -> reset chuỗi gõ nhanh
+        scanInputState.fastStreakCount = 0;
+    }
+
+    clearTimeout(scanInputState.autoSubmitTimer);
+    const val = inputEl.value.trim();
+    const minLen = (window.CFG && CFG.MIN_SCAN_LEN) ? CFG.MIN_SCAN_LEN : 4;
+
+    // CHỈ TỰ ĐỘNG SUBMIT KHÔNG CẦN ENTER KHI PHÁT HIỆN LUỒNG QUÉT TỐC ĐỘ CAO
+    // (Súng barcode không cấu hình Enter, hoặc dán Paste, hoặc chuỗi >= 4 ký tự bắn vào < 45ms/ký tự)
+    const isPasteOrScannerBurst = (e && e.inputType === 'insertFromPaste') || (scanInputState.fastStreakCount >= 3);
+
+    if (isPasteOrScannerBurst && val.length >= minLen) {
+        scanInputState.autoSubmitTimer = setTimeout(() => {
+            const finalVal = inputEl.value.trim();
+            if (finalVal.length >= minLen) {
+                if (typeof submitCallback === 'function') {
+                    submitCallback(finalVal);
+                }
+                inputEl.value = '';
+                scanInputState.fastStreakCount = 0;
+            }
+        }, 110); // Chốt mã ngay sau 110ms kể từ ký tự cuối cùng của súng quét
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     QIT.i18n.applyTranslations();
@@ -15275,29 +16790,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. Đăng ký sự kiện Quét mã vạch tại ô Scanner Input
+    // 2. Đăng ký sự kiện Quét mã vạch tại ô Scanner Input (Hỗ trợ phân loại Súng quét vs Gõ tay)
     const scanInput = document.getElementById('scanner-input');
     if (scanInput) {
         scanInput.addEventListener('keydown', onScanInputKeydown);
+        scanInput.addEventListener('input', (e) => onScanInputEvent(e, scanInput, (val) => {
+            handleScanBarcode(val);
+        }));
     }
 
     const auditScanInput = document.getElementById('audit-scanner-input');
     if (auditScanInput) {
         auditScanInput.addEventListener('keydown', onAuditScanKeydown);
+        auditScanInput.addEventListener('input', (e) => onScanInputEvent(e, auditScanInput, (val) => {
+            handleAuditScan(val);
+        }));
     }
 
-    // 3. Tự động focus vào ô quét khi bấm vào bất kỳ đâu trên màn hình Quét
-    document.addEventListener('click', (e) => {
-        if (currentTab === 'scan' || currentTab === 'audit') {
-            const target = e.target;
-            const isInteractive = target.tagName === 'INPUT' || target.tagName === 'BUTTON' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA' || target.closest('.modal') || target.closest('#fast-scan-modal');
-            if (!isInteractive) {
-                focusActiveScanInput();
-            }
-        }
-    });
-
-    // 4. Đóng modal bằng phím Escape
+    // 3. Global Keystroke Router & Focus Guard (Chống cướp focus và bắt phím thông minh)
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeSettingsModal();
@@ -15305,6 +16815,29 @@ document.addEventListener('DOMContentLoaded', () => {
             closeRobotLifetimeModal();
             closeFastScanModal();
             closeNetworkShareGuideModal();
+            return;
+        }
+
+        // Phím tắt Alt + E: Bật/tắt Ngăn Kéo Kỹ Sư (Engineering Drawer) trên Tab Đối Soát
+        if (e.altKey && (e.key === 'e' || e.key === 'E')) {
+            e.preventDefault();
+            if (typeof toggleAuditEngineeringDrawer === 'function') {
+                toggleAuditEngineeringDrawer();
+            }
+            return;
+        }
+
+        if (isUserInteractingWithUI()) return;
+        if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+        // Tự động chuyển ký tự in được (length === 1) vào ô quét của Tab đang kích hoạt
+        if (e.key.length === 1) {
+            const activeInput = (currentTab === 'audit')
+                ? document.getElementById('audit-scanner-input')
+                : document.getElementById('scanner-input');
+            if (activeInput && document.activeElement !== activeInput) {
+                activeInput.focus();
+            }
         }
     });
 

@@ -22,7 +22,7 @@ var MATCH_TIER_NAME = new Proxy({}, {
  */
 function preprocessRawScan(rawScan) {
     if (rawScan == null) return '';
-    let s = String(rawScan);
+    let s = String(rawScan).replace(/[\u200B-\u200D\uFEFF\x00-\x1F\x7F]/g, '').replace(/\u00A0/g, ' ');
     if (CFG.TRIM_SCAN_WHITESPACE !== false) {
         s = s.trim();
     }

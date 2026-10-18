@@ -531,6 +531,45 @@ function setAuditScanScope(scope) {
     focusActiveScanInput();
 }
 
+function toggleAuditScanScope() {
+    const newScope = auditState.scanScope === 'ACTIVE' ? 'GLOBAL' : 'ACTIVE';
+    setAuditScanScope(newScope);
+    updateAuditScopeButtonUI();
+}
+
+function updateAuditScopeButtonUI() {
+    const iconEl = document.getElementById('audit-scope-btn-icon');
+    const textEl = document.getElementById('audit-scope-btn-text');
+    if (!iconEl || !textEl) return;
+    if (auditState.scanScope === 'ACTIVE') {
+        iconEl.textContent = '🎯';
+        textEl.textContent = _t('Khóa Riêng Group Này');
+    } else {
+        iconEl.textContent = '🌐';
+        textEl.textContent = _t('Tự Động Định Tuyến Mọi Group');
+    }
+}
+
+function toggleAuditEngineeringDrawer() {
+    const drawer = document.getElementById('audit-eng-drawer');
+    if (!drawer) return;
+    drawer.classList.toggle('collapsed');
+    const isOpen = !drawer.classList.contains('collapsed');
+    try {
+        localStorage.setItem('qit_eng_drawer_open', isOpen ? '1' : '0');
+    } catch (e) {}
+    updateEngineeringDrawerButtonUI();
+}
+
+function updateEngineeringDrawerButtonUI() {
+    const drawer = document.getElementById('audit-eng-drawer');
+    const btn = document.getElementById('audit-drawer-toggle-btn');
+    if (!drawer || !btn) return;
+    const isOpen = !drawer.classList.contains('collapsed');
+    btn.classList.toggle('btn-primary', isOpen);
+    btn.classList.toggle('btn-secondary', !isOpen);
+}
+
 function toggleAuditAutoSwitchGroup(checked) {
     auditState.autoSwitchGroup = !!checked;
     CFG.AUDIT_AUTO_SWITCH_GROUP = !!checked;
@@ -704,6 +743,8 @@ function handleAuditScan(rawBarcode) {
             logEntry.groupName = owningGroup.name;
             logEntry.targetItem = item;
             auditState.scanLog.unshift(logEntry);
+            updateAuditHeroBanner(logEntry);
+            saveAuditStateToStorage();
             renderAuditDashboard();
             showToast(_t('🔒 TỪ CHỐI: [{0}] đã khóa hoàn tất, không nhận thêm mã quét!', owningGroup.name), 'error');
             return;
@@ -768,6 +809,7 @@ function handleAuditScan(rawBarcode) {
                 logEntry.groupName = otherGroup ? otherGroup.name : _t('Group khác');
                 logEntry.targetItem = otherItem;
                 auditState.scanLog.unshift(logEntry);
+                updateAuditHeroBanner(logEntry);
                 saveAuditStateToStorage();
                 renderAuditDashboard();
                 showToast(_t('🚨 NHẦM KIỆN HÀNG: Mã [{0}] thuộc [{1}], KHÔNG thuộc [{2}]!', otherItem.rawId, logEntry.groupName, activeGrp.name), 'error');
@@ -788,8 +830,134 @@ function handleAuditScan(rawBarcode) {
     auditState.scanLog.unshift(logEntry);
     if (auditState.scanLog.length > 200) auditState.scanLog.pop();
 
+    updateAuditHeroBanner(logEntry);
     saveAuditStateToStorage();
     renderAuditDashboard();
+}
+
+/**
+ * Cập nhật Banner Định Tuyến Nhóm Hàng Cỡ Lớn (Smart Group Routing Hero Banner)
+ * Hỗ trợ các trạng thái PASS, DUPLICATE, KLIPPEL_FAIL, WRONG_GROUP, GROUP_LOCKED, UNKNOWN
+ */
+function updateAuditHeroBanner(logEntry = null) {
+    const banner = document.getElementById('audit-hero-banner');
+    if (!banner) return;
+
+    const grpTitleEl = document.getElementById('hero-group-title');
+    const statusPillEl = document.getElementById('hero-status-pill');
+    const serialEl = document.getElementById('hero-serial-display');
+    const seqEl = document.getElementById('hero-seq-display');
+    const qcEl = document.getElementById('hero-qc-display');
+    const scannedEl = document.getElementById('hero-scanned-count');
+    const missingEl = document.getElementById('hero-missing-count');
+    const progressEl = document.getElementById('hero-progress-bar');
+
+    // Kích hoạt hiệu ứng xung nhịp khi nhận mã quét
+    banner.classList.remove('scan-receive-pulse');
+    if (typeof banner.offsetWidth !== 'undefined') void banner.offsetWidth;
+    banner.classList.add('scan-receive-pulse');
+
+    banner.classList.remove('hero-banner-idle', 'hero-banner-pass', 'hero-banner-fail', 'hero-banner-warn');
+
+    if (!logEntry) {
+        banner.classList.add('hero-banner-idle');
+        const activeGrp = auditState.activeGroupId !== 'ALL'
+            ? auditState.groups.find(g => g.id === auditState.activeGroupId)
+            : null;
+        if (grpTitleEl) grpTitleEl.textContent = activeGrp ? activeGrp.name : _t('CHỜ QUÉT MÃ...');
+        if (statusPillEl) statusPillEl.innerHTML = `<span class="hero-status-text">${_t('Sẵn sàng nhận mã từ súng barcode hoặc camera')}</span>`;
+        if (serialEl) serialEl.textContent = '—';
+        if (seqEl) seqEl.innerHTML = `<span>${_t('Thứ tự trong kiện: —')}</span>`;
+        if (qcEl) qcEl.innerHTML = `<span class="badge-pill" style="background:rgba(148,163,184,0.12); color:var(--text-muted);">${_t('Klippel: Chờ quét')}</span>`;
+
+        const viewItems = getActiveAuditViewItems();
+        const tot = viewItems.length;
+        const sc = viewItems.filter(i => (i.scanCount || 0) > 0).length;
+        const rem = Math.max(0, tot - sc);
+        const p = tot > 0 ? (sc / tot) * 100 : 0;
+        if (scannedEl) scannedEl.textContent = `${sc} / ${tot}`;
+        if (missingEl) missingEl.textContent = `${rem}`;
+        if (progressEl) progressEl.style.width = `${p.toFixed(1)}%`;
+        return;
+    }
+
+    // Xác định Group mục tiêu & tiến độ
+    let targetGroup = null;
+    if (logEntry.targetItem && logEntry.targetItem.groupId) {
+        targetGroup = auditState.groups.find(g => g.id === logEntry.targetItem.groupId);
+    } else if (auditState.activeGroupId !== 'ALL') {
+        targetGroup = auditState.groups.find(g => g.id === auditState.activeGroupId);
+    }
+
+    const groupName = targetGroup ? targetGroup.name : (logEntry.groupName || _t('Toàn bộ'));
+    if (grpTitleEl) grpTitleEl.textContent = groupName;
+
+    let gTot = targetGroup ? targetGroup.targetList.length : auditState.targetList.length;
+    let gSc = targetGroup ? targetGroup.scannedCount : auditState.scannedCount;
+    let gRem = Math.max(0, gTot - gSc);
+    let gPct = gTot > 0 ? (gSc / gTot) * 100 : 0;
+
+    if (scannedEl) scannedEl.textContent = `${gSc} / ${gTot}`;
+    if (missingEl) missingEl.textContent = `${gRem}`;
+    if (progressEl) progressEl.style.width = `${gPct.toFixed(1)}%`;
+
+    if (serialEl) serialEl.textContent = logEntry.rawScan || '—';
+
+    if (seqEl) {
+        if (logEntry.targetItem) {
+            seqEl.innerHTML = `<span>${_t('Thứ tự trong kiện:')} <strong>#${logEntry.targetItem.index} / ${gTot}</strong></span>`;
+        } else {
+            seqEl.innerHTML = `<span>${_t('Thứ tự trong kiện: —')}</span>`;
+        }
+    }
+
+    let pillHtml = '';
+    let qcHtml = '';
+
+    switch (logEntry.result) {
+        case 'MATCH':
+            if (logEntry.klippelVerdict === 'FAIL') {
+                banner.classList.add('hero-banner-fail');
+                pillHtml = `<span class="hero-status-text" style="color:#f87171;">🚨 ${_t('NG KLIPPEL: MÃ KHỚP NHƯNG LỖI THÔNG SỐ QC')}</span>`;
+                qcHtml = `<span class="badge-pill badge-fail" style="font-weight:800; cursor:pointer;" onclick="inspectRecordInModal('${escapeHtml(logEntry.targetItem.rawId)}')">✕ KLIPPEL FAIL 🔍</span>`;
+            } else {
+                banner.classList.add('hero-banner-pass');
+                pillHtml = `<span class="hero-status-text" style="color:#34d399;">✓ ${_t('ĐỐI SOÁT HỢP LỆ — ĐÚNG KIỆN HÀNG')}</span>`;
+                qcHtml = logEntry.klippelVerdict === 'PASS'
+                    ? `<span class="badge-pill badge-pass" style="font-weight:800; cursor:pointer;" onclick="inspectRecordInModal('${escapeHtml(logEntry.targetItem.rawId)}')">✓ KLIPPEL PASS 🔍</span>`
+                    : `<span class="badge-pill badge-pass">${_t('✓ ĐÃ QUÉT')}</span>`;
+            }
+            break;
+        case 'DUPLICATE':
+            banner.classList.add('hero-banner-warn');
+            const dupTimes = logEntry.targetItem ? logEntry.targetItem.scanCount : 2;
+            pillHtml = `<span class="hero-status-text" style="color:#fbbf24;">⚠️ ${_t('QUÉT LẶP LẦN {0} TRONG KIỆN', dupTimes)}</span>`;
+            qcHtml = `<span class="badge-pill badge-warn">${_t('⚠️ LẶP ×{0}', dupTimes)}</span>`;
+            break;
+        case 'WRONG_GROUP':
+            banner.classList.add('hero-banner-fail');
+            pillHtml = `<span class="hero-status-text" style="color:#f87171;">🚨 ${_t('NHẦM KIỆN: THUỘC [{0}]', escapeHtml(logEntry.groupName))}</span>`;
+            qcHtml = `<span class="badge-pill badge-fail">${_t('🚨 SAI GROUP')}</span>`;
+            break;
+        case 'GROUP_LOCKED':
+            banner.classList.add('hero-banner-warn');
+            pillHtml = `<span class="hero-status-text" style="color:#fbbf24;">🔒 ${_t('TỪ CHỐI: KIỆN [{0}] ĐÃ KHÓA NIÊM PHONG', escapeHtml(logEntry.groupName))}</span>`;
+            qcHtml = `<span class="badge-pill badge-warn">${_t('🔒 ĐÃ KHÓA')}</span>`;
+            break;
+        case 'AMBIGUOUS':
+            banner.classList.add('hero-banner-warn');
+            pillHtml = `<span class="hero-status-text" style="color:#fbbf24;">⚠️ ${_t('NHẬP NHẰNG NHIỀU MÃ TRÙNG KHỚP')}</span>`;
+            qcHtml = `<span class="badge-pill badge-warn">${_t('⚠️ NHẬP NHẰNG')}</span>`;
+            break;
+        default: // NOT_FOUND / STRANGER
+            banner.classList.add('hero-banner-fail');
+            pillHtml = `<span class="hero-status-text" style="color:#f87171;">✕ ${_t('MÃ LẠ: KHÔNG NẰM TRONG MỤC TIÊU')}</span>`;
+            qcHtml = `<span class="badge-pill badge-fail">${_t('✕ MÃ LẠ')}</span>`;
+            break;
+    }
+
+    if (statusPillEl) statusPillEl.innerHTML = pillHtml;
+    if (qcEl) qcEl.innerHTML = qcHtml;
 }
 
 /**
@@ -899,6 +1067,25 @@ function renderAuditDashboard() {
         }
     }
 
+    updateAuditScopeButtonUI();
+    updateEngineeringDrawerButtonUI();
+    updateAuditHeroBanner(auditState.scanLog[0] || null);
+
+    // Auto open/close engineering drawer based on state if not manually set
+    const drawer = document.getElementById('audit-eng-drawer');
+    if (drawer) {
+        let storedDrawer = null;
+        try { storedDrawer = localStorage.getItem('qit_eng_drawer_open'); } catch (e) {}
+        if (storedDrawer === null) {
+            if (auditState.groups.length === 0) {
+                drawer.classList.remove('collapsed');
+            } else {
+                drawer.classList.add('collapsed');
+            }
+            updateEngineeringDrawerButtonUI();
+        }
+    }
+
     // Render danh sách thẻ Group (Group Control Cards)
     renderAuditGroupsPanel();
 
@@ -962,13 +1149,18 @@ function renderAuditDashboard() {
  */
 function renderAuditGroupsPanel() {
     const container = document.getElementById('audit-groups-deck');
+    const countBadge = document.getElementById('audit-groups-count-badge');
     if (!container) return;
 
     const groups = auditState.groups || [];
+    if (countBadge) {
+        countBadge.textContent = `${groups.length} Group`;
+    }
+
     if (groups.length === 0) {
         container.innerHTML = `
-            <div style="text-align:center; padding:18px; color:var(--text-muted); border:1px dashed var(--border-color); border-radius:12px;">
-                ${_t('Chưa có Group kiểm soát nào. Hãy dán danh sách mã bên dưới hoặc bấm [🧪 Nạp Mẫu 3 Group Kiện Hàng] để bắt đầu.')}
+            <div style="text-align:center; padding:18px; color:var(--text-muted); border:1px dashed var(--border-color); border-radius:12px; width:100%;">
+                ${_t('Chưa có Group kiểm soát nào. Hãy dán danh sách mã trong Ngăn Kỹ Sư hoặc bấm [🧪 Nạp Mẫu 3 Group].')}
             </div>
         `;
         return;
@@ -980,25 +1172,24 @@ function renderAuditGroupsPanel() {
     const isAllActive = auditState.activeGroupId === 'ALL';
 
     let html = `
-        <div class="audit-groups-grid">
-            <!-- Thẻ Tổng Hợp Tất Cả Các Group -->
-            <div class="audit-group-card ${isAllActive ? 'active-group-card' : ''}" onclick="selectAuditGroup('ALL')">
-                <div class="agc-header">
-                    <div>
-                        <div class="agc-title">${_t('🌐 TẤT CẢ CÁC GROUP ({0})', groups.length)}</div>
-                        <div class="agc-sub">${_t('Xem tổng hợp toàn bộ lô đối soát')}</div>
-                    </div>
-                    <span class="agc-pct" style="color:var(--accent-cyan);">${pctAll}%</span>
+        <!-- Thẻ Tổng Hợp Tất Cả Các Group -->
+        <div class="audit-group-card ${isAllActive ? 'active-group-card' : ''}" onclick="selectAuditGroup('ALL')" style="min-width:240px; flex:0 0 auto;">
+            <div class="agc-header">
+                <div>
+                    <div class="agc-title">${_t('🌐 TẤT CẢ CÁC GROUP ({0})', groups.length)}</div>
+                    <div class="agc-sub">${_t('Tổng hợp toàn bộ lô đối soát')}</div>
                 </div>
-                <div class="agc-progress-track">
-                    <div class="agc-progress-fill" style="width:${pctAll}%;"></div>
-                </div>
-                <div class="agc-stats-row">
-                    <span>${_t('Tổng:')} <strong>${totalAll}</strong></span>
-                    <span style="color:#10b981;">${_t('Đã quét:')} <strong>${scannedAll}</strong></span>
-                    <span style="color:#f87171;">${_t('Thiếu:')} <strong>${Math.max(0, totalAll - scannedAll)}</strong></span>
-                </div>
+                <span class="agc-pct" style="color:var(--accent-cyan); font-weight:800;">${pctAll}%</span>
             </div>
+            <div class="agc-progress-track">
+                <div class="agc-progress-fill" style="width:${pctAll}%;"></div>
+            </div>
+            <div class="agc-stats-row">
+                <span>${_t('Tổng:')} <strong>${totalAll}</strong></span>
+                <span style="color:#10b981;">${_t('Đã quét:')} <strong>${scannedAll}</strong></span>
+                <span style="color:#f87171;">${_t('Thiếu:')} <strong>${Math.max(0, totalAll - scannedAll)}</strong></span>
+            </div>
+        </div>
     `;
 
     groups.forEach((g, idx) => {
@@ -1018,7 +1209,7 @@ function renderAuditGroupsPanel() {
         }
 
         html += `
-            <div class="audit-group-card ${isSelected ? 'active-group-card' : ''} ${isDone ? 'done-group-card' : ''} ${g.locked ? 'locked-group-card' : ''}" onclick="selectAuditGroup('${escapeHtml(g.id)}')">
+            <div class="audit-group-card ${isSelected ? 'active-group-card' : ''} ${isDone ? 'done-group-card' : ''} ${g.locked ? 'locked-group-card' : ''}" onclick="selectAuditGroup('${escapeHtml(g.id)}')" style="min-width:240px; flex:0 0 auto;">
                 <div class="agc-header">
                     <div style="min-width:0; flex:1;">
                         <div class="agc-title" title="${escapeHtml(g.name)}">
@@ -1026,7 +1217,7 @@ function renderAuditGroupsPanel() {
                         </div>
                         <div class="agc-sub">${escapeHtml(g.note || _t('Group #{0} · Tạo lúc {1}', idx + 1, g.createdAt))}</div>
                     </div>
-                    <span class="agc-pct" style="color:${isDone ? '#10b981' : 'var(--accent-blue)'};">${gPct.toFixed(0)}%</span>
+                    <span class="agc-pct" style="color:${isDone ? '#10b981' : 'var(--accent-blue)'}; font-weight:800;">${gPct.toFixed(0)}%</span>
                 </div>
                 <div class="agc-progress-track">
                     <div class="agc-progress-fill ${isDone ? 'fill-done' : ''}" style="width:${gPct.toFixed(1)}%;"></div>
@@ -1041,21 +1232,34 @@ function renderAuditGroupsPanel() {
                     <button class="agc-btn" onclick="toggleLockAuditGroup('${escapeHtml(g.id)}', event)" title="${g.locked ? _t('Mở khóa Group này') : _t('Khóa bảo vệ Group này')}">
                         ${g.locked ? _t('🔓 Mở') : _t('🔒 Khóa')}
                     </button>
-                    <button class="agc-btn" onclick="renameAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đổi tên Group')}">✏️ ${_t('Tên')}</button>
-                    <button class="agc-btn" onclick="exportAuditReport('${escapeHtml(g.id)}')" title="${_t('Xuất Excel riêng Group này')}">📥 Excel</button>
-                    <button class="agc-btn" onclick="resetSingleAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đặt lại riêng tiến độ của Group này')}">🔄 Reset</button>
+                    <button class="agc-btn" onclick="renameAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đổi tên Group')}">✏️</button>
+                    <button class="agc-btn" onclick="exportAuditReport('${escapeHtml(g.id)}')" title="${_t('Xuất Excel riêng Group này')}">📥</button>
+                    <button class="agc-btn" onclick="resetSingleAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Đặt lại riêng tiến độ')}">🔄</button>
                     <button class="agc-btn agc-btn-danger" onclick="deleteSingleAuditGroup('${escapeHtml(g.id)}', event)" title="${_t('Xóa Group này')}">✕</button>
                 </div>
             </div>
         `;
     });
 
-    html += `</div>`;
     container.innerHTML = html;
 }
 
 /**
- * Render Bảng Chi Tiết Từng Mã Mục Tiêu (9 Cột đầy đủ thông tin đối soát & thông số Klippel QC)
+ * Đóng / Mở hàng chi tiết kỹ thuật Accordion trong bảng đối soát
+ */
+function toggleAuditRowAccordion(itemIndex) {
+    const row = document.getElementById(`audit-accordion-${itemIndex}`);
+    const icon = document.getElementById(`audit-acc-icon-${itemIndex}`);
+    if (!row) return;
+    const willShow = row.classList.contains('hidden');
+    row.classList.toggle('hidden');
+    if (icon) {
+        icon.textContent = willShow ? '▾' : '▸';
+    }
+}
+
+/**
+ * Render Bảng Danh Sách Thích Ứng 5 Cột + Hàng Accordion Mở Rộng
  */
 function renderAuditTable() {
     const tbody = document.getElementById('audit-table-tbody');
@@ -1064,7 +1268,7 @@ function renderAuditTable() {
 
     const viewItems = getActiveAuditViewItems();
     if (viewItems.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:28px;">${_t('Chưa nạp danh sách mục tiêu. Hãy dán danh sách mã vạch, nạp tệp Excel/CSV hoặc bấm [🧪 Nạp Mẫu 3 Group Kiện Hàng].')}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:28px;">${_t('Chưa nạp danh sách mục tiêu. Hãy dán danh sách mã vạch, nạp tệp Excel/CSV hoặc bấm [🧪 Nạp Mẫu 3 Group Kiện Hàng].')}</td></tr>`;
         if (countBadge) countBadge.textContent = _t('0 mã');
         return;
     }
@@ -1098,7 +1302,7 @@ function renderAuditTable() {
     }
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:24px;">${_t('Không có mã mục tiêu nào khớp với bộ lọc hiện tại.')}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:24px;">${_t('Không có mã mục tiêu nào khớp với bộ lọc hiện tại.')}</td></tr>`;
         return;
     }
 
@@ -1106,74 +1310,109 @@ function renderAuditTable() {
     filtered.forEach(item => {
         const isDone = (item.scanCount || 0) > 0;
         const isDup = (item.scanCount || 0) > 1;
-        const statusBadge = isDone
-            ? `<span class="badge-pill badge-pass">${_t('✓ ĐÃ QUÉT')} ${isDup ? `(×${item.scanCount})` : ''}</span>`
-            : `<span class="badge-pill badge-notfound">${_t('⏳ CHƯA QUÉT')}</span>`;
 
-        let klippelCol = `<td style="text-align:center; color:var(--text-muted); font-size:11px;">—</td>`;
-        let metricsCol = `<td style="font-size:11px; color:var(--text-muted);">—</td>`;
+        let statusBadge = '';
+        if (isDone) {
+            statusBadge = isDup
+                ? `<span class="badge-pill badge-warn">${_t('⚠️ LẶP (×{0})', item.scanCount)}</span>`
+                : `<span class="badge-pill badge-pass">${_t('✓ ĐÃ QUÉT')}</span>`;
+        } else {
+            statusBadge = `<span class="badge-pill badge-notfound">${_t('⏳ CHƯA QUÉT')}</span>`;
+        }
+
+        let timeStr = '';
+        if (item.firstScanTime) {
+            timeStr = item.firstScanTime;
+            if (item.lastScanTime && item.lastScanTime !== item.firstScanTime) {
+                timeStr += ` → ${item.lastScanTime}`;
+            }
+        }
+
+        let klippelCol = `<span style="color:var(--text-muted); font-size:11px;">—</span>`;
+        let rec = null;
+        let isPass = false;
+        let reVal = '', fsVal = '', splVal = '';
+        let errs = '';
 
         if (loadedFilesMap.size > 0) {
             const matchRec = findRecordByBarcode(item.rawId);
             if (matchRec && matchRec.record) {
-                const rec = matchRec.record;
-                const isPass = isRecordPass(rec);
-                klippelCol = `
-                    <td style="text-align:center;">
-                        <span class="badge-pill ${isPass ? 'badge-pass' : 'badge-fail'}" style="font-size:10.5px; font-weight:700; cursor:pointer;" onclick="inspectRecordInModal('${escapeHtml(rec.id)}')">
-                            ${isPass ? '✓ PASS' : '✕ FAIL'} 🔍
-                        </span>
-                    </td>
-                `;
-
-                let reStr = '', fsStr = '', splStr = '';
+                rec = matchRec.record;
+                isPass = isRecordPass(rec);
                 if (rec.metrics) {
                     for (let mk in rec.metrics) {
                         const low = mk.toLowerCase();
-                        if (low.startsWith('re')) reStr = `Re:${rec.metrics[mk].value.toFixed(2)}Ω`;
-                        else if (low.startsWith('fs')) fsStr = `fs:${rec.metrics[mk].value.toFixed(1)}Hz`;
-                        else if (low.includes('level') || low.includes('spl')) splStr = `SPL:${rec.metrics[mk].value.toFixed(1)}dB`;
+                        if (low.startsWith('re')) reVal = `${rec.metrics[mk].value.toFixed(2)} Ω`;
+                        else if (low.startsWith('fs')) fsVal = `${rec.metrics[mk].value.toFixed(1)} Hz`;
+                        else if (low.includes('level') || low.includes('spl')) splVal = `${rec.metrics[mk].value.toFixed(1)} dB`;
                     }
                 }
-                const errs = !isPass ? activeErrors(rec.errors).map(getMappedName).join(', ') : '';
-                metricsCol = `
-                    <td style="font-family:var(--font-mono); font-size:11px;">
-                        <span style="color:var(--accent-blue); font-weight:700;">${escapeHtml(rec.stationName)}</span>
-                        ${reStr || fsStr || splStr ? ` · <span>${[reStr, fsStr, splStr].filter(Boolean).join(' · ')}</span>` : ''}
-                        ${errs ? `<div style="color:#f87171; font-size:10px; font-weight:700;">⚠️ ${_t('Lỗi:')} ${escapeHtml(errs)}</div>` : ''}
-                    </td>
+                errs = !isPass ? activeErrors(rec.errors).map(getMappedName).join(', ') : '';
+
+                klippelCol = `
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span class="badge-pill ${isPass ? 'badge-pass' : 'badge-fail'}" style="font-size:10.5px; font-weight:800; cursor:pointer;" onclick="event.stopPropagation(); inspectRecordInModal('${escapeHtml(rec.id)}')">
+                            ${isPass ? '✓ PASS' : '✕ FAIL'} 🔍
+                        </span>
+                        <span style="font-family:var(--font-mono); font-size:11px; color:var(--accent-blue); font-weight:700;">${escapeHtml(rec.stationName)}</span>
+                    </div>
                 `;
             } else {
-                klippelCol = `<td style="text-align:center;"><span class="badge-pill badge-warn" style="font-size:10px;">${_t('❓ Chưa đo')}</span></td>`;
-                metricsCol = `<td style="font-size:11px; color:var(--text-muted);">${_t('Chưa có bản ghi trong Log')}</td>`;
+                klippelCol = `<span class="badge-pill badge-warn" style="font-size:10px;">${_t('❓ Chưa có log')}</span>`;
             }
         }
 
         html += `
-            <tr class="${isDone ? 'row-scanned' : ''}">
-                <td style="text-align:center; color:var(--text-muted); font-weight:700; font-family:var(--font-mono);">#${item.index}</td>
+            <tr class="${isDone ? 'row-scanned' : ''} audit-main-row" onclick="toggleAuditRowAccordion(${item.index})" style="cursor:pointer;">
+                <td style="text-align:center; font-family:var(--font-mono); font-weight:700;">
+                    <span id="audit-acc-icon-${item.index}" style="font-size:10.5px; color:var(--text-muted); margin-right:4px;">▸</span>#${item.index}
+                </td>
                 <td>
-                    <span class="meta-chip meta-chip-cyan" style="cursor:pointer;" onclick="selectAuditGroup('${escapeHtml(item.groupId)}')">
+                    <span class="meta-chip meta-chip-cyan" onclick="event.stopPropagation(); selectAuditGroup('${escapeHtml(item.groupId)}')">
                         📦 ${escapeHtml(item.groupName || 'Group #1')}
                     </span>
                 </td>
                 <td style="font-weight:700; font-family:var(--font-mono); color:var(--text-main);">
                     ${escapeHtml(item.rawId)}
+                    ${item.modelHint ? `<div style="font-size:10.5px; font-weight:normal; color:var(--text-muted);">${escapeHtml(item.modelHint)}</div>` : ''}
                 </td>
-                <td style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">
-                    ${item.modelHint ? `<strong style="color:var(--text-main);">${escapeHtml(item.modelHint)}</strong> · ` : ''}${escapeHtml(item.serialOnly || item.cleanId)}
+                <td>
+                    ${statusBadge}
+                    ${timeStr ? `<div style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-muted); margin-top:2px;">${escapeHtml(timeStr)}</div>` : ''}
                 </td>
-                <td style="text-align:center;">${statusBadge}</td>
-                <td style="text-align:center; font-family:var(--font-mono); font-weight:700;">${item.scanCount || 0}</td>
-                <td style="font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">
-                    ${item.firstScanTime ? `${item.firstScanTime}${item.lastScanTime && item.lastScanTime !== item.firstScanTime ? ' → ' + item.lastScanTime : ''}` : '—'}
+                <td>
+                    ${klippelCol}
                 </td>
-                ${klippelCol}
-                ${metricsCol}
-                <td style="text-align:center;">
-                    <button class="btn btn-sm ${isDone ? 'btn-secondary' : 'btn-outline'}" style="padding:3px 8px; font-size:10.5px;" onclick="toggleManualAuditItemScan('${escapeHtml(item.groupId)}', ${item.index})" title="${_t('Đánh dấu hoặc hoàn tác trạng thái quét của mã này')}">
-                        ${isDone ? _t('↩ Hoàn tác') : _t('✓ Đánh dấu')}
-                    </button>
+            </tr>
+            <tr id="audit-accordion-${item.index}" class="audit-accordion-row hidden">
+                <td colspan="5" style="background:var(--bg-surface-elevated); padding:10px 16px; border-bottom:1px solid var(--border-color);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+                        <div style="display:flex; flex-direction:column; gap:4px; font-size:11.5px;">
+                            <div>
+                                <span style="color:var(--text-muted);">${_t('Mã vạch gốc:')}</span> <strong style="font-family:var(--font-mono); color:var(--text-main);">${escapeHtml(item.rawId)}</strong>
+                                ${item.serialOnly ? ` &nbsp;·&nbsp; <span style="color:var(--text-muted);">${_t('Serial tách:')}</span> <span style="font-family:var(--font-mono); color:var(--accent-cyan); font-weight:700;">${escapeHtml(item.serialOnly)}</span>` : ''}
+                            </div>
+                            <div>
+                                <span style="color:var(--text-muted);">${_t('Số lần quét:')}</span> <strong>${item.scanCount || 0}</strong>
+                                ${timeStr ? ` &nbsp;·&nbsp; <span style="color:var(--text-muted);">${_t('Thời gian:')}</span> <span style="font-family:var(--font-mono);">${escapeHtml(timeStr)}</span>` : ''}
+                            </div>
+                            ${rec ? `
+                                <div style="display:flex; align-items:center; gap:8px; margin-top:2px; font-family:var(--font-mono); font-size:11px;">
+                                    <span style="color:var(--text-muted);">${_t('Trạm đo:')}</span> <strong>${escapeHtml(rec.stationName)}</strong>
+                                    ${reVal ? `· <span>Re: <strong>${reVal}</strong></span>` : ''}
+                                    ${fsVal ? `· <span>fs: <strong>${fsVal}</strong></span>` : ''}
+                                    ${splVal ? `· <span>SPL: <strong>${splVal}</strong></span>` : ''}
+                                </div>
+                                ${errs ? `<div style="color:#f87171; font-weight:700; font-size:11px;">⚠️ ${_t('Lỗi Klippel:')} ${escapeHtml(errs)}</div>` : ''}
+                            ` : ''}
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            ${rec ? `<button class="btn btn-sm btn-outline" style="padding:4px 10px; font-size:11px;" onclick="event.stopPropagation(); inspectRecordInModal('${escapeHtml(rec.id)}')">🔍 ${_t('Xem Chi Tiết Klippel')}</button>` : ''}
+                            <button class="btn btn-sm ${isDone ? 'btn-secondary' : 'btn-primary'}" style="padding:4px 10px; font-size:11px;" onclick="event.stopPropagation(); toggleManualAuditItemScan('${escapeHtml(item.groupId)}', ${item.index})">
+                                ${isDone ? _t('↩ Hoàn tác quét') : _t('✓ Đánh dấu đã quét')}
+                            </button>
+                        </div>
+                    </div>
                 </td>
             </tr>
         `;
@@ -1442,4 +1681,253 @@ function exportAuditHTML() {
 
     downloadBlobFile(htmlContent, `QIT_MultiGroup_Audit_Report_${toLocalDateStr(new Date())}.html`, 'text/html;charset=utf-8');
     showToast(_t('✅ Đã xuất Báo Cáo Đối Soát Đa Group HTML thành công!'), 'success');
+}
+
+/* ════════════ CAMERA 2D AUDIT SCANNER (DATAMATRIX / QR / BARCODE) ════════════ */
+
+let cameraStream = null;
+let cameraAnimationId = null;
+let cameraTrack = null;
+let cameraZoomLevel = 2.0;
+let cameraTorchActive = false;
+let cameraInvertActive = false;
+let cameraFpsCounter = 0;
+let cameraFpsLastTime = Date.now();
+let lastCameraScannedCode = '';
+let lastCameraScannedTime = 0;
+let cameraBarcodeDetector = null;
+
+async function toggleAuditCameraDock() {
+    const dock = document.getElementById('audit-camera-dock');
+    if (!dock) return;
+    if (dock.classList.contains('hidden')) {
+        await initAuditCamera();
+    } else {
+        stopAuditCamera();
+    }
+}
+
+async function initAuditCamera() {
+    const dock = document.getElementById('audit-camera-dock');
+    const video = document.getElementById('audit-camera-video');
+    if (!dock || !video) return;
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showToast(_t('⚠️ Trình duyệt hoặc thiết bị của bạn không hỗ trợ camera.'), 'error');
+        return;
+    }
+
+    try {
+        dock.classList.remove('hidden');
+        const constraints = {
+            video: {
+                facingMode: { ideal: 'environment' },
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        };
+
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = cameraStream;
+        await video.play();
+
+        const tracks = cameraStream.getVideoTracks();
+        if (tracks.length > 0) {
+            cameraTrack = tracks[0];
+            await setCameraZoom(cameraZoomLevel);
+        }
+
+        // Initialize BarcodeDetector if available
+        if ('BarcodeDetector' in window) {
+            try {
+                cameraBarcodeDetector = new window.BarcodeDetector({
+                    formats: ['data_matrix', 'qr_code', 'code_128', 'code_39', 'code_93', 'ean_13', 'itf']
+                });
+            } catch (e) {
+                try {
+                    cameraBarcodeDetector = new window.BarcodeDetector();
+                } catch (e2) {
+                    cameraBarcodeDetector = null;
+                }
+            }
+        }
+
+        startCameraScanLoop();
+        showToast(_t('📷 Camera 2D đã sẵn sàng. Hướng khung ngắm vào mã DataMatrix / QR / Barcode.'), 'info');
+    } catch (err) {
+        console.error('Lỗi khởi động camera:', err);
+        dock.classList.add('hidden');
+        showToast(_t('❌ Không thể mở camera: {0}', err.message || err.name), 'error');
+    }
+}
+
+function stopAuditCamera() {
+    if (cameraAnimationId) {
+        cancelAnimationFrame(cameraAnimationId);
+        cameraAnimationId = null;
+    }
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+        cameraTrack = null;
+    }
+    const video = document.getElementById('audit-camera-video');
+    if (video) video.srcObject = null;
+
+    const dock = document.getElementById('audit-camera-dock');
+    if (dock) dock.classList.add('hidden');
+
+    focusActiveScanInput();
+}
+
+async function setCameraZoom(val) {
+    cameraZoomLevel = Number(val) || 1.0;
+    ['1x', '2x', '3x'].forEach(z => {
+        const btn = document.getElementById(`camera-zoom-${z}`);
+        if (btn) {
+            const btnVal = parseFloat(z);
+            if (Math.abs(btnVal - cameraZoomLevel) < 0.1) {
+                btn.classList.add('btn-primary');
+                btn.classList.remove('btn-outline');
+            } else {
+                btn.classList.remove('btn-primary');
+                btn.classList.add('btn-outline');
+            }
+        }
+    });
+
+    if (cameraTrack && typeof cameraTrack.getCapabilities === 'function') {
+        const caps = cameraTrack.getCapabilities();
+        if (caps.zoom) {
+            const targetZoom = Math.max(caps.zoom.min || 1, Math.min(caps.zoom.max || 1, cameraZoomLevel));
+            try {
+                await cameraTrack.applyConstraints({
+                    advanced: [{ zoom: targetZoom }]
+                });
+            } catch (e) {
+                console.warn('Hardware zoom not accepted:', e);
+            }
+        }
+    }
+}
+
+async function toggleCameraTorch() {
+    if (!cameraTrack) return;
+    cameraTorchActive = !cameraTorchActive;
+    const btn = document.getElementById('camera-torch-btn');
+    if (cameraTrack.getCapabilities) {
+        const caps = cameraTrack.getCapabilities();
+        if (caps.torch) {
+            try {
+                await cameraTrack.applyConstraints({
+                    advanced: [{ torch: cameraTorchActive }]
+                });
+                if (btn) btn.classList.toggle('btn-primary', cameraTorchActive);
+                return;
+            } catch (e) {
+                console.warn('Torch constraint failed:', e);
+            }
+        }
+    }
+    showToast(_t('⚠️ Thiết bị không hỗ trợ đèn trợ sáng Flash.'), 'warning');
+}
+
+function toggleCameraInvert() {
+    cameraInvertActive = !cameraInvertActive;
+    const btn = document.getElementById('camera-invert-btn');
+    const video = document.getElementById('audit-camera-video');
+    if (btn) btn.classList.toggle('btn-primary', cameraInvertActive);
+    if (video) {
+        video.style.filter = cameraInvertActive ? 'invert(1) contrast(1.4)' : 'none';
+    }
+    showToast(cameraInvertActive ? _t('◐ Đã bật chế độ đảo màu (Đọc tem laser đen)') : _t('◑ Đã tắt chế độ đảo màu'), 'info');
+}
+
+function startCameraScanLoop() {
+    const video = document.getElementById('audit-camera-video');
+    const canvas = document.getElementById('audit-camera-canvas');
+    const fpsBadge = document.getElementById('camera-fps-badge');
+    if (!video || !canvas) return;
+
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+    async function scanFrame() {
+        if (!cameraStream || video.readyState < 2) {
+            cameraAnimationId = requestAnimationFrame(scanFrame);
+            return;
+        }
+
+        // FPS counter calculation
+        cameraFpsCounter++;
+        const now = Date.now();
+        if (now - cameraFpsLastTime >= 1000) {
+            if (fpsBadge) fpsBadge.textContent = `${cameraFpsCounter} FPS`;
+            cameraFpsCounter = 0;
+            cameraFpsLastTime = now;
+        }
+
+        // Detect barcodes
+        try {
+            if (cameraBarcodeDetector) {
+                let detected = [];
+                if (cameraInvertActive) {
+                    canvas.width = 320;
+                    canvas.height = 320;
+                    const cropSize = Math.min(video.videoWidth, video.videoHeight) * 0.7;
+                    const sx = (video.videoWidth - cropSize) / 2;
+                    const sy = (video.videoHeight - cropSize) / 2;
+                    ctx.drawImage(video, sx, sy, cropSize, cropSize, 0, 0, 320, 320);
+
+                    // Software pixel invert (iOS safe without ctx.filter)
+                    const imgData = ctx.getImageData(0, 0, 320, 320);
+                    const d = imgData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        d[i] = 255 - d[i];
+                        d[i + 1] = 255 - d[i + 1];
+                        d[i + 2] = 255 - d[i + 2];
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    detected = await cameraBarcodeDetector.detect(canvas);
+                } else {
+                    detected = await cameraBarcodeDetector.detect(video);
+                }
+
+                if (detected && detected.length > 0) {
+                    const rawValue = detected[0].rawValue;
+                    if (rawValue) {
+                        onCameraBarcodeDetected(rawValue);
+                    }
+                }
+            }
+        } catch (scanErr) {
+            // Frame detection error, continue next frame
+        }
+
+        cameraAnimationId = requestAnimationFrame(scanFrame);
+    }
+
+    cameraAnimationId = requestAnimationFrame(scanFrame);
+}
+
+function onCameraBarcodeDetected(rawCode) {
+    if (!rawCode) return;
+    const cleanCode = String(rawCode).trim();
+    if (!cleanCode) return;
+
+    const now = Date.now();
+    // 1800ms cooldown for identical codes, 0ms for new codes
+    if (cleanCode === lastCameraScannedCode && (now - lastCameraScannedTime) < 1800) {
+        return;
+    }
+
+    lastCameraScannedCode = cleanCode;
+    lastCameraScannedTime = now;
+
+    // Haptic feedback
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+        try { navigator.vibrate([40]); } catch (e) {}
+    }
+
+    handleAuditScan(cleanCode);
 }

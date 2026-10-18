@@ -36,7 +36,7 @@ var CFG = {
     CPK_EXCELLENT: 1.67,       // Cpk >= 1.67: Xuất sắc (6-Sigma)
     CPK_CAPABLE: 1.33,         // Cpk >= 1.33: Đạt năng lực
     CPK_MARGINAL: 1.00,        // 1.00 <= Cpk < 1.33: Cận biên / Cần kiểm soát
-    NEAR_FAIL_MARGIN_PCT: 10,  // Ngưỡng cảnh báo cận biên sai số (% sát mép LSL/USL)
+    NEAR_FAIL_MARGIN_PCT: 15,  // Ngưỡng cảnh báo cận biên sai số (% sát mép LSL/USL)
     HISTOGRAM_BINS_COUNT: 16,  // Số cột bin trong biểu đồ phân phối
 
     // --- Nạp tệp & Thư mục (Fast Multi-Million File Scanner) ---

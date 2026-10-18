@@ -393,150 +393,115 @@
             <section id="pane-audit" class="tab-pane hidden">
                 <div style="display:flex; flex-direction:column; gap:14px;">
 
-                    <!-- HÀNG 1: 6 THẺ KPI ĐỐI SOÁT TOÀN DIỆN -->
-                    <div class="audit-kpi-grid">
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="TỔNG MÃ MỤC TIÊU">TỔNG MÃ MỤC TIÊU</div>
-                            <div class="kpi-val" id="audit-total-count" style="color:var(--text-main);">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Trong phạm vi Group đang xem">Trong phạm vi Group đang xem</div>
+                    <!-- ════════════ TẦNG 1: VÙNG TÁC NGHIỆP TẦM NHÌN XA 1.5M (GLANCEABLE PRIMARY ZONE) ════════════ -->
+                    
+                    <!-- 1.1. Thanh Nhập Liệu Quét & Cụm Nút Tác Vụ Nhanh (Cao 52px) -->
+                    <div class="audit-top-bar">
+                        <div class="input-glow-wrapper audit-input-wrapper">
+                            <input type="text" id="audit-scanner-input" class="audit-scanner-input-large" placeholder="QUÉT MÃ ĐỐI SOÁT KIỆN HÀNG..." data-i18n-placeholder="QUÉT MÃ ĐỐI SOÁT KIỆN HÀNG..." autocomplete="off">
+                            <span class="scan-icon-indicator">🎯</span>
                         </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="ĐÃ QUÉT ĐỐI SOÁT">ĐÃ QUÉT ĐỐI SOÁT</div>
-                            <div class="kpi-val" id="audit-scanned-count" style="color:#10b981;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Khớp thành công">Khớp thành công</div>
+                        <button class="btn btn-primary" id="audit-submit-btn" onclick="onAuditManualSubmit()" style="height:52px; padding:0 20px; font-weight:800;" data-i18n="⚡ Chốt Mã">⚡ Chốt Mã</button>
+                        <button class="btn btn-outline" id="audit-camera-toggle-btn" onclick="toggleAuditCameraDock()" style="height:52px; padding:0 16px; font-weight:700; white-space:nowrap;">
+                            📷 <span data-i18n="Quét Camera 2D">Quét Camera 2D</span>
+                        </button>
+                        <button class="btn btn-outline" id="audit-scope-toggle-btn" onclick="toggleAuditScanScope()" style="height:52px; padding:0 16px; font-weight:700; white-space:nowrap;" title="Chuyển chế độ phạm vi đối soát 1 chạm" data-i18n-title="Chuyển chế độ phạm vi đối soát 1 chạm">
+                            <span id="audit-scope-btn-icon">🌐</span> <span id="audit-scope-btn-text" data-i18n="Tự Động Định Tuyến Mọi Group">Tự Động Định Tuyến Mọi Group</span>
+                        </button>
+                        <button class="btn btn-secondary" id="audit-drawer-toggle-btn" onclick="toggleAuditEngineeringDrawer()" style="height:52px; padding:0 16px; font-weight:700; white-space:nowrap;" title="Mở ngăn công cụ nạp danh sách, tách lô và báo cáo (Alt + E)" data-i18n-title="Mở ngăn công cụ nạp danh sách, tách lô và báo cáo (Alt + E)">
+                            🛠️ <span data-i18n="Quản lý Lô & Tách Nhóm">Quản lý Lô &amp; Tách Nhóm</span> <span id="audit-drawer-status-dot" class="dot-online"></span> ▾
+                        </button>
+                    </div>
+
+                    <!-- 1.2. Khung Camera Nổi (Floating Compact Camera Dock - Part 4) -->
+                    <div id="audit-camera-dock" class="camera-dock hidden">
+                        <div class="camera-dock-header">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span style="font-size:14px;">📷</span>
+                                <strong style="font-size:12px; letter-spacing:0.04em;" data-i18n="CAMERA QUÉT 2D TRỰC TIẾP (DATAMATRIX / QR / BARCODE)">CAMERA QUÉT 2D TRỰC TIẾP (DATAMATRIX / QR / BARCODE)</strong>
+                                <span id="camera-fps-badge" class="meta-chip">30 FPS</span>
+                            </div>
+                            <div class="camera-dock-tools">
+                                <button class="btn btn-xs btn-outline" id="camera-zoom-1x" onclick="setCameraZoom(1.0)">1x</button>
+                                <button class="btn btn-xs btn-primary" id="camera-zoom-2x" onclick="setCameraZoom(2.0)">2x</button>
+                                <button class="btn btn-xs btn-outline" id="camera-zoom-3x" onclick="setCameraZoom(3.0)">3x</button>
+                                <button class="btn btn-xs btn-outline" id="camera-torch-btn" onclick="toggleCameraTorch()" title="Bật/Tắt Đèn Trợ Sáng" data-i18n-title="Bật/Tắt Đèn Trợ Sáng">🔦 Flash</button>
+                                <button class="btn btn-xs btn-outline" id="camera-invert-btn" onclick="toggleCameraInvert()" title="Đảo màu quét tem khắc laser nền đen" data-i18n-title="Đảo màu quét tem khắc laser nền đen">◐ Đảo màu</button>
+                                <button class="btn btn-xs btn-outline-danger" onclick="stopAuditCamera()" title="Đóng Camera (ESC)" data-i18n-title="Đóng Camera (ESC)">✕ Đóng</button>
+                            </div>
                         </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="CÒN THIẾU CHƯA QUÉT">CÒN THIẾU CHƯA QUÉT</div>
-                            <div class="kpi-val" id="audit-remaining-count" style="color:#f87171;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Cần tiếp tục quét">Cần tiếp tục quét</div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="LƯỢT QUÉT LẶP (DUP)">LƯỢT QUÉT LẶP (DUP)</div>
-                            <div class="kpi-val" id="audit-dup-count" style="color:#f59e0b;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Quét trùng > 1 lần">Quét trùng &gt; 1 lần</div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="MÃ LẠ NGOÀI DS">MÃ LẠ NGOÀI DS</div>
-                            <div class="kpi-val" id="audit-stranger-count" style="color:#a855f7;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Không thuộc danh sách">Không thuộc danh sách</div>
-                        </div>
-                        <div class="kpi-card">
-                            <div class="kpi-label" data-i18n="CẢNH BÁO NG KLIPPEL">CẢNH BÁO NG KLIPPEL</div>
-                            <div class="kpi-val" id="audit-qcfail-count" style="color:#ef4444;">0</div>
-                            <div style="font-size:10px; color:var(--text-muted);" data-i18n="Mã trong DS bị lỗi QC">Mã trong DS bị lỗi QC</div>
+                        <div class="camera-dock-viewport">
+                            <video id="audit-camera-video" playsinline muted autoplay></video>
+                            <canvas id="audit-camera-canvas" width="320" height="320" style="display:none;"></canvas>
+                            <div class="camera-viewfinder">
+                                <div class="viewfinder-box" id="viewfinder-box">
+                                    <span class="vf-corner vf-tl"></span>
+                                    <span class="vf-corner vf-tr"></span>
+                                    <span class="vf-corner vf-bl"></span>
+                                    <span class="vf-corner vf-br"></span>
+                                    <div class="vf-laser-line"></div>
+                                </div>
+                                <div class="viewfinder-hint" data-i18n="Đưa mã DataMatrix / QR / Barcode vào giữa khung ngắm">Đưa mã DataMatrix / QR / Barcode vào giữa khung ngắm</div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- HÀNG 2: THANH TIẾN ĐỘ THỜI GIAN THỰC & PHẠM VI GROUP -->
+                    <!-- 1.3. Banner Định Tuyến Nhóm Hàng Cỡ Lớn (Smart Group Routing Hero Banner) -->
+                    <div id="audit-hero-banner" class="audit-hero-banner hero-banner-idle">
+                        <!-- Cột Trái (Định danh Nhóm đích cực lớn) -->
+                        <div class="hero-col hero-col-left">
+                            <div class="hero-label-top" data-i18n="ĐỊNH TUYẾN KIỆN HÀNG">ĐỊNH TUYẾN KIỆN HÀNG</div>
+                            <div class="hero-group-title" id="hero-group-title" data-i18n="CHỜ QUÉT MÃ...">CHỜ QUÉT MÃ...</div>
+                            <div class="hero-status-pill" id="hero-status-pill">
+                                <span class="hero-status-text" data-i18n="Sẵn sàng nhận mã từ súng barcode hoặc camera">Sẵn sàng nhận mã từ súng barcode hoặc camera</span>
+                            </div>
+                        </div>
+                        <!-- Cột Giữa (Thông tin Con hàng vừa quét) -->
+                        <div class="hero-col hero-col-center">
+                            <div class="hero-label-top" data-i18n="SẢN PHẨM VỪA QUÉT">SẢN PHẨM VỪA QUÉT</div>
+                            <div class="hero-serial-display" id="hero-serial-display">—</div>
+                            <div class="hero-seq-display" id="hero-seq-display">
+                                <span data-i18n="Thứ tự trong kiện: —">Thứ tự trong kiện: —</span>
+                            </div>
+                            <div class="hero-qc-display" id="hero-qc-display">
+                                <span class="badge-pill" style="background:rgba(148,163,184,0.12); color:var(--text-muted);" data-i18n="Klippel: Chờ quét">Klippel: Chờ quét</span>
+                            </div>
+                        </div>
+                        <!-- Cột Phải (Tiến độ Kiện hiện tại) -->
+                        <div class="hero-col hero-col-right">
+                            <div class="hero-label-top" data-i18n="TIẾN ĐỘ KIỆN HIỆN TẠI">TIẾN ĐỘ KIỆN HIỆN TẠI</div>
+                            <div class="hero-counts-display">
+                                <div>
+                                    <span class="hcd-lbl" data-i18n="Đã quét:">Đã quét:</span>
+                                    <strong class="hcd-val-scanned" id="hero-scanned-count">0 / 0</strong>
+                                </div>
+                                <div>
+                                    <span class="hcd-lbl" data-i18n="Còn thiếu:">Còn thiếu:</span>
+                                    <strong class="hcd-val-missing" id="hero-missing-count">0</strong>
+                                </div>
+                            </div>
+                            <div class="hero-progress-track">
+                                <div class="hero-progress-bar" id="hero-progress-bar" style="width:0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ════════════ TẦNG 2: DẢI THẺ GROUP ĐỘC LẬP & BẢNG DANH SÁCH THÍCH ỨNG ════════════ -->
+                    
+                    <!-- 2.1. Dải Thẻ Group Ngang (Horizontal Multi-Group Strip) -->
+                    <div class="card" style="padding:12px 16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <span style="font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em;" data-i18n="📦 DẢI THẺ GROUP / KIỆN HÀNG ĐỘC LẬP (CHỌN ĐỂ LỌC RIÊNG)">📦 DẢI THẺ GROUP / KIỆN HÀNG ĐỘC LẬP (CHỌN ĐỂ LỌC RIÊNG)</span>
+                            <span id="audit-groups-count-badge" class="meta-chip" data-i18n="0 Group">0 Group</span>
+                        </div>
+                        <div id="audit-groups-deck" class="audit-groups-horizontal-strip"></div>
+                    </div>
+
+                    <!-- 2.2. Bảng Danh Sách Thích Ứng (Progressive Detail Table 5 cột + Inline Row Accordion) -->
                     <div class="card" style="padding:14px 18px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-                            <div id="audit-active-scope-title" style="font-size:12px; font-weight:800; color:var(--text-main);">
-                                <span data-i18n="🌐 TỔNG HỢP TOÀN BỘ GROUP ĐỐI SOÁT">🌐 TỔNG HỢP TOÀN BỘ GROUP ĐỐI SOÁT</span>
-                            </div>
-                            <span id="audit-progress-pct" style="font-family:var(--font-mono); font-size:20px; font-weight:900; color:var(--accent-cyan);">0.0%</span>
-                        </div>
-                        <div style="background:rgba(148,163,184,0.14); height:11px; border-radius:11px; overflow:hidden;">
-                            <div id="audit-progress-bar" style="width:0%; height:100%; border-radius:11px; background:linear-gradient(90deg, #00f2fe, #38bdf8, #10b981); transition:width 0.35s ease;"></div>
-                        </div>
-                    </div>
-
-                    <!-- HÀNG 3: BẢNG ĐIỀU KHIỂN CÁC GROUP ĐỘC LẬP (MULTI-GROUP CONTROL DECK) -->
-                    <div class="card" style="padding:16px 18px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
-                            <div>
-                                <div style="font-size:12px; font-weight:900; color:var(--accent-cyan); text-transform:uppercase; letter-spacing:0.06em;">
-                                    <span data-i18n="📦 BẢNG ĐIỀU KHIỂN & PHÂN TÁCH CÁC GROUP KIỂM SOÁT RIÊNG">📦 BẢNG ĐIỀU KHIỂN &amp; PHÂN TÁCH CÁC GROUP KIỂM SOÁT RIÊNG</span>
-                                </div>
-                                <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">
-                                    <span data-i18n="Nhấp chọn bất kỳ Group/Kiện hàng nào để kiểm soát riêng, Khóa bảo vệ khi đóng đủ thùng, hoặc dùng công cụ Chia Tách Group Tự Động bên phải.">Nhấp chọn bất kỳ Group/Kiện hàng nào để kiểm soát riêng, Khóa bảo vệ khi đóng đủ thùng, hoặc dùng công cụ Chia Tách Group Tự Động bên phải.</span>
-                                </div>
-                            </div>
-
-                            <!-- Thanh công cụ tách Group tự động 1-Click -->
-                            <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                                <div style="display:inline-flex; align-items:center; gap:4px; background:var(--bg-surface-elevated); padding:3px 8px; border-radius:8px; border:1px solid var(--border-color);">
-                                    <span style="font-size:11px; color:var(--text-muted); font-weight:700;" data-i18n="Quy cách:">Quy cách:</span>
-                                    <input type="number" id="audit-batch-size-input" min="1" max="500" value="6" class="settings-input" style="width:52px; padding:3px 6px; font-size:11.5px; font-weight:800; text-align:center;">
-                                    <button class="btn btn-sm btn-outline" style="padding:4px 9px; font-size:11px;" onclick="splitAuditIntoGroups('BATCH_SIZE')" title="Chia danh sách hiện tại thành các Thùng/Group theo số lượng PCS mỗi thùng" data-i18n-title="Chia danh sách hiện tại thành các Thùng/Group theo số lượng PCS mỗi thùng" data-i18n="📦 Chia Theo Thùng">📦 Chia Theo Thùng</button>
-                                </div>
-                                <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('MODEL_PREFIX')" title="Tự động tách thành các Group riêng theo Mã Model hoặc Tiền tố" data-i18n-title="Tự động tách thành các Group riêng theo Mã Model hoặc Tiền tố" data-i18n="🏷️ Tách Theo Model">🏷️ Tách Theo Model</button>
-                                <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('KLIPPEL_STATUS')" title="Tách riêng Group Đạt (PASS), Group Lỗi (FAIL) và Group Chưa Đo" data-i18n-title="Tách riêng Group Đạt (PASS), Group Lỗi (FAIL) và Group Chưa Đo" data-i18n="🔬 Tách Theo KQ Klippel">🔬 Tách Theo KQ Klippel</button>
-                                <button class="btn btn-sm btn-secondary" style="border-color:var(--status-pass); color:#34d399;" onclick="loadDemoMultiGroupAudit()" title="Nạp danh sách mẫu gồm 3 Kiện hàng độc lập để kiểm thử ngay" data-i18n-title="Nạp danh sách mẫu gồm 3 Kiện hàng độc lập để kiểm thử ngay" data-i18n="🧪 Nạp Mẫu 3 Group">🧪 Nạp Mẫu 3 Group</button>
-                            </div>
-                        </div>
-
-                        <!-- Lưới hiển thị các thẻ Group -->
-                        <div id="audit-groups-deck"></div>
-                    </div>
-
-                    <!-- HÀNG 4: KHUNG NẠP / TẠO GROUP MỚI & KHUNG QUÉT ĐỐI SOÁT THỰC TẾ -->
-                    <div class="audit-io-grid">
-                        <!-- Cột Trái: Nạp Danh Sách / Tạo Group Mới -->
-                        <div class="card" style="display:flex; flex-direction:column; gap:10px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                                <div style="font-size:11.5px; font-weight:800; color:var(--text-main);" data-i18n="📋 NẠP DANH SÁCH MÃ HOẶC TẠO GROUP MỚI">📋 NẠP DANH SÁCH MÃ HOẶC TẠO GROUP MỚI</div>
-                                <div style="display:flex; gap:6px;">
-                                    <button class="btn btn-sm btn-outline" onclick="document.getElementById('audit-file-input').click()" style="font-size:11px; padding:4px 10px;" data-i18n="📄 Nạp File (.xlsx, .csv, .txt)">📄 Nạp File (.xlsx, .csv, .txt)</button>
-                                    <input type="file" id="audit-file-input" accept=".xlsx,.xls,.csv,.txt" style="display:none;" onchange="handleAuditFileUpload(this)">
-                                </div>
-                            </div>
-
-                            <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:8px;">
-                                <input type="text" id="audit-group-name-input" class="settings-input" placeholder="📦 Tên Group (VD: Kiện #01 - Pallet A)..." data-i18n-placeholder="📦 Tên Group (VD: Kiện #01 - Pallet A)...">
-                                <input type="text" id="audit-group-note-input" class="settings-input" placeholder="📝 Ghi chú (PO / Khách hàng / Ca)..." data-i18n-placeholder="📝 Ghi chú (PO / Khách hàng / Ca)...">
-                            </div>
-
-                            <textarea id="audit-target-input" rows="5" style="width:100%; padding:10px 12px; border-radius:var(--radius-sm); background:var(--bg-surface-elevated); color:var(--text-main); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:12px; line-height:1.6; outline:none;" placeholder="Dán danh sách mã Serial / DUT tại đây (mỗi mã 1 dòng).&#10;💡 Mẹo tách nhiều Group cùng lúc: Gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!" data-i18n-placeholder="Dán danh sách mã Serial / DUT tại đây (mỗi mã 1 dòng).&#10;💡 Mẹo tách nhiều Group cùng lúc: Gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!"></textarea>
-
-                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <button class="btn btn-primary btn-sm" style="flex:1;" onclick="loadAuditTargetList(false)" data-i18n="✓ Nạp Mới (Thay Thế)">✓ Nạp Mới (Thay Thế)</button>
-                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="loadAuditTargetList(true)" data-i18n="➕ Thêm Thành Group Riêng">➕ Thêm Thành Group Riêng</button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="resetAuditList()" data-i18n="🗑️ Xóa Hết">🗑️ Xóa Hết</button>
-                            </div>
-                        </div>
-
-                        <!-- Cột Phải: Quét Đối Soát Thực Tế Theo Phạm Vi Group -->
-                        <div class="card" style="display:flex; flex-direction:column; justify-content:space-between; gap:10px;">
-                            <div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
-                                    <span style="font-size:11.5px; font-weight:800; color:var(--accent-cyan);" data-i18n="🎯 QUÉT ĐỐI SOÁT THỰC TẾ THEO GROUP">🎯 QUÉT ĐỐI SOÁT THỰC TẾ THEO GROUP</span>
-                                    <div style="display:flex; gap:6px; align-items:center;">
-                                        <select class="settings-select" style="padding:3px 8px; font-size:11px; font-weight:700;" onchange="setAuditScanScope(this.value)" title="Chọn chế độ kiểm soát phạm vi Group khi quét" data-i18n-title="Chọn chế độ kiểm soát phạm vi Group khi quét">
-                                            <option value="GLOBAL" data-i18n="🌐 Tự Động Định Tuyến Mọi Group">🌐 Tự Động Định Tuyến Mọi Group</option>
-                                            <option value="ACTIVE" data-i18n="🎯 Khóa Quét Trong Group Đang Chọn">🎯 Khóa Quét Trong Group Đang Chọn</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="input-glow-wrapper">
-                                    <input type="text" id="audit-scanner-input" placeholder="QUÉT MÃ THỰC TẾ ĐỂ KIỂM SOÁT GROUP..." data-i18n-placeholder="QUÉT MÃ THỰC TẾ ĐỂ KIỂM SOÁT GROUP..." autocomplete="off">
-                                    <span class="scan-icon-indicator">🎯</span>
-                                </div>
-
-                                <div style="display:flex; gap:8px; margin-top:8px;">
-                                    <button class="btn btn-primary btn-sm" style="flex:1;" onclick="onAuditManualSubmit()" data-i18n="⚡ Quét Khớp Ngay">⚡ Quét Khớp Ngay</button>
-                                    <label style="display:inline-flex; align-items:center; gap:5px; font-size:11px; color:var(--text-muted); cursor:pointer;">
-                                        <input type="checkbox" checked onchange="toggleAuditAutoSwitchGroup(this.checked)"> <span data-i18n="Tự chuyển sang Group vừa quét">Tự chuyển sang Group vừa quét</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Vùng hiển thị Chip các lượt quét đối soát -->
-                            <div style="min-height:76px; max-height:125px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start; padding:8px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-color);" id="audit-chips-container"></div>
-
-                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                                <button class="btn btn-secondary btn-sm" onclick="copyMissingAuditTargets()" data-i18n="📋 Copy Mã Còn Thiếu">📋 Copy Mã Còn Thiếu</button>
-                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditHTML()" data-i18n="📤 Xuất Báo Cáo HTML">📤 Xuất Báo Cáo HTML</button>
-                                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditReport()" data-i18n="📥 Xuất Excel Đa Group">📥 Xuất Excel Đa Group</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HÀNG 5: BẢNG CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU -->
-                    <div class="card">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
                             <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                                <div style="font-size:11.5px; font-weight:800; color:var(--text-main);" data-i18n="📋 CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU">📋 CHI TIẾT TRẠNG THÁI TỪNG MÃ MỤC TIÊU</div>
+                                <div style="font-size:12px; font-weight:800; color:var(--text-main);" data-i18n="📋 DANH SÁCH KIỂM ĐẾM & TRUY VẾT CHI TIẾT">📋 DANH SÁCH KIỂM ĐẾM &amp; TRUY VẾT CHI TIẾT</div>
                                 <span id="audit-filtered-count-label" class="meta-chip" data-i18n="0 mã">0 mã</span>
                                 <div id="audit-log-reference-badge"></div>
                             </div>
@@ -554,26 +519,119 @@
                             </div>
                         </div>
 
-                        <div class="table-wrapper" style="max-height:420px; overflow-y:auto;">
-                            <table class="data-table">
+                        <div class="table-wrapper" style="max-height:480px; overflow-y:auto;">
+                            <table class="data-table audit-adaptive-table">
                                 <thead>
                                     <tr>
-                                        <th style="width:45px; text-align:center;">#</th>
-                                        <th data-i18n="Group / Kiện">Group / Kiện</th>
-                                        <th data-i18n="Mã Mục Tiêu (Target ID)">Mã Mục Tiêu (Target ID)</th>
-                                        <th data-i18n="Model · Serial Tách">Model · Serial Tách</th>
-                                        <th style="text-align:center;" data-i18n="Trạng Thái Đối Soát">Trạng Thái Đối Soát</th>
-                                        <th style="text-align:center;" data-i18n="Lượt Quét">Lượt Quét</th>
-                                        <th data-i18n="Giờ Quét (Đầu → Cuối)">Giờ Quét (Đầu → Cuối)</th>
-                                        <th style="text-align:center;">Klippel QC</th>
-                                        <th data-i18n="Thông Số Đo & Cảnh Báo Lỗi">Thông Số Đo &amp; Cảnh Báo Lỗi</th>
-                                        <th style="text-align:center;" data-i18n="Thao Tác">Thao Tác</th>
+                                        <th style="width:45px; text-align:center;">#STT</th>
+                                        <th data-i18n="Nhóm / Kiện">Nhóm / Kiện</th>
+                                        <th data-i18n="Mã Serial (DUT)">Mã Serial (DUT)</th>
+                                        <th data-i18n="Trạng Thái Quét (Thời gian)">Trạng Thái Quét (Thời gian)</th>
+                                        <th data-i18n="Phán Định Klippel QC">Phán Định Klippel QC</th>
                                     </tr>
                                 </thead>
                                 <tbody id="audit-table-tbody">
-                                    <tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:24px;" data-i18n="Chưa nạp danh sách mục tiêu">Chưa nạp danh sách mục tiêu</td></tr>
+                                    <tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:24px;" data-i18n="Chưa nạp danh sách mục tiêu">Chưa nạp danh sách mục tiêu</td></tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <!-- ════════════ TẦNG 3: NGĂN CÔNG CỤ KỸ SƯ THU GỌN (COLLAPSIBLE ENGINEERING DRAWER) ════════════ -->
+                    <div id="audit-eng-drawer" class="audit-eng-drawer collapsed">
+                        <div class="card eng-drawer-card">
+                            <div class="eng-drawer-header">
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <span style="font-size:16px;">🛠️</span>
+                                    <strong style="font-size:13px; color:var(--accent-cyan); letter-spacing:0.04em;" data-i18n="NGĂN CÔNG CỤ KỸ SƯ: QUẢN LÝ LÔ, TÁCH NHÓM & BÁO CÁO">NGĂN CÔNG CỤ KỸ SƯ: QUẢN LÝ LÔ, TÁCH NHÓM &amp; BÁO CÁO</strong>
+                                    <span class="meta-chip" data-i18n="Phím tắt: Alt + E">Phím tắt: Alt + E</span>
+                                </div>
+                                <button class="btn btn-sm btn-outline" onclick="toggleAuditEngineeringDrawer()" data-i18n="▲ Thu Gọn">▲ Thu Gọn</button>
+                            </div>
+
+                            <div class="eng-drawer-grid">
+                                <!-- Khu vực A: Nạp & Soạn thảo Danh sách Đa Group -->
+                                <div class="eng-area eng-area-a">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                        <span style="font-size:11.5px; font-weight:800; color:var(--text-main);" data-i18n="📋 NẠP & SOẠN THẢO DANH SÁCH ĐA GROUP">📋 NẠP &amp; SOẠN THẢO DANH SÁCH ĐA GROUP</span>
+                                        <button class="btn btn-sm btn-outline" onclick="document.getElementById('audit-file-input').click()" style="font-size:11px; padding:3px 8px;" data-i18n="📄 Nạp Excel / CSV">📄 Nạp Excel / CSV</button>
+                                        <input type="file" id="audit-file-input" accept=".xlsx,.xls,.csv,.txt" style="display:none;" onchange="handleAuditFileUpload(this)">
+                                    </div>
+
+                                    <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:8px; margin-bottom:8px;">
+                                        <input type="text" id="audit-group-name-input" class="settings-input" placeholder="📦 Tên Group (VD: Kiện #01 - Pallet A)..." data-i18n-placeholder="📦 Tên Group (VD: Kiện #01 - Pallet A)...">
+                                        <input type="text" id="audit-group-note-input" class="settings-input" placeholder="📝 Ghi chú (PO / Khách hàng / Ca)..." data-i18n-placeholder="📝 Ghi chú (PO / Khách hàng / Ca)...">
+                                    </div>
+
+                                    <textarea id="audit-target-input" rows="4" style="width:100%; padding:9px 11px; border-radius:var(--radius-sm); background:var(--bg-surface-elevated); color:var(--text-main); border:1px solid var(--border-color); font-family:var(--font-mono); font-size:12px; line-height:1.5; outline:none;" placeholder="Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).&#10;💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!" data-i18n-placeholder="Dán danh sách mã Serial / DUT (mỗi mã 1 dòng).&#10;💡 Tách nhiều Group: gõ '# Tên Group' trên dòng riêng hoặc dán 2 cột 'Tên_Group [Tab] Mã_Serial' từ Excel!"></textarea>
+
+                                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+                                        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="loadAuditTargetList(false)" data-i18n="✓ Nạp Mới (Thay Thế)">✓ Nạp Mới (Thay Thế)</button>
+                                        <button class="btn btn-outline btn-sm" style="flex:1;" onclick="loadAuditTargetList(true)" data-i18n="➕ Thêm Thành Group Riêng">➕ Thêm Thành Group Riêng</button>
+                                        <button class="btn btn-secondary btn-sm" onclick="loadDemoMultiGroupAudit()" data-i18n="🧪 Nạp Mẫu 3 Group">🧪 Nạp Mẫu 3 Group</button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="resetAuditList()" data-i18n="🗑️ Xóa Hết">🗑️ Xóa Hết</button>
+                                    </div>
+                                </div>
+
+                                <!-- Khu vực B: 4 Công cụ Chia tách Group & 6 thẻ KPI mở rộng -->
+                                <div class="eng-area eng-area-b">
+                                    <div style="font-size:11.5px; font-weight:800; color:var(--text-main); margin-bottom:8px;" data-i18n="⚡ 4 CÔNG CỤ CHIA TÁCH GROUP & BÁO CÁO TỔNG HỢP">⚡ 4 CÔNG CỤ CHIA TÁCH GROUP &amp; BÁO CÁO TỔNG HỢP</div>
+
+                                    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:12px;">
+                                        <div style="display:inline-flex; align-items:center; gap:4px; background:var(--bg-surface-elevated); padding:3px 8px; border-radius:8px; border:1px solid var(--border-color);">
+                                            <span style="font-size:11px; color:var(--text-muted); font-weight:700;" data-i18n="Quy cách:">Quy cách:</span>
+                                            <input type="number" id="audit-batch-size-input" min="1" max="500" value="6" class="settings-input" style="width:48px; padding:3px 5px; font-size:11px; font-weight:800; text-align:center;">
+                                            <button class="btn btn-sm btn-outline" style="padding:3px 8px; font-size:11px;" onclick="splitAuditIntoGroups('BATCH_SIZE')" data-i18n="📦 Chia Theo Thùng">📦 Chia Theo Thùng</button>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('MODEL_PREFIX')" data-i18n="🏷️ Tách Theo Model">🏷️ Tách Theo Model</button>
+                                        <button class="btn btn-sm btn-outline" onclick="splitAuditIntoGroups('KLIPPEL_STATUS')" data-i18n="🔬 Tách Theo KQ Klippel">🔬 Tách Theo KQ Klippel</button>
+                                    </div>
+
+                                    <!-- 6 thẻ KPI Đối soát toàn diện -->
+                                    <div class="audit-kpi-grid" style="margin-bottom:12px;">
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="TỔNG MÃ MỤC TIÊU">TỔNG MÃ MỤC TIÊU</div>
+                                            <div class="kpi-val" id="audit-total-count" style="color:var(--text-main); font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="ĐÃ QUÉT ĐỐI SOÁT">ĐÃ QUÉT ĐỐI SOÁT</div>
+                                            <div class="kpi-val" id="audit-scanned-count" style="color:#10b981; font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="CÒN THIẾU CHƯA QUÉT">CÒN THIẾU CHƯA QUÉT</div>
+                                            <div class="kpi-val" id="audit-remaining-count" style="color:#f87171; font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="LƯỢT QUÉT LẶP (DUP)">LƯỢT QUÉT LẶP (DUP)</div>
+                                            <div class="kpi-val" id="audit-dup-count" style="color:#f59e0b; font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="MÃ LẠ NGOÀI DS">MÃ LẠ NGOÀI DS</div>
+                                            <div class="kpi-val" id="audit-stranger-count" style="color:#a855f7; font-size:20px;">0</div>
+                                        </div>
+                                        <div class="kpi-card">
+                                            <div class="kpi-label" data-i18n="CẢNH BÁO NG KLIPPEL">CẢNH BÁO NG KLIPPEL</div>
+                                            <div class="kpi-val" id="audit-qcfail-count" style="color:#ef4444; font-size:20px;">0</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Vùng chip các lượt quét đối soát trong ngăn kỹ sư -->
+                                    <div style="min-height:56px; max-height:85px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:4px; align-content:flex-start; padding:6px; border-radius:8px; background:var(--bg-surface-elevated); border:1px solid var(--border-color); margin-bottom:10px;" id="audit-chips-container"></div>
+
+                                    <!-- Tiến độ ẩn cho các bộ kiểm thử và thanh hiển thị -->
+                                    <div style="display:none;">
+                                        <div id="audit-active-scope-title"></div>
+                                        <div id="audit-progress-pct">0.0%</div>
+                                        <div id="audit-progress-bar"></div>
+                                    </div>
+
+                                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                        <button class="btn btn-secondary btn-sm" onclick="copyMissingAuditTargets()" data-i18n="📋 Copy Mã Còn Thiếu">📋 Copy Mã Còn Thiếu</button>
+                                        <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditHTML()" data-i18n="📤 Xuất Báo Cáo HTML">📤 Xuất Báo Cáo HTML</button>
+                                        <button class="btn btn-outline btn-sm" style="flex:1;" onclick="exportAuditReport()" data-i18n="📥 Xuất Excel Đa Group">📥 Xuất Excel Đa Group</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

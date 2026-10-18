@@ -4,6 +4,73 @@ let isFastScanRunning = false;
 let isFastScanAborted = false;
 let currentFastScanFoundFiles = [];
 
+/**
+ * Bộ bảo vệ vùng nhập liệu (Focus Guard)
+ * Ngăn chặn việc cướp con trỏ khi người dùng đang thao tác trên các form/bảng/tìm kiếm
+ */
+function isUserInteractingWithUI() {
+    const el = document.activeElement;
+    if (el) {
+        if (el.id === 'scanner-input' || el.id === 'audit-scanner-input') return false;
+        const tag = el.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable) {
+            return true; // Đang gõ ở ô Tên Group, Ghi chú, Tìm kiếm, Batch Size... -> CẤM cướp focus!
+        }
+    }
+    // Nếu người dùng đang bôi đen văn bản trong bảng để copy -> CẤM cướp focus!
+    const sel = (typeof window !== 'undefined' && window.getSelection) ? window.getSelection().toString() : '';
+    if (sel && sel.length > 0) return true;
+    // Nếu đang mở Modal cấu hình hoặc Dialog -> CẤM cướp focus!
+    if (typeof document !== 'undefined') {
+        const openModal = document.querySelector('.modal:not(.hidden), .modal-backdrop:not(.hidden)');
+        if (openModal) return true;
+    }
+    return false;
+}
+
+/**
+ * Bộ đo vận tốc phím & Phân loại: Súng Quét (Scanner Burst / Paste) vs Gõ Tay (Manual Typing)
+ */
+const scanInputState = {
+    lastKeyTime: 0,
+    fastStreakCount: 0,
+    autoSubmitTimer: null
+};
+
+function onScanInputEvent(e, inputEl, submitCallback) {
+    const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : Date.now();
+    const delta = now - scanInputState.lastKeyTime;
+    scanInputState.lastKeyTime = now;
+
+    if (delta < 45) {
+        scanInputState.fastStreakCount++;
+    } else if (delta > 150) {
+        // Khoảng nghỉ dài -> reset chuỗi gõ nhanh
+        scanInputState.fastStreakCount = 0;
+    }
+
+    clearTimeout(scanInputState.autoSubmitTimer);
+    const val = inputEl.value.trim();
+    const minLen = (window.CFG && CFG.MIN_SCAN_LEN) ? CFG.MIN_SCAN_LEN : 4;
+
+    // CHỈ TỰ ĐỘNG SUBMIT KHÔNG CẦN ENTER KHI PHÁT HIỆN LUỒNG QUÉT TỐC ĐỘ CAO
+    // (Súng barcode không cấu hình Enter, hoặc dán Paste, hoặc chuỗi >= 4 ký tự bắn vào < 45ms/ký tự)
+    const isPasteOrScannerBurst = (e && e.inputType === 'insertFromPaste') || (scanInputState.fastStreakCount >= 3);
+
+    if (isPasteOrScannerBurst && val.length >= minLen) {
+        scanInputState.autoSubmitTimer = setTimeout(() => {
+            const finalVal = inputEl.value.trim();
+            if (finalVal.length >= minLen) {
+                if (typeof submitCallback === 'function') {
+                    submitCallback(finalVal);
+                }
+                inputEl.value = '';
+                scanInputState.fastStreakCount = 0;
+            }
+        }, 110); // Chốt mã ngay sau 110ms kể từ ký tự cuối cùng của súng quét
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     QIT.i18n.applyTranslations();
@@ -57,29 +124,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. Đăng ký sự kiện Quét mã vạch tại ô Scanner Input
+    // 2. Đăng ký sự kiện Quét mã vạch tại ô Scanner Input (Hỗ trợ phân loại Súng quét vs Gõ tay)
     const scanInput = document.getElementById('scanner-input');
     if (scanInput) {
         scanInput.addEventListener('keydown', onScanInputKeydown);
+        scanInput.addEventListener('input', (e) => onScanInputEvent(e, scanInput, (val) => {
+            handleScanBarcode(val);
+        }));
     }
 
     const auditScanInput = document.getElementById('audit-scanner-input');
     if (auditScanInput) {
         auditScanInput.addEventListener('keydown', onAuditScanKeydown);
+        auditScanInput.addEventListener('input', (e) => onScanInputEvent(e, auditScanInput, (val) => {
+            handleAuditScan(val);
+        }));
     }
 
-    // 3. Tự động focus vào ô quét khi bấm vào bất kỳ đâu trên màn hình Quét
-    document.addEventListener('click', (e) => {
-        if (currentTab === 'scan' || currentTab === 'audit') {
-            const target = e.target;
-            const isInteractive = target.tagName === 'INPUT' || target.tagName === 'BUTTON' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA' || target.closest('.modal') || target.closest('#fast-scan-modal');
-            if (!isInteractive) {
-                focusActiveScanInput();
-            }
-        }
-    });
-
-    // 4. Đóng modal bằng phím Escape
+    // 3. Global Keystroke Router & Focus Guard (Chống cướp focus và bắt phím thông minh)
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeSettingsModal();
@@ -87,6 +149,29 @@ document.addEventListener('DOMContentLoaded', () => {
             closeRobotLifetimeModal();
             closeFastScanModal();
             closeNetworkShareGuideModal();
+            return;
+        }
+
+        // Phím tắt Alt + E: Bật/tắt Ngăn Kéo Kỹ Sư (Engineering Drawer) trên Tab Đối Soát
+        if (e.altKey && (e.key === 'e' || e.key === 'E')) {
+            e.preventDefault();
+            if (typeof toggleAuditEngineeringDrawer === 'function') {
+                toggleAuditEngineeringDrawer();
+            }
+            return;
+        }
+
+        if (isUserInteractingWithUI()) return;
+        if (e.ctrlKey || e.altKey || e.metaKey) return;
+
+        // Tự động chuyển ký tự in được (length === 1) vào ô quét của Tab đang kích hoạt
+        if (e.key.length === 1) {
+            const activeInput = (currentTab === 'audit')
+                ? document.getElementById('audit-scanner-input')
+                : document.getElementById('scanner-input');
+            if (activeInput && document.activeElement !== activeInput) {
+                activeInput.focus();
+            }
         }
     });
 

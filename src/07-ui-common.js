@@ -200,10 +200,17 @@ function toggleTheme() {
 function applyUiZoom(zoomPct) {
     const cleanZoom = Math.min(150, Math.max(80, parseInt(zoomPct, 10) || 100));
     const scale = cleanZoom / 100;
-    document.documentElement.style.fontSize = `${16 * scale}px`;
+    if (document.documentElement && document.documentElement.style) {
+        if (typeof document.documentElement.style.setProperty === 'function') {
+            document.documentElement.style.setProperty('--ui-zoom', scale);
+        } else {
+            document.documentElement.style['--ui-zoom'] = scale;
+        }
+        document.documentElement.style.fontSize = `${16 * scale}px`;
+    }
     const appContainer = document.getElementById('app-container');
     if (appContainer && appContainer.style) {
-        appContainer.style.zoom = String(scale);
+        appContainer.style.zoom = scale;
     }
     CFG.UI_ZOOM = cleanZoom;
     saveCustomConfig();

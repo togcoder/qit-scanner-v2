@@ -589,6 +589,9 @@ function extractModelFromDbOrFile(dbPath, fileName) {
 function extractModelFromFileName(fileName) {
     return extractModelFromDbOrFile('', fileName);
 }
+if (typeof window !== 'undefined') {
+    window.extractModelFromFileName = extractModelFromFileName;
+}
 
 /**
  * Trích xuất tên trạm đo từ đường dẫn Database (VD: "SAS208-01" từ D:\SAS208-01\...)

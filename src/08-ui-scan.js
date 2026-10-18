@@ -307,9 +307,8 @@ function renderParametricSnapshotBand(container, record) {
             statusLabel = _t('HIGH (Vượt USL)');
             pctPos = 96;
         } else if (hasMin && hasMax && (m.maxLimit - m.minLimit) > 0) {
-            const span = m.maxLimit - m.minLimit;
-            pctPos = Math.max(5, Math.min(95, ((m.value - m.minLimit) / span) * 100));
-            const margin = span * ((CFG.NEAR_FAIL_MARGIN_PCT || 10) / 100);
+            const marginPct = (window.CFG && CFG.NEAR_FAIL_MARGIN_PCT) ? CFG.NEAR_FAIL_MARGIN_PCT : 15;
+            const margin = span * (marginPct / 100);
             if ((m.value - m.minLimit) <= margin || (m.maxLimit - m.value) <= margin) {
                 stateClass = 'warn';
                 statusLabel = _t('CẬN BIÊN');
