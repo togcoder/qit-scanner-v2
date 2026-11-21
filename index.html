@@ -135,21 +135,28 @@
                 </nav>
 
                 <div class="header-actions">
-                    <select id="lang-select" class="lang-select" onchange="QIT.i18n.setLang(this.value)" title="Ngôn ngữ hiển thị" data-i18n-title="Ngôn ngữ hiển thị">
-                        <option value="vi">🇻🇳 VN</option>
-                        <option value="en">🇬🇧 EN</option>
-                        <option value="ja">🇯🇵 JP</option>
-                        <option value="zh">🇨🇳 CN</option>
-                    </select>
-                    <button class="btn-icon" id="audio-toggle-btn" onclick="toggleAudioMute()" title="Bật/Tắt âm thanh thông báo" data-i18n-title="Bật/Tắt âm thanh thông báo">🔊</button>
-                    <button class="btn-icon" id="theme-toggle-btn" onclick="toggleTheme()" title="Chuyển đổi giao diện Sáng/Tối" data-i18n-title="Chuyển đổi giao diện Sáng/Tối">
-                        <span id="sun-icon">☀️</span>
-                        <span id="moon-icon" class="hidden">🌙</span>
-                    </button>
-                    <button class="btn-icon" onclick="openSettingsModal()" title="Cài đặt hệ thống (ESC)" data-i18n-title="Cài đặt hệ thống (ESC)">⚙️</button>
-                    <button class="btn btn-outline btn-sm" onclick="loadBuiltInDemoKlippelLogs()" title="Nạp bộ dữ liệu mẫu 3 trạm đo Klippel QC &amp; 3 Group đối soát" data-i18n-title="Nạp bộ dữ liệu mẫu 3 trạm đo Klippel QC & 3 Group đối soát"><span data-i18n="🧪 DỮ LIỆU MẪU">🧪 DỮ LIỆU MẪU</span></button>
-                    <button class="btn btn-secondary btn-sm" onclick="exportFullExcelReport()" data-i18n="XUẤT BÁO CÁO EXCEL">📥 XUẤT EXCEL</button>
-                    <button class="btn btn-primary btn-sm" onclick="resetApp()" data-i18n="NẠP TỆP MỚI">🔄 NẠP MỚI</button>
+                    <!-- Nhóm 1: Tiện ích hệ thống (System Utilities) -->
+                    <div class="header-util-group">
+                        <select id="lang-select" class="lang-select" onchange="QIT.i18n.setLang(this.value)" title="Ngôn ngữ hiển thị" data-i18n-title="Ngôn ngữ hiển thị">
+                            <option value="vi">🇻🇳 VN</option>
+                            <option value="en">🇬🇧 EN</option>
+                            <option value="ja">🇯🇵 JP</option>
+                            <option value="zh">🇨🇳 CN</option>
+                        </select>
+                        <button class="btn-icon" id="audio-toggle-btn" onclick="toggleAudioMute()" title="Bật/Tắt âm thanh thông báo" data-i18n-title="Bật/Tắt âm thanh thông báo">🔊</button>
+                        <button class="btn-icon" id="theme-toggle-btn" onclick="toggleTheme()" title="Chuyển đổi giao diện Sáng/Tối" data-i18n-title="Chuyển đổi giao diện Sáng/Tối">
+                            <span id="sun-icon">☀️</span>
+                            <span id="moon-icon" class="hidden">🌙</span>
+                        </button>
+                        <button class="btn-icon" onclick="openSettingsModal()" title="Cài đặt hệ thống (ESC)" data-i18n-title="Cài đặt hệ thống (ESC)">⚙️</button>
+                    </div>
+
+                    <!-- Nhóm 2: Tác vụ vận hành (Operations & Workflows) -->
+                    <div class="header-workflow-group">
+                        <button class="btn btn-ghost btn-sm" onclick="loadBuiltInDemoKlippelLogs()" title="Nạp bộ dữ liệu mẫu 3 trạm đo Klippel QC &amp; 3 Group đối soát" data-i18n-title="Nạp bộ dữ liệu mẫu 3 trạm đo Klippel QC & 3 Group đối soát"><span data-i18n="🧪 DỮ LIỆU MẪU">🧪 Mẫu Demo</span></button>
+                        <button class="btn btn-secondary btn-sm" onclick="exportFullExcelReport()" data-i18n="XUẤT BÁO CÁO EXCEL">📥 Xuất Excel</button>
+                        <button class="btn btn-outline btn-sm" onclick="resetApp()" title="Nạp lại từ đầu" data-i18n="NẠP TỆP MỚI">🔄 Nạp Tệp</button>
+                    </div>
                 </div>
             </div>
         </header>
@@ -177,21 +184,32 @@
                 <div id="drop-zone" class="drop-zone">
                     <div class="drop-zone-icon">📁</div>
                     <div class="drop-zone-text" data-i18n="KÉO & THẢ CÁC TỆP LOG VÀO ĐÂY">KÉO &amp; THẢ CÁC TỆP LOG HOẶC THƯ MỤC VÀO ĐÂY</div>
-                    <div class="drop-zone-sub" data-i18n="hoặc bấm để chọn tệp từ máy tính">hoặc chọn chế độ khởi động nhanh bên dưới:</div>
+                    <div class="drop-zone-sub" data-i18n="hoặc chọn chế độ khởi động nhanh bên dưới:">hoặc chọn phương thức nạp dữ liệu bên dưới:</div>
 
-                    <div style="display:flex; justify-content:center; gap:12px; margin-top:18px; flex-wrap:wrap;">
-                        <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); startFastDirectoryScan()" style="padding:10px 20px; font-weight:800; font-size:13px;">
-                            <span data-i18n="📁 Quét Nhanh Thư Mục Summary">📁 Quét Nhanh Thư Mục Summary</span>
-                        </button>
-                        <button type="button" class="btn btn-outline" onclick="event.stopPropagation(); document.getElementById('file-input').click()" style="padding:10px 18px; font-size:13px;">
-                            <span data-i18n="📄 Chọn Tệp Log (.log, .txt, .csv)">📄 Chọn Tệp Log (.log, .txt, .csv)</span>
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); loadBuiltInDemoKlippelLogs()" style="padding:10px 18px; font-size:13px; font-weight:800; border-color:var(--status-pass); color:#34d399; background:rgba(16,185,129,0.1);">
-                            <span data-i18n="🧪 Nạp Bộ Dữ Liệu Mẫu (3 Trạm · 3 Group)">🧪 Nạp Bộ Dữ Liệu Mẫu (3 Trạm · 3 Group)</span>
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="event.stopPropagation(); switchTab('audit')" style="padding:10px 18px; font-size:13px; font-weight:700; border-color:var(--accent-blue); color:var(--accent-cyan);">
-                            <span data-i18n="🎯 Vào Kiểm Tra Danh Sách Đa Group">🎯 Vào Kiểm Tra Danh Sách Đa Group</span>
-                        </button>
+                    <!-- Bố cục 2 nhánh tác vụ rõ ràng: Sản Xuất vs Mẫu Thử -->
+                    <div style="display:flex; flex-direction:column; gap:12px; align-items:center; margin-top:20px;">
+                        <!-- Nhánh 1: Tác vụ nạp sản xuất chính -->
+                        <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                            <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); startFastDirectoryScan()" style="padding:10px 22px; font-weight:800; font-size:13px;">
+                                <span data-i18n="📁 Quét Nhanh Thư Mục Summary">📁 Nạp Từ Thư Mục Summary</span>
+                            </button>
+                            <button type="button" class="btn btn-outline" onclick="event.stopPropagation(); document.getElementById('file-input').click()" style="padding:10px 20px; font-size:13px; font-weight:700;">
+                                <span data-i18n="📄 Chọn Tệp Log (.log, .txt, .csv)">📄 Chọn Tệp Log Rời</span>
+                            </button>
+                        </div>
+
+                        <!-- Nhánh 2: Tiện ích trải nghiệm nhanh -->
+                        <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); loadBuiltInDemoKlippelLogs()" style="color:#34d399; font-weight:700;">
+                                <span data-i18n="🧪 Nạp Bộ Dữ Liệu Mẫu (3 Trạm · 3 Group)">🧪 Dữ Liệu Mẫu (3 Trạm · Cpk)</span>
+                            </button>
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); switchTab('audit')" style="color:var(--foster-blue-50); font-weight:700;">
+                                <span data-i18n="🎯 Vào Kiểm Tra Danh Sách Đa Group">🎯 Đối Soát Đa Group</span>
+                            </button>
+                            <button type="button" class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); switchTab('scan')" style="color:var(--text-muted);">
+                                <span data-i18n="⚡ Vào thẳng Quét Sản Xuất">⚡ Quét Sản Xuất</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div style="margin-top:16px; display:inline-flex; align-items:center; gap:8px; background:rgba(0,0,0,0.2); padding:6px 14px; border-radius:20px; font-size:11.5px; color:var(--text-muted);" onclick="event.stopPropagation()">
@@ -207,19 +225,6 @@
 
                 <div class="setup-footer">
                     <button id="btn-process" class="btn btn-primary btn-lg btn-block" disabled onclick="processFiles()" data-i18n="TIẾN HÀNH XỬ LÝ DỮ LIỆU">TIẾN HÀNH XỬ LÝ DỮ LIỆU</button>
-                    <div style="display:flex; justify-content:center; gap:16px; margin-top:12px; font-size:12px; flex-wrap:wrap;">
-                        <a href="javascript:void(0)" onclick="loadBuiltInDemoKlippelLogs()" style="color:#34d399; text-decoration:none; font-weight:700;">
-                            <span data-i18n="🧪 Nạp Dữ Liệu Mẫu Đa Trạm &rarr;">🧪 Nạp Dữ Liệu Mẫu Đa Trạm &rarr;</span>
-                        </a>
-                        <span style="color:var(--border-color);">|</span>
-                        <a href="javascript:void(0)" onclick="switchTab('audit')" style="color:var(--accent-cyan); text-decoration:none; font-weight:700;">
-                            <span data-i18n="🎯 Kiểm Tra Danh Sách Đa Group &rarr;">🎯 Kiểm Tra Danh Sách Đa Group &rarr;</span>
-                        </a>
-                        <span style="color:var(--border-color);">|</span>
-                        <a href="javascript:void(0)" onclick="switchTab('scan')" style="color:var(--text-muted); text-decoration:none;">
-                            <span data-i18n="⚡ Vào thẳng Quét Sản Xuất &rarr;">⚡ Vào thẳng Quét Sản Xuất &rarr;</span>
-                        </a>
-                    </div>
                 </div>
             </div>
         </section>
@@ -247,38 +252,50 @@
                     <!-- HÀNG 1: Ô QUÉT MÃ VẠCH & THẺ PHÁN ĐỊNH CÔNG NGHIỆP -->
                     <div class="scan-top-grid">
                         <div class="card scan-input-card">
-                            <div>
-                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
-                                    <label for="scanner-input" class="scan-label" data-i18n="MÁY QUÉT MÃ VẠCH SẴN SÀNG">⚡ TRẠM QUÉT MÃ VẠCH · LIVE MATCH O(1)</label>
-                                    <div style="display:flex; align-items:center; gap:6px;">
-                                        <select id="scan-station-filter" class="settings-select" style="padding:3px 8px; font-size:11px; font-weight:700;" onchange="setLiveScanStationFilter(this.value)" title="Giới hạn tra cứu theo trạm đo" data-i18n-title="Giới hạn tra cứu theo trạm đo">
-                                            <option value="ALL" data-i18n="🏭 Tất cả trạm đo">🏭 Tất cả trạm đo</option>
-                                        </select>
-                                        <select class="settings-select" style="padding:3px 8px; font-size:11px; font-weight:700;" onchange="setLiveScanMatchMode(this.value)" title="Chế độ thuật toán so khớp" data-i18n-title="Chế độ thuật toán so khớp">
-                                            <option value="flex" data-i18n="🎯 Khớp 3-Tầng Linh Hoạt">🎯 Khớp 3-Tầng Linh Hoạt</option>
-                                            <option value="exact" data-i18n="🔒 Khớp Chính Xác 100%">🔒 Khớp Chính Xác 100%</option>
-                                        </select>
-                                    </div>
+                            <!-- Thanh tiêu đề trên cùng với trạng thái & 2 bộ lọc pill gọn gàng -->
+                            <div class="scan-card-header">
+                                <div class="scan-status-pill">
+                                    <span class="scan-live-dot"></span>
+                                    <span class="scan-label" data-i18n="MÁY QUÉT MÃ VẠCH SẴN SÀNG">LIVE SCANNER CONSOLE</span>
                                 </div>
-
-                                <div class="input-glow-wrapper">
-                                    <input type="text" id="scanner-input" placeholder="QUÉT HOẶC NHẬP SERIAL DUT..." data-i18n-placeholder="QUÉT HOẶC NHẬP SERIAL DUT..." autocomplete="off" autofocus>
-                                    <span class="scan-icon-indicator">🔍</span>
+                                <div class="scan-pill-filters">
+                                    <select id="scan-station-filter" class="pill-select" onchange="setLiveScanStationFilter(this.value)" title="Giới hạn tra cứu theo trạm đo" data-i18n-title="Giới hạn tra cứu theo trạm đo">
+                                        <option value="ALL" data-i18n="🏭 Tất cả trạm đo">🏭 Tất cả trạm</option>
+                                    </select>
+                                    <select class="pill-select" onchange="setLiveScanMatchMode(this.value)" title="Chế độ thuật toán so khớp" data-i18n-title="Chế độ thuật toán so khớp">
+                                        <option value="flex" data-i18n="🎯 Khớp 3-Tầng Linh Hoạt">🎯 3-Tầng O(1)</option>
+                                        <option value="exact" data-i18n="🔒 Khớp Chính Xác 100%">🔒 Chính xác</option>
+                                    </select>
                                 </div>
                             </div>
 
-                            <div style="display:flex; flex-direction:column; gap:8px; margin-top:12px;">
-                                <div style="display:flex; gap:8px;">
-                                    <button class="btn btn-primary" style="flex:1;" onclick="onScanManualSubmit()" data-i18n="⚡ ĐỐI SOÁT NGAY (ENTER)">⚡ ĐỐI SOÁT NGAY (ENTER)</button>
-                                    <button class="btn btn-secondary" onclick="document.getElementById('scanner-input').value=''; document.getElementById('scanner-input').focus();" data-i18n="XOÁ Ô">XOÁ Ô</button>
+                            <!-- Thanh nhập mã hợp nhất (All-in-one Input Bar): Input + Clear + Submit -->
+                            <div class="unified-scan-bar">
+                                <span class="usb-lead-icon" aria-hidden="true">⚡</span>
+                                <input type="text" id="scanner-input" class="usb-input" placeholder="QUÉT HOẶC NHẬP SERIAL DUT..." data-i18n-placeholder="QUÉT HOẶC NHẬP SERIAL DUT..." autocomplete="off" autofocus oninput="toggleScanClearBtn(this.value)">
+                                <button type="button" id="btn-scan-clear" class="usb-btn-clear" onclick="clearScanInput()" title="Xoá ô (ESC)" style="display:none;" aria-label="Xóa ô nhập">✕</button>
+                                <button type="button" class="btn btn-primary usb-btn-submit" onclick="onScanManualSubmit()" title="Gửi mã đối soát (Enter)" data-i18n-title="Gửi mã đối soát (Enter)">
+                                    <span data-i18n="ĐỐI SOÁT">ĐỐI SOÁT</span>
+                                    <kbd class="usb-kbd">↵</kbd>
+                                </button>
+                            </div>
+
+                            <!-- Dải công cụ quét mẫu nhanh (Segmented Test Bar) -->
+                            <div class="scan-action-toolbar">
+                                <div class="sat-lead">
+                                    <span class="sat-icon">🧪</span>
+                                    <span data-i18n="Mẫu thử nhanh:">Mẫu thử nhanh:</span>
                                 </div>
-                                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; padding-top:6px; border-top:1px solid var(--border-color); font-size:11px; color:var(--text-muted);">
-                                    <span data-i18n="🧪 Quét thử nhanh:">🧪 Quét thử nhanh:</span>
-                                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                                        <button class="btn btn-sm btn-outline" style="padding:3px 8px; font-size:10.5px;" onclick="triggerQuickSampleScan('PASS')" data-i18n="✓ Mẫu Đạt (PASS)">✓ Mẫu Đạt (PASS)</button>
-                                        <button class="btn btn-sm btn-outline-danger" style="padding:3px 8px; font-size:10.5px;" onclick="triggerQuickSampleScan('FAIL')" data-i18n="✕ Mẫu Lỗi (FAIL)">✕ Mẫu Lỗi (FAIL)</button>
-                                        <button class="btn btn-sm btn-secondary" style="padding:3px 8px; font-size:10.5px;" onclick="triggerQuickSampleScan('PURE_SERIAL')" data-i18n="🏷️ Quét Serial Trần (Tầng 2)">🏷️ Quét Serial Trần (Tầng 2)</button>
-                                    </div>
+                                <div class="segmented-control-group">
+                                    <button type="button" class="seg-btn seg-btn-pass" onclick="triggerQuickSampleScan('PASS')" data-i18n="✓ PASS">
+                                        <span>✓</span> PASS
+                                    </button>
+                                    <button type="button" class="seg-btn seg-btn-fail" onclick="triggerQuickSampleScan('FAIL')" data-i18n="✕ FAIL">
+                                        <span>✕</span> FAIL
+                                    </button>
+                                    <button type="button" class="seg-btn seg-btn-suffix" onclick="triggerQuickSampleScan('PURE_SERIAL')" data-i18n="🏷️ Serial Trần (T2)">
+                                        <span>🏷️</span> Tầng 2
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -8,6 +8,24 @@ function onScanInputKeydown(e) {
     if (e.key === 'Enter') {
         e.preventDefault();
         onScanManualSubmit();
+    } else if (e.key === 'Escape') {
+        clearScanInput();
+    }
+}
+
+function toggleScanClearBtn(val) {
+    const btn = document.getElementById('btn-scan-clear');
+    if (btn) {
+        btn.style.display = (val && String(val).trim().length > 0) ? 'inline-flex' : 'none';
+    }
+}
+
+function clearScanInput() {
+    const input = document.getElementById('scanner-input');
+    if (input) {
+        input.value = '';
+        toggleScanClearBtn('');
+        input.focus();
     }
 }
 
@@ -18,6 +36,7 @@ function onScanManualSubmit() {
     if (val) {
         handleScanBarcode(val);
         input.value = '';
+        toggleScanClearBtn('');
         input.focus();
     }
 }
