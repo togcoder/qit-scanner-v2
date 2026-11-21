@@ -325,45 +325,70 @@ function playScanSound(type = 'PASS') {
         const vol = (typeof audioVolume === 'number' && audioVolume >= 0) ? audioVolume : 1.3;
 
         if (type === 'PASS') {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(587.33, now);
-            osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.12);
-            gain.gain.setValueAtTime(0.4 * vol, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(now);
-            osc.stop(now + 0.3);
-
-            if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Đạt'));
-        } else if (type === 'FAIL') {
+            // Chuông kép điều hòa thanh thoát (Harmonic Dual Chime - Foster Acoustic Style)
+            // Note 1: D5 (587.33 Hz)
             const osc1 = ctx.createOscillator();
             const gain1 = ctx.createGain();
-            osc1.type = 'sawtooth';
-            osc1.frequency.setValueAtTime(160, now);
-            osc1.frequency.exponentialRampToValueAtTime(90, now + 0.25);
-            gain1.gain.setValueAtTime(0.6 * vol, now);
-            gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(587.33, now);
+            gain1.gain.setValueAtTime(0.35 * vol, now);
+            gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
             osc1.connect(gain1);
             gain1.connect(ctx.destination);
             osc1.start(now);
-            osc1.stop(now + 0.26);
+            osc1.stop(now + 0.36);
+
+            // Note 2: A5 (880.00 Hz) sau 45ms (Quãng 5 chuẩn xác, âm vang trong trẻo)
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(880.00, now + 0.045);
+            gain2.gain.setValueAtTime(0.38 * vol, now + 0.045);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.start(now + 0.045);
+            osc2.stop(now + 0.43);
+
+            if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Đạt'));
+        } else if (type === 'FAIL') {
+            // Cảnh báo âm học công nghiệp Foster (Damped Acoustic Minor Dyad) dứt khoát, không rè chát
+            const osc1 = ctx.createOscillator();
+            const gain1 = ctx.createGain();
+            osc1.type = 'triangle';
+            osc1.frequency.setValueAtTime(329.63, now); // E4
+            gain1.gain.setValueAtTime(0.48 * vol, now);
+            gain1.gain.exponentialRampToValueAtTime(0.005, now + 0.22);
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.23);
 
             const osc2 = ctx.createOscillator();
             const gain2 = ctx.createGain();
-            osc2.type = 'square';
-            osc2.frequency.setValueAtTime(120, now + 0.08);
-            osc2.frequency.exponentialRampToValueAtTime(70, now + 0.28);
-            gain2.gain.setValueAtTime(0.4 * vol, now + 0.08);
-            gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(261.63, now + 0.035); // C4
+            gain2.gain.setValueAtTime(0.42 * vol, now + 0.035);
+            gain2.gain.exponentialRampToValueAtTime(0.005, now + 0.28);
             osc2.connect(gain2);
             gain2.connect(ctx.destination);
-            osc2.start(now + 0.08);
+            osc2.start(now + 0.035);
             osc2.stop(now + 0.29);
 
             if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Lỗi'));
+        } else if (type === 'CLICK') {
+            // Âm xúc giác cơ học siêu nhẹ (Tactile Mechanical Soft-Click)
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1400, now);
+            osc.frequency.exponentialRampToValueAtTime(700, now + 0.012);
+            gain.gain.setValueAtTime(0.06 * vol, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.012);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.015);
         } else if (type === 'NOT_FOUND') {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -646,3 +671,40 @@ function downloadBlobFile(content, fileName, mimeType = 'text/plain;charset=utf-
         window.URL.revokeObjectURL(url);
     }, 250);
 }
+
+/**
+ * Khởi tạo hiệu ứng gợn sóng âm học (Acoustic Wave Ripple) & phản hồi xúc giác cho toàn bộ nút bấm
+ */
+function initTactileAcousticRipple() {
+    if (typeof document === 'undefined') return;
+    document.addEventListener('pointerdown', (e) => {
+        const target = e.target.closest('.btn, .nav-tab, .kpi-card[onclick], .hourly-card, .btn-scan, button, .agc-btn');
+        if (!target || target.disabled || target.classList.contains('disabled')) return;
+
+        // Âm phản hồi click siêu nhẹ chuẩn cơ học
+        if (!audioMuted && typeof playScanSound === 'function') {
+            playScanSound('CLICK');
+        }
+
+        const rect = target.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height) * 2;
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+
+        const ripple = document.createElement('span');
+        ripple.className = 'qit-acoustic-ripple';
+        ripple.style.width = `${size}px`;
+        ripple.style.height = `${size}px`;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+
+        target.appendChild(ripple);
+
+        setTimeout(() => {
+            if (ripple && ripple.parentNode) {
+                ripple.parentNode.removeChild(ripple);
+            }
+        }, 550);
+    }, { passive: true });
+}
+

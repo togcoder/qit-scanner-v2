@@ -74,6 +74,7 @@ function onScanInputEvent(e, inputEl, submitCallback) {
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     QIT.i18n.applyTranslations();
+    initTactileAcousticRipple();
 
     // 1. Đăng ký sự kiện Kéo & Thả tệp và Thư mục tại Drop Zone
     const dropZone = document.getElementById('drop-zone');

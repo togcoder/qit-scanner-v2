@@ -167,6 +167,7 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
     if (!band || !mark || !title) return;
 
     band.className = 'verdict-band';
+    void band.offsetWidth; // Trigger DOM reflow để làm mới animation dứt khoát
     detailDrawer.innerHTML = '';
 
     const allRuns = (matchInfo && matchInfo.allRecords) ? matchInfo.allRecords : (record ? findAllRecordsForDUT(record) : []);
@@ -179,8 +180,9 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
         : `<span class="meta-chip">${_t('Lần đo thứ 1 (First Run)')}</span>`;
 
     if (status === 'PASS' || status === 'PASS_DUP') {
-        band.classList.add('verdict-pass');
+        band.classList.add('verdict-pass', 'verdict-glow');
         mark.style.display = 'flex';
+        mark.className = 'vb-mark vb-mark-pop';
         mark.innerHTML = '✓';
         title.innerHTML = _t('PASS · ĐẠT CHUẨN') + (status === 'PASS_DUP' ? ` <span class="badge-dup">${_t('⚠️ QUÉT LẶP')}</span>` : '');
         sub.innerHTML = `
@@ -199,8 +201,9 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
             </div>
         `;
     } else if (status === 'FAIL' || status === 'FAIL_DUP') {
-        band.classList.add('verdict-fail');
+        band.classList.add('verdict-fail', 'verdict-shake');
         mark.style.display = 'flex';
+        mark.className = 'vb-mark vb-mark-pop';
         mark.innerHTML = '✕';
         title.innerHTML = _t('FAIL · SẢN PHẨM LỖI') + (status === 'FAIL_DUP' ? ` <span class="badge-dup">${_t('⚠️ QUÉT LẶP')}</span>` : '');
         sub.innerHTML = `
@@ -307,8 +310,10 @@ function renderParametricSnapshotBand(container, record) {
             statusLabel = _t('HIGH (Vượt USL)');
             pctPos = 96;
         } else if (hasMin && hasMax && (m.maxLimit - m.minLimit) > 0) {
+            const span = m.maxLimit - m.minLimit;
             const marginPct = (window.CFG && CFG.NEAR_FAIL_MARGIN_PCT) ? CFG.NEAR_FAIL_MARGIN_PCT : 15;
             const margin = span * (marginPct / 100);
+            pctPos = Math.max(5, Math.min(95, ((m.value - m.minLimit) / span) * 100));
             if ((m.value - m.minLimit) <= margin || (m.maxLimit - m.value) <= margin) {
                 stateClass = 'warn';
                 statusLabel = _t('CẬN BIÊN');
@@ -517,8 +522,9 @@ function renderScanHistoryTable() {
             ? activeErrors(rec.errors).map(getMappedName).join(', ')
             : (isNotFound ? _t('Không có bản ghi log') : _t('Đạt 100%'));
 
+        const rowClass = idx === 0 ? 'row-just-scanned' : '';
         html += `
-            <tr style="cursor:pointer;" onclick="selectScanHistoryItem(${origIdx})" title="" data-i18n-title="Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này">
+            <tr class="${rowClass}" style="cursor:pointer;" onclick="selectScanHistoryItem(${origIdx})" title="" data-i18n-title="Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này">
                 <td style="text-align:center; font-weight:700; color:var(--text-muted);">${scanHistory.length - origIdx}</td>
                 <td style="font-family:var(--font-mono); color:var(--text-muted); font-size:11.5px;">${item.time}</td>
                 <td style="font-weight:700; font-family:var(--font-mono); color:var(--text-main);">

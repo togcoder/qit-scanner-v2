@@ -972,6 +972,22 @@ body.light-theme .btn-outline:hover:not(:disabled),
     padding: 14px 0;
 }
 
+.tab-pane.active {
+    display: block;
+    animation: tabContentEnter 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes tabContentEnter {
+    0% {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .hidden {
     display: none !important;
 }
@@ -1109,7 +1125,8 @@ body.light-theme .btn-outline:hover:not(:disabled),
     border: 2px solid #34d399;
     color: #ecfdf5;
     transition: all 0.2s ease;
-    box-shadow: 0 0 40px -20px #34d399;
+    box-shadow: 0 0 35px -12px rgba(52, 211, 153, 0.45);
+    animation: verdictPassPulse 0.38s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .verdict-fail {
@@ -1117,7 +1134,8 @@ body.light-theme .btn-outline:hover:not(:disabled),
     border: 2px solid #f87171;
     color: #fef2f2;
     transition: all 0.2s ease;
-    box-shadow: 0 0 40px -20px #f87171;
+    box-shadow: 0 0 35px -12px rgba(248, 113, 113, 0.45);
+    animation: verdictFailShake 0.38s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
 
 .verdict-warn,
@@ -1127,7 +1145,28 @@ body.light-theme .btn-outline:hover:not(:disabled),
     border: 2px solid #fbbf24;
     color: #fffbeb;
     transition: all 0.2s ease;
-    box-shadow: 0 0 40px -20px #fbbf24;
+    box-shadow: 0 0 35px -12px rgba(251, 191, 36, 0.45);
+    animation: verdictWarnPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes verdictPassPulse {
+    0% { transform: scale(0.985); }
+    50% { transform: scale(1.008); box-shadow: 0 0 45px rgba(52, 211, 153, 0.4); }
+    100% { transform: scale(1); }
+}
+
+@keyframes verdictFailShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(3px); }
+}
+
+@keyframes verdictWarnPop {
+    0% { transform: scale(0.98); }
+    60% { transform: scale(1.01); }
+    100% { transform: scale(1); }
 }
 
 .vb-row {
@@ -1146,6 +1185,17 @@ body.light-theme .btn-outline:hover:not(:disabled),
     justify-content: center;
     font-size: 34px;
     font-weight: 900;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vb-mark-pop {
+    animation: vbMarkPopIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes vbMarkPopIn {
+    0% { transform: scale(0.35); opacity: 0; }
+    70% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); }
 }
 
 .verdict-idle .vb-mark { display: none; }
@@ -1302,6 +1352,30 @@ body.light-theme .btn-outline:hover:not(:disabled),
     height: 12px;
     border-radius: 50%;
     transform: translateX(-50%);
+    border: 2px solid #090d16;
+    box-shadow: 0 0 10px currentColor, 0 1px 3px rgba(0, 0, 0, 0.4);
+    transition: left 0.42s cubic-bezier(0.34, 1.3, 0.64, 1), background-color 0.25s ease;
+}
+
+@keyframes rowInsertSlide {
+    0% {
+        opacity: 0;
+        transform: translateY(-8px);
+        background-color: rgba(0, 98, 172, 0.26);
+    }
+    40% {
+        opacity: 1;
+        background-color: rgba(0, 98, 172, 0.16);
+    }
+    100% {
+        transform: translateY(0);
+        background-color: transparent;
+    }
+}
+
+.row-just-scanned {
+    animation: rowInsertSlide 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
     border: 2px solid #090d16;
     box-shadow: 0 0 8px currentColor;
 }
@@ -1799,11 +1873,17 @@ body.light-theme .btn-outline:hover:not(:disabled),
     position: fixed;
     inset: 0;
     z-index: 70;
-    background: rgba(3, 7, 14, 0.76);
-    backdrop-filter: blur(7px);
+    background: rgba(3, 7, 14, 0.78);
+    backdrop-filter: blur(8px);
     display: grid;
     place-items: center;
     padding: 20px;
+    animation: modalBackdropFade 0.22s ease-out;
+}
+
+@keyframes modalBackdropFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .modal-card {
@@ -1815,7 +1895,19 @@ body.light-theme .btn-outline:hover:not(:disabled),
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 40px 100px -40px #000;
+    box-shadow: 0 40px 100px -40px #000, 0 0 0 1px rgba(255, 255, 255, 0.08);
+    animation: modalCardSpring 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalCardSpring {
+    0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(14px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .settings-modal-card {
@@ -2604,6 +2696,68 @@ body.light-theme .analysis-subnav-btn.active,
         grid-template-columns: 1fr;
     }
 }
+
+/* ════════════ FOSTER ACOUSTIC WAVE RIPPLE & TACTILE PARTICLES ════════════ */
+.btn, .nav-tab, .agc-btn, .kpi-card[onclick], .hourly-card, button, .modal-footer button {
+    position: relative;
+    overflow: hidden;
+}
+
+.qit-acoustic-ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    animation: acousticRippleSpread 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.38) 0%, rgba(64, 137, 193, 0.28) 45%, transparent 75%);
+    pointer-events: none;
+    z-index: 10;
+}
+
+body.light-theme .qit-acoustic-ripple {
+    background: radial-gradient(circle, rgba(0, 98, 172, 0.32) 0%, rgba(0, 98, 172, 0.14) 50%, transparent 78%);
+}
+
+@keyframes acousticRippleSpread {
+    0% {
+        transform: scale(0);
+        opacity: 0.85;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* Flagship Scan CTA Gentle Breathing */
+@keyframes ctaReadyBreathe {
+    0%, 100% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.32),
+            0 2px 0 #003e6d,
+            0 4px 14px rgba(0, 98, 172, 0.35);
+    }
+    50% {
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.42),
+            0 2px 0 #003e6d,
+            0 6px 22px rgba(0, 98, 172, 0.55);
+    }
+}
+
+.btn-scan:not(:disabled) {
+    animation: ctaReadyBreathe 3s ease-in-out infinite;
+}
+
+/* Status Bar LED Pulse */
+.status-pill {
+    transition: all 0.2s ease;
+}
+
+.status-dot {
+    box-shadow: 0 0 8px currentColor;
+    animation: qitPulse 2.4s ease-in-out infinite;
+}
+
 
 
 
@@ -10515,45 +10669,70 @@ function playScanSound(type = 'PASS') {
         const vol = (typeof audioVolume === 'number' && audioVolume >= 0) ? audioVolume : 1.3;
 
         if (type === 'PASS') {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(587.33, now);
-            osc.frequency.exponentialRampToValueAtTime(880.00, now + 0.12);
-            gain.gain.setValueAtTime(0.4 * vol, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(now);
-            osc.stop(now + 0.3);
-
-            if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Đạt'));
-        } else if (type === 'FAIL') {
+            // Chuông kép điều hòa thanh thoát (Harmonic Dual Chime - Foster Acoustic Style)
+            // Note 1: D5 (587.33 Hz)
             const osc1 = ctx.createOscillator();
             const gain1 = ctx.createGain();
-            osc1.type = 'sawtooth';
-            osc1.frequency.setValueAtTime(160, now);
-            osc1.frequency.exponentialRampToValueAtTime(90, now + 0.25);
-            gain1.gain.setValueAtTime(0.6 * vol, now);
-            gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(587.33, now);
+            gain1.gain.setValueAtTime(0.35 * vol, now);
+            gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
             osc1.connect(gain1);
             gain1.connect(ctx.destination);
             osc1.start(now);
-            osc1.stop(now + 0.26);
+            osc1.stop(now + 0.36);
+
+            // Note 2: A5 (880.00 Hz) sau 45ms (Quãng 5 chuẩn xác, âm vang trong trẻo)
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(880.00, now + 0.045);
+            gain2.gain.setValueAtTime(0.38 * vol, now + 0.045);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.start(now + 0.045);
+            osc2.stop(now + 0.43);
+
+            if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Đạt'));
+        } else if (type === 'FAIL') {
+            // Cảnh báo âm học công nghiệp Foster (Damped Acoustic Minor Dyad) dứt khoát, không rè chát
+            const osc1 = ctx.createOscillator();
+            const gain1 = ctx.createGain();
+            osc1.type = 'triangle';
+            osc1.frequency.setValueAtTime(329.63, now); // E4
+            gain1.gain.setValueAtTime(0.48 * vol, now);
+            gain1.gain.exponentialRampToValueAtTime(0.005, now + 0.22);
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.23);
 
             const osc2 = ctx.createOscillator();
             const gain2 = ctx.createGain();
-            osc2.type = 'square';
-            osc2.frequency.setValueAtTime(120, now + 0.08);
-            osc2.frequency.exponentialRampToValueAtTime(70, now + 0.28);
-            gain2.gain.setValueAtTime(0.4 * vol, now + 0.08);
-            gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(261.63, now + 0.035); // C4
+            gain2.gain.setValueAtTime(0.42 * vol, now + 0.035);
+            gain2.gain.exponentialRampToValueAtTime(0.005, now + 0.28);
             osc2.connect(gain2);
             gain2.connect(ctx.destination);
-            osc2.start(now + 0.08);
+            osc2.start(now + 0.035);
             osc2.stop(now + 0.29);
 
             if (CFG.VOICE_ALERTS_ENABLED) speakVoice(_t('Lỗi'));
+        } else if (type === 'CLICK') {
+            // Âm xúc giác cơ học siêu nhẹ (Tactile Mechanical Soft-Click)
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1400, now);
+            osc.frequency.exponentialRampToValueAtTime(700, now + 0.012);
+            gain.gain.setValueAtTime(0.06 * vol, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.012);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.015);
         } else if (type === 'NOT_FOUND') {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -10837,6 +11016,43 @@ function downloadBlobFile(content, fileName, mimeType = 'text/plain;charset=utf-
     }, 250);
 }
 
+/**
+ * Khởi tạo hiệu ứng gợn sóng âm học (Acoustic Wave Ripple) & phản hồi xúc giác cho toàn bộ nút bấm
+ */
+function initTactileAcousticRipple() {
+    if (typeof document === 'undefined') return;
+    document.addEventListener('pointerdown', (e) => {
+        const target = e.target.closest('.btn, .nav-tab, .kpi-card[onclick], .hourly-card, .btn-scan, button, .agc-btn');
+        if (!target || target.disabled || target.classList.contains('disabled')) return;
+
+        // Âm phản hồi click siêu nhẹ chuẩn cơ học
+        if (!audioMuted && typeof playScanSound === 'function') {
+            playScanSound('CLICK');
+        }
+
+        const rect = target.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height) * 2;
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+
+        const ripple = document.createElement('span');
+        ripple.className = 'qit-acoustic-ripple';
+        ripple.style.width = `${size}px`;
+        ripple.style.height = `${size}px`;
+        ripple.style.left = `${x}px`;
+        ripple.style.top = `${y}px`;
+
+        target.appendChild(ripple);
+
+        setTimeout(() => {
+            if (ripple && ripple.parentNode) {
+                ripple.parentNode.removeChild(ripple);
+            }
+        }, 550);
+    }, { passive: true });
+}
+
+
 
 /* ── Module: 08-ui-scan.js ── */
 /* ════════════ GIAO DIỆN QUÉT SẢN XUẤT THỜI GIAN THỰC (LIVE SCAN UI) V2 PRO ════════════ */
@@ -11008,6 +11224,7 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
     if (!band || !mark || !title) return;
 
     band.className = 'verdict-band';
+    void band.offsetWidth; // Trigger DOM reflow để làm mới animation dứt khoát
     detailDrawer.innerHTML = '';
 
     const allRuns = (matchInfo && matchInfo.allRecords) ? matchInfo.allRecords : (record ? findAllRecordsForDUT(record) : []);
@@ -11020,8 +11237,9 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
         : `<span class="meta-chip">${_t('Lần đo thứ 1 (First Run)')}</span>`;
 
     if (status === 'PASS' || status === 'PASS_DUP') {
-        band.classList.add('verdict-pass');
+        band.classList.add('verdict-pass', 'verdict-glow');
         mark.style.display = 'flex';
+        mark.className = 'vb-mark vb-mark-pop';
         mark.innerHTML = '✓';
         title.innerHTML = _t('PASS · ĐẠT CHUẨN') + (status === 'PASS_DUP' ? ` <span class="badge-dup">${_t('⚠️ QUÉT LẶP')}</span>` : '');
         sub.innerHTML = `
@@ -11040,8 +11258,9 @@ function renderVerdictCard(status, rawScan, record, matchInfo) {
             </div>
         `;
     } else if (status === 'FAIL' || status === 'FAIL_DUP') {
-        band.classList.add('verdict-fail');
+        band.classList.add('verdict-fail', 'verdict-shake');
         mark.style.display = 'flex';
+        mark.className = 'vb-mark vb-mark-pop';
         mark.innerHTML = '✕';
         title.innerHTML = _t('FAIL · SẢN PHẨM LỖI') + (status === 'FAIL_DUP' ? ` <span class="badge-dup">${_t('⚠️ QUÉT LẶP')}</span>` : '');
         sub.innerHTML = `
@@ -11148,8 +11367,10 @@ function renderParametricSnapshotBand(container, record) {
             statusLabel = _t('HIGH (Vượt USL)');
             pctPos = 96;
         } else if (hasMin && hasMax && (m.maxLimit - m.minLimit) > 0) {
+            const span = m.maxLimit - m.minLimit;
             const marginPct = (window.CFG && CFG.NEAR_FAIL_MARGIN_PCT) ? CFG.NEAR_FAIL_MARGIN_PCT : 15;
             const margin = span * (marginPct / 100);
+            pctPos = Math.max(5, Math.min(95, ((m.value - m.minLimit) / span) * 100));
             if ((m.value - m.minLimit) <= margin || (m.maxLimit - m.value) <= margin) {
                 stateClass = 'warn';
                 statusLabel = _t('CẬN BIÊN');
@@ -11358,8 +11579,9 @@ function renderScanHistoryTable() {
             ? activeErrors(rec.errors).map(getMappedName).join(', ')
             : (isNotFound ? _t('Không có bản ghi log') : _t('Đạt 100%'));
 
+        const rowClass = idx === 0 ? 'row-just-scanned' : '';
         html += `
-            <tr style="cursor:pointer;" onclick="selectScanHistoryItem(${origIdx})" title="" data-i18n-title="Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này">
+            <tr class="${rowClass}" style="cursor:pointer;" onclick="selectScanHistoryItem(${origIdx})" title="" data-i18n-title="Nhấp để xem lại toàn bộ hồ sơ đo của lượt quét này">
                 <td style="text-align:center; font-weight:700; color:var(--text-muted);">${scanHistory.length - origIdx}</td>
                 <td style="font-family:var(--font-mono); color:var(--text-muted); font-size:11.5px;">${item.time}</td>
                 <td style="font-weight:700; font-family:var(--font-mono); color:var(--text-main);">
@@ -17158,6 +17380,7 @@ function onScanInputEvent(e, inputEl, submitCallback) {
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     QIT.i18n.applyTranslations();
+    initTactileAcousticRipple();
 
     // 1. Đăng ký sự kiện Kéo & Thả tệp và Thư mục tại Drop Zone
     const dropZone = document.getElementById('drop-zone');
