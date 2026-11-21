@@ -95,8 +95,8 @@ function renderAllMetricsSummaryMatrix() {
                 badge = `<span class="badge-pill badge-pass">🌟 6-Sigma (&ge;${CFG.CPK_EXCELLENT})</span>`;
                 cpkCol = '#10b981';
             } else if (item.cpk >= CFG.CPK_CAPABLE) {
-                badge = `<span class="badge-pill" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35);">${_t('✓ Đạt')} (&ge;${CFG.CPK_CAPABLE})</span>`;
-                cpkCol = '#38bdf8';
+                badge = `<span class="badge-pill" style="background:var(--accent-subtle-bg); color:var(--accent-ink); border:1px solid var(--accent-subtle-border);">${_t('✓ Đạt')} (&ge;${CFG.CPK_CAPABLE})</span>`;
+                cpkCol = 'var(--accent-ink)';
             } else if (item.cpk >= CFG.CPK_MARGINAL) {
                 badge = `<span class="badge-pill badge-warn">${_t('⚠️ Cận biên')}</span>`;
                 cpkCol = '#f59e0b';
@@ -191,7 +191,7 @@ function renderSelectedMetricCpk() {
             ratingColor = '#10b981';
         } else if (m.cpk >= CFG.CPK_CAPABLE) {
             ratingBadge = _t('✓ ĐẠT NĂNG LỰC (CAPABLE)');
-            ratingColor = '#38bdf8';
+            ratingColor = 'var(--accent-ink)';
         } else if (m.cpk >= CFG.CPK_MARGINAL) {
             ratingBadge = _t('⚠️ CẬN BIÊN (MARGINAL)');
             ratingColor = '#f59e0b';
@@ -265,7 +265,7 @@ function renderSelectedMetricCpk() {
                     ${_t('📈 BIỂU ĐỒ PHÂN PHỐI HISTOGRAM & ĐƯỜNG CONG GAUSS —')} <span style="color:var(--accent-cyan);">${escapeHtml(m.name)} ${m.condition ? '(' + escapeHtml(m.condition) + ')' : ''}</span>
                 </div>
                 <div style="display:flex; gap:14px; font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
-                    <span style="color:#38bdf8;">${_t('■ Tần suất mẫu (n={0})', m.count)}</span>
+                    <span style="color:var(--accent-ink);">${_t('■ Tần suất mẫu (n={0})', m.count)}</span>
                     <span style="color:#f59e0b;">${_t('— Chuẩn Gauss N(μ,σ)')}</span>
                     <span style="color:#ef4444;">┆ LSL: ${m.lsl !== null ? m.lsl : '—'} / USL: ${m.usl !== null ? m.usl : '—'}</span>
                     <span style="color:#10b981;">┆ Mean μ: ${m.mean.toFixed(3)}</span>
@@ -437,8 +437,8 @@ function renderHistogramChart(m) {
                     order: 2,
                     label: _t('Tần suất mẫu thực tế'),
                     data: hist.counts,
-                    backgroundColor: 'rgba(56, 189, 248, 0.62)',
-                    borderColor: '#38bdf8',
+                    backgroundColor: 'rgba(64, 137, 193, 0.45)',
+                    borderColor: '#4089C1',
                     borderWidth: 1,
                     borderRadius: 4
                 },
@@ -572,8 +572,8 @@ function exportCpkHTML() {
   :root {
     --bg: #090d16; --bg-card: rgba(17, 24, 39, 0.88); --bg-elevated: #1e293b;
     --border: rgba(148, 163, 184, 0.16); --txt: #f1f5f9; --txt-sub: #94a3b8;
-    --cyan: #00f2fe; --blue: #38bdf8; --pass: #10b981; --pass-bg: rgba(16, 185, 129, 0.16);
-    --capable-bg: rgba(56, 189, 248, 0.16); --fail: #ef4444; --fail-bg: rgba(239, 68, 68, 0.16);
+    --cyan: #80B0D6; --blue: #4089C1; --foster-blue: #0062AC; --pass: #10b981; --pass-bg: rgba(16, 185, 129, 0.16);
+    --capable-bg: rgba(64, 137, 193, 0.16); --fail: #ef4444; --fail-bg: rgba(239, 68, 68, 0.16);
     --warn: #f59e0b; --warn-bg: rgba(245, 158, 11, 0.16);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }

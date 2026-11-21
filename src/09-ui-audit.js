@@ -1582,7 +1582,7 @@ function exportAuditHTML() {
   :root {
     --bg: #090d16; --bg-card: rgba(17, 24, 39, 0.9); --bg-elevated: #1e293b;
     --border: rgba(148, 163, 184, 0.16); --txt: #f1f5f9; --txt-sub: #94a3b8;
-    --cyan: #00f2fe; --blue: #38bdf8; --pass: #10b981; --pass-bg: rgba(16, 185, 129, 0.16);
+    --cyan: #80B0D6; --blue: #4089C1; --foster-blue: #0062AC; --pass: #10b981; --pass-bg: rgba(16, 185, 129, 0.16);
     --fail: #ef4444; --fail-bg: rgba(239, 68, 68, 0.16); --warn: #f59e0b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }

@@ -87,7 +87,7 @@ function renderAnalysisDashboard() {
 /* ════════════ KHÔNG GIAN 1: TỔNG QUAN & PARETO 80/20 ════════════ */
 function renderWorkspace1_Pareto(container) {
     const topDefects = analysisData.errorPareto.slice(0, 5);
-    const colors = ['#ef4444', '#f97316', '#f59e0b', '#38bdf8', '#a855f7'];
+    const colors = ['#ef4444', '#f97316', '#f59e0b', '#4089C1', '#a855f7'];
 
     let topBarsHtml = '';
     if (topDefects.length > 0) {
@@ -133,7 +133,7 @@ function renderWorkspace1_Pareto(container) {
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">${_t('TỶ LỆ PASS THỰC TẾ')}</div>
-                    <div class="kpi-val" style="color:#38bdf8;">${analysisData.finalPassRate.toFixed(1)}%</div>
+                    <div class="kpi-val" style="color:var(--accent-ink);">${analysisData.finalPassRate.toFixed(1)}%</div>
                     <div style="font-size:10px; color:var(--text-muted);">${_t('Tỷ lệ đạt cuối cùng')}</div>
                 </div>
                 <div class="kpi-card">
@@ -169,7 +169,7 @@ function renderWorkspace1_Pareto(container) {
                             ${_t('📈 BIỂU ĐỒ PARETO LỖI 80/20 · DUAL AXIS')}
                         </h4>
                         <div style="display:flex; gap:12px; font-size:10px; color:var(--text-sub); font-family:var(--font-mono);">
-                            <span>${_t('■ SỐ LỖI')}</span><span style="color:#38bdf8;">${_t('— % LUỸ KẾ')}</span><span style="color:#ef4444;">-- 80%</span>
+                            <span>${_t('■ SỐ LỖI')}</span><span style="color:var(--accent-ink);">${_t('— % LUỸ KẾ')}</span><span style="color:#ef4444;">-- 80%</span>
                         </div>
                     </div>
                     <div style="position:relative; height:300px; width:100%;">
@@ -370,9 +370,9 @@ function renderWorkspace2_Matrix(container) {
 
                 <!-- 5 Thẻ Tóm Tắt Ma Trận -->
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:14px;">
-                    <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
+                    <div style="background:rgba(0,98,172,0.1); border:1px solid rgba(0,98,172,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
                         <div style="font-size:10px; font-weight:800; color:var(--text-muted);">${_t('TỔNG SỐ LƯỢT ĐO')}</div>
-                        <div style="font-size:17px; font-weight:900; color:#38bdf8; font-family:var(--font-mono); margin-top:2px;">${totalRuns} ${_t('Lượt')}</div>
+                        <div style="font-size:17px; font-weight:900; color:var(--accent-ink); font-family:var(--font-mono); margin-top:2px;">${totalRuns} ${_t('Lượt')}</div>
                     </div>
                     <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
                         <div style="font-size:10px; font-weight:800; color:var(--text-muted);">${_t('TỔNG SỐ PCS')}</div>
@@ -449,13 +449,13 @@ function renderCorrelationMatrixTable() {
             let color = 'var(--text-muted)';
             if (count > 0) {
                 if (i === j) {
-                    bg = 'rgba(56,189,248,0.15)'; color = '#38bdf8';
+                    bg = 'rgba(0,98,172,0.18)'; color = 'var(--accent-ink)';
                 } else if (count >= 20) {
                     bg = 'rgba(239,68,68,0.35)'; color = '#fca5a5';
                 } else if (count >= 5) {
                     bg = 'rgba(245,158,11,0.25)'; color = '#fbbf24';
                 } else {
-                    bg = 'rgba(56,189,248,0.08)'; color = 'var(--text-main)';
+                    bg = 'rgba(0,98,172,0.08)'; color = 'var(--text-main)';
                 }
             }
             html += `<td style="background:${bg}; color:${color}; font-weight:${count > 0 ? '700' : 'normal'}; font-family:var(--font-mono);">${count > 0 ? count : '—'}</td>`;
@@ -601,7 +601,7 @@ function renderWorkspace3_Timeline(container) {
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">${_t('KHUNG GIỜ ĐẠT CAO NHẤT')}</div>
-                    <div class="kpi-val" style="color:#38bdf8; font-size:16px; margin-top:2px;">
+                    <div class="kpi-val" style="color:var(--accent-ink); font-size:16px; margin-top:2px;">
                         ${sum.peakBucket ? `${sum.peakBucket.label} (${sum.peakBucket.yieldRate.toFixed(1)}%)` : '—'}
                     </div>
                     <div style="font-size:10px; color:var(--text-muted);">${sum.worstBucket ? _t('Thấp nhất: {0} ({1}%)', sum.worstBucket.label, sum.worstBucket.yieldRate.toFixed(1)) : '—'}</div>
@@ -623,7 +623,7 @@ function renderWorkspace3_Timeline(container) {
                         ${!isFilteringDefect ? `
                             <span style="color:#10b981;">■ ${_t('ĐẠT (PASS)')}</span>
                             <span style="color:#ef4444;">■ ${_t('LỖI (FAIL)')}</span>
-                            <span style="color:#00f2fe; font-weight:800;">— ${_t('TỶ LỆ ĐẠT (%)')}</span>
+                            <span style="color:var(--accent-ink); font-weight:800;">— ${_t('TỶ LỆ ĐẠT (%)')}</span>
                         ` : `
                             <span style="color:#0ea5e9;">■ ${_t('KHÔNG BỊ LỖI NÀY')}</span>
                             <span style="color:#ef4444; font-weight:700;">■ ${_t('SỐ LẦN DÍNH LỖI NÀY')}</span>
@@ -787,10 +787,10 @@ function renderProductionTimelineChart() {
                 data: yieldData,
                 type: 'line',
                 order: 1, // ĐƯỜNG Ở TRÊN CÙNG
-                borderColor: '#00f2fe',
-                backgroundColor: 'rgba(0, 242, 254, 0.15)',
+                borderColor: '#4089C1',
+                backgroundColor: 'rgba(64, 137, 193, 0.15)',
                 borderWidth: 3,
-                pointBackgroundColor: '#00f2fe',
+                pointBackgroundColor: '#0062AC',
                 pointBorderColor: '#ffffff',
                 pointBorderWidth: 1.5,
                 pointRadius: 4.5,
@@ -889,9 +889,9 @@ function renderProductionTimelineChart() {
                     position: 'right', 
                     min: 0, 
                     max: 100, 
-                    ticks: { color: isFilteringDefect ? '#f59e0b' : '#00f2fe', callback: val => `${val}%` }, 
+                    ticks: { color: isFilteringDefect ? '#f59e0b' : '#4089C1', callback: val => `${val}%` }, 
                     grid: { drawOnChartArea: false }, 
-                    title: { display: true, text: isFilteringDefect ? _t('Tỷ Lệ Lỗi Này (%)') : _t('Tỷ Lệ Đạt (%)'), color: isFilteringDefect ? '#f59e0b' : '#00f2fe' } 
+                    title: { display: true, text: isFilteringDefect ? _t('Tỷ Lệ Lỗi Này (%)') : _t('Tỷ Lệ Đạt (%)'), color: isFilteringDefect ? '#f59e0b' : '#4089C1' } 
                 }
             }
         }
@@ -1244,7 +1244,7 @@ function renderParetoTableAndChart() {
                 tr.onclick = () => openDrilldownModal(item.rawName);
 
                 const is80Cutoff = item.cumPercent <= 80 || (idx > 0 && analysisData.errorPareto[idx - 1].cumPercent < 80);
-                const cumColor = is80Cutoff ? '#ef4444' : '#38bdf8';
+                const cumColor = is80Cutoff ? '#ef4444' : '#4089C1';
 
                 tr.innerHTML = `
                     <td style="text-align:center; font-weight:700; color:var(--text-muted);">${idx + 1}</td>
@@ -1306,10 +1306,10 @@ function renderParetoTableAndChart() {
                     data: cumPcts,
                     type: 'line',
                     order: 1, // ĐƯỜNG Ở TRÊN CÙNG
-                    borderColor: '#38bdf8',
-                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                    borderColor: '#4089C1',
+                    backgroundColor: 'rgba(64, 137, 193, 0.2)',
                     borderWidth: 2.5,
-                    pointBackgroundColor: '#00f2fe',
+                    pointBackgroundColor: '#0062AC',
                     pointRadius: 4,
                     yAxisID: 'y1'
                 }
@@ -1326,7 +1326,7 @@ function renderParetoTableAndChart() {
             scales: {
                 x: { ticks: { color: textCol, maxRotation: 45, minRotation: 0, font: { size: 10 } }, grid: { color: gridCol } },
                 y: { type: 'linear', position: 'left', ticks: { color: textCol }, grid: { color: gridCol }, title: { display: true, text: _t('Số Lỗi'), color: textCol } },
-                y1: { type: 'linear', position: 'right', min: 0, max: 100, ticks: { color: '#38bdf8', callback: val => `${val}%` }, grid: { drawOnChartArea: false }, title: { display: true, text: _t('% Tích Lũy'), color: '#38bdf8' } }
+                y1: { type: 'linear', position: 'right', min: 0, max: 100, ticks: { color: '#4089C1', callback: val => `${val}%` }, grid: { drawOnChartArea: false }, title: { display: true, text: _t('% Tích Lũy'), color: '#4089C1' } }
             }
         }
     });
@@ -1381,7 +1381,7 @@ function renderHourlyYieldHeatmap() {
         } else if (failRate > 15) {
             bg = 'rgba(245, 158, 11, 0.2)'; border = 'rgba(245, 158, 11, 0.5)'; textCol = '#fbbf24';
         } else if (failRate > 5) {
-            bg = 'rgba(56, 189, 248, 0.15)'; border = 'rgba(56, 189, 248, 0.4)'; textCol = '#38bdf8';
+            bg = 'rgba(0, 98, 172, 0.15)'; border = 'rgba(0, 98, 172, 0.4)'; textCol = 'var(--accent-ink)';
         }
 
         const hStr = `${String(s.hour).padStart(2, '0')}:00`;
@@ -1438,7 +1438,7 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
                         <span style="color:var(--accent-blue);">🔍 ${escapeHtml(runInfo.shortLabel)}</span> 
                         <span style="font-size:12px; color:var(--text-muted); font-weight:normal;">(${_t('Trạm')}: ${escapeHtml(runInfo.stationName)})</span>
                         <div style="font-size:13px; color:var(--text-main); font-weight:700; margin-top:2px;">
-                            PCS: <strong style="font-family:var(--font-mono); color:#38bdf8;">${escapeHtml(ev.rawSN || sn)}</strong>
+                            PCS: <strong style="font-family:var(--font-mono); color:var(--accent-ink);">${escapeHtml(ev.rawSN || sn)}</strong>
                         </div>
                     </div>
                     <button class="btn btn-sm btn-secondary" onclick="openMatrixDetailModal('${escapeHtml(sn)}', '${escapeHtml(runId)}', true)" style="font-size:11px;">
@@ -1450,7 +1450,7 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
             titleEl.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                     <div>
-                        <span style="color:#38bdf8;">🔍 ${_t('TOÀN BỘ LỊCH SỬ ĐO ({0} LẦN)', ev.records.length)}</span>
+                        <span style="color:var(--accent-ink);">🔍 ${_t('TOÀN BỘ LỊCH SỬ ĐO ({0} LẦN)', ev.records.length)}</span>
                         <div style="font-size:13px; color:var(--text-main); font-weight:700; margin-top:2px;">
                             PCS: <strong style="font-family:var(--font-mono); color:var(--accent-blue);">${escapeHtml(ev.rawSN || sn)}</strong>
                         </div>
@@ -1671,11 +1671,12 @@ function exportMatrixStandaloneHTML() {
     --bg-card: rgba(17, 24, 39, 0.88);
     --bg-elevated: #1e293b;
     --border: rgba(148, 163, 184, 0.16);
-    --border-hover: rgba(0, 242, 254, 0.35);
+    --border-hover: rgba(64, 137, 193, 0.45);
     --txt: #f1f5f9;
     --txt-sub: #94a3b8;
-    --cyan: #00f2fe;
-    --blue: #38bdf8;
+    --cyan: #80B0D6;
+    --blue: #4089C1;
+    --foster-blue: #0062AC;
     --pass: #10b981;
     --pass-bg: rgba(16, 185, 129, 0.16);
     --fail: #ef4444;
@@ -1747,7 +1748,7 @@ function exportMatrixStandaloneHTML() {
     <div class="brand">
       <svg viewBox="50 50 200 200" width="38" height="38">
         <defs>
-          <linearGradient id="qGradExp" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient>
+          <linearGradient id="qGradExp" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4089C1"/><stop offset="100%" stop-color="#0062AC"/></linearGradient>
           <linearGradient id="b1" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#0f2b5c"/><stop offset="100%" stop-color="#0ea5e9"/></linearGradient>
           <linearGradient id="b2" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#2d1363"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient>
           <linearGradient id="b3" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#093d5c"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
@@ -1760,10 +1761,10 @@ function exportMatrixStandaloneHTML() {
         <rect x="146" y="125" width="14" height="60" fill="url(#b3)"/>
         <rect x="174" y="135" width="14" height="50" fill="url(#b4)"/>
         <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+        <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
       </svg>
       <div class="brand-text">
         <h1>🧩 ${_t('BÁO CÁO MA TRẬN ĐA LƯỢT ĐO & BIẾN ĐỔI CHẤT LƯỢNG')}</h1>
@@ -1947,7 +1948,7 @@ function exportKPIStandaloneHTML() {
             </td>
             <td style="font-family:monospace; font-weight:800; color:#f87171;">${item.count}</td>
             <td style="font-family:monospace;">${item.pctOfDefects.toFixed(2)}%</td>
-            <td style="font-family:monospace; font-weight:700; color:${isVital ? '#ef4444' : '#38bdf8'};">${item.cumPercent.toFixed(2)}%</td>
+            <td style="font-family:monospace; font-weight:700; color:${isVital ? '#ef4444' : '#4089C1'};">${item.cumPercent.toFixed(2)}%</td>
             <td><span class="badge ${isVital ? 'badge-fail' : 'badge-pass'}">${isVital ? _t('Top 80% Trọng Tâm') : _t('Vùng Dài 20%')}</span></td>
         </tr>`;
     });
@@ -1964,11 +1965,12 @@ function exportKPIStandaloneHTML() {
     --bg-card: rgba(17, 24, 39, 0.88);
     --bg-elevated: #1e293b;
     --border: rgba(148, 163, 184, 0.16);
-    --border-hover: rgba(0, 242, 254, 0.35);
+    --border-hover: rgba(64, 137, 193, 0.45);
     --txt: #f1f5f9;
     --txt-sub: #94a3b8;
-    --cyan: #00f2fe;
-    --blue: #38bdf8;
+    --cyan: #80B0D6;
+    --blue: #4089C1;
+    --foster-blue: #0062AC;
     --pass: #10b981;
     --pass-bg: rgba(16, 185, 129, 0.16);
     --fail: #ef4444;
@@ -2031,7 +2033,7 @@ function exportKPIStandaloneHTML() {
     <div class="brand">
       <svg viewBox="50 50 200 200" width="38" height="38">
         <defs>
-          <linearGradient id="qGradExp2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient>
+          <linearGradient id="qGradExp2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4089C1"/><stop offset="100%" stop-color="#0062AC"/></linearGradient>
           <linearGradient id="b12" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#0f2b5c"/><stop offset="100%" stop-color="#0ea5e9"/></linearGradient>
           <linearGradient id="b22" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#2d1363"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient>
           <linearGradient id="b32" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#093d5c"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
@@ -2044,10 +2046,10 @@ function exportKPIStandaloneHTML() {
         <rect x="146" y="125" width="14" height="60" fill="url(#b32)"/>
         <rect x="174" y="135" width="14" height="50" fill="url(#b42)"/>
         <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+        <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
       </svg>
       <div class="brand-text">
         <h1>📊 ${_t('BÁO CÁO TỔNG QUAN CHẤT LƯỢNG & PARETO 80/20')}</h1>

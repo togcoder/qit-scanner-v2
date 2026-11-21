@@ -68,39 +68,89 @@
     --font-sans: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
 
+    /* Foster Brand Primitives (FOSTER_colors.json / A8031 Standard) */
+    --foster-blue: #0062AC;         /* PANTONE 2945C */
+    --foster-blue-hover: #0072C6;   /* +8% luminance */
+    --foster-blue-active: #004E8A;  /* -12% luminance */
+    --foster-blue-75: #4089C1;
+    --foster-blue-50: #80B0D6;
+    --foster-blue-25: #BFD8EA;
+    --foster-grey-75: #404040;
+    --foster-grey-50: #808080;
+    --foster-grey-25: #BFBFBF;
+    --foster-blue-ring: rgba(0, 98, 172, 0.42);
+    --foster-a: 18px;               /* Foster Logo Height Standard */
+
     /* Theme: Deep Space Industrial Matte (WCAG AAA) */
     --bg-base: #0b1120;
     --bg-surface: #111827;
-    --bg-surface-elevated: #1e293b;
+    --bg-surface-elevated: #192231;
     --bg-card: #111827;
-    --surface3: rgba(148, 163, 184, 0.07);
-    --border-color: #1e293b;
-    --border-color-hover: #38bdf8;
+    --surface3: rgba(148, 163, 184, 0.08);
+    --border-color: rgba(148, 163, 184, 0.16);
+    --border-color-strong: rgba(148, 163, 184, 0.28);
+    --border-color-hover: var(--foster-blue-75);
 
     --text-main: #f1f5f9;
     --text-muted: #94a3b8;
     --text-sub: #64748b;
 
-    /* Accents & Legacy Aliases */
-    --accent-blue: #38bdf8;
-    --accent-cyan: #00f2fe;
-    --cyan: #00f2fe;
-    --blue: #38bdf8;
+    /* Semantic Accent & Interactive Tokens */
+    --accent-primary: var(--foster-blue);
+    --accent-primary-hover: var(--foster-blue-hover);
+    --accent-primary-active: var(--foster-blue-active);
+    --accent-ink: var(--foster-blue-50);            /* High contrast 8.5:1 on dark base */
+    --accent-subtle-bg: rgba(0, 98, 172, 0.14);
+    --accent-subtle-bg-hover: rgba(0, 98, 172, 0.24);
+    --accent-subtle-border: rgba(64, 137, 193, 0.42);
+    --focus-ring: rgba(128, 176, 214, 0.55);
+
+    /* Accents & Legacy Aliases (Maintains 100% Chart.js / Analysis compatibility) */
+    --accent-blue: var(--foster-blue-75);
+    --accent-cyan: var(--foster-blue-50);
+    --cyan: var(--foster-blue-50);
+    --blue: var(--foster-blue-75);
     --accent-indigo: #6366f1;
     --accent-purple: #a855f7;
 
     /* Status Colors */
     --status-pass: #10b981;
+    --status-pass-hover: #059669;
     --status-pass-bg: rgba(16, 185, 129, 0.14);
-    --status-fail: #ef4444;
+    --status-fail: #dc2626;
+    --status-fail-hover: #b91c1c;
     --status-fail-bg: rgba(239, 68, 68, 0.14);
+    --status-fail-ink: #f87171;
     --status-warn: #f59e0b;
     --status-warn-bg: rgba(245, 158, 11, 0.14);
 
+    /* Geometry & Tactile Motion Tokens */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 22px;
+    --btn-radius: 7px;
+    --btn-radius-sm: 6px;
+    --btn-radius-lg: 10px;
+    --ease-foster: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-hover: 160ms;
+    --dur-press: 60ms;
+    --btn-transition: transform 0.08s ease, box-shadow 0.12s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+    /* Semantic Control Variables for Tactile System */
+    --ctrl-surface: #1e293b;
+    --ctrl-surface-hover: #283548;
+    --ctrl-surface-active: #162032;
+    --ctrl-border: rgba(148, 163, 184, 0.28);
+    --ctrl-border-strong: rgba(148, 163, 184, 0.48);
+    --ctrl-text: #f1f5f9;
+    --ctrl-text-muted: #94a3b8;
+
+    --danger-bg: #dc2626;
+    --danger-hover: #b91c1c;
+    --danger-lip: #7f1d1d;
+    --danger-soft: rgba(239, 68, 68, 0.14);
+    --danger-text: #f87171;
 
     --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.28);
     --shadow-md: 0 10px 28px -6px rgba(0, 0, 0, 0.45);
@@ -114,30 +164,59 @@
 }
 
 /* Light Theme Variables */
-body.light-theme {
+body.light-theme,
+[data-theme="light"],
+body.light-mode {
     --bg-base: #eef2f6;
-    --bg-surface: rgba(255, 255, 255, 0.92);
-    --bg-surface-elevated: #f8fafc;
-    --bg-card: rgba(255, 255, 255, 0.95);
+    --bg-surface: rgba(255, 255, 255, 0.94);
+    --bg-surface-elevated: #ffffff;
+    --bg-card: rgba(255, 255, 255, 0.96);
     --surface3: rgba(15, 23, 42, 0.045);
-    --border-color: rgba(15, 23, 42, 0.11);
-    --border-color-hover: rgba(2, 132, 199, 0.45);
+    --border-color: rgba(15, 23, 42, 0.12);
+    --border-color-strong: rgba(15, 23, 42, 0.22);
+    --border-color-hover: rgba(0, 98, 172, 0.55);
 
     --text-main: #0f172a;
     --text-muted: #475569;
     --text-sub: #64748b;
 
-    --accent-blue: #0284c7;
-    --accent-cyan: #0891b2;
-    --cyan: #0891b2;
-    --blue: #0284c7;
+    --foster-blue-hover: #005596;
+    --foster-blue-active: #00447A;
+
+    --accent-primary: var(--foster-blue);
+    --accent-primary-hover: var(--foster-blue-hover);
+    --accent-primary-active: var(--foster-blue-active);
+    --accent-ink: var(--foster-blue);               /* High contrast 6.45:1 on white */
+    --accent-subtle-bg: rgba(0, 98, 172, 0.06);
+    --accent-subtle-bg-hover: rgba(0, 98, 172, 0.12);
+    --accent-subtle-border: rgba(0, 98, 172, 0.32);
+    --focus-ring: rgba(0, 98, 172, 0.38);
+
+    --accent-blue: var(--foster-blue);
+    --accent-cyan: var(--foster-blue-75);
+    --cyan: var(--foster-blue-75);
+    --blue: var(--foster-blue);
+
+    --ctrl-surface: #ffffff;
+    --ctrl-surface-hover: #f1f5f9;
+    --ctrl-surface-active: #e2e8f0;
+    --ctrl-border: #cbd5e1;
+    --ctrl-border-strong: #94a3b8;
+    --ctrl-text: #0f172a;
+    --ctrl-text-muted: #475569;
 
     --status-pass: #059669;
+    --status-pass-hover: #047857;
     --status-pass-bg: rgba(5, 150, 105, 0.12);
     --status-fail: #dc2626;
+    --status-fail-hover: #b91c1c;
     --status-fail-bg: rgba(220, 38, 38, 0.12);
+    --status-fail-ink: #b91c1c;
     --status-warn: #d97706;
     --status-warn-bg: rgba(217, 119, 6, 0.12);
+
+    --danger-soft: rgba(220, 38, 38, 0.08);
+    --danger-text: #dc2626;
 
     --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.06);
     --shadow-md: 0 8px 20px rgba(15, 23, 42, 0.09);
@@ -168,8 +247,8 @@ body {
     font-family: var(--font-sans);
     background-color: var(--bg-base);
     background-image:
-        radial-gradient(circle at 12% 0%, rgba(0, 242, 254, 0.06), transparent 36%),
-        radial-gradient(circle at 88% 8%, rgba(56, 189, 248, 0.05), transparent 36%);
+        radial-gradient(circle at 12% 0%, rgba(0, 98, 172, 0.08), transparent 36%),
+        radial-gradient(circle at 88% 8%, rgba(64, 137, 193, 0.06), transparent 36%);
     color: var(--text-main);
     line-height: 1.5;
     overflow-x: hidden;
@@ -215,22 +294,23 @@ body {
 .header-brand {
     display: flex;
     align-items: center;
-    gap: 11px;
-    flex: none;
+    gap: 10px;
+    min-width: 0;
+    flex-shrink: 0;
 }
 
 .qit-logo-small {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .qit-logo-small:hover {
-    transform: scale(1.08);
+    transform: scale(1.06);
 }
 
 .logo-svg {
@@ -239,21 +319,105 @@ body {
 }
 
 .brand-text h1 {
-    font-size: 15.5px;
+    font-size: 15px;
     font-weight: 900;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     line-height: 1.1;
-    background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-blue) 100%);
+    background: linear-gradient(135deg, var(--foster-blue-25) 0%, var(--foster-blue-75) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.light-theme .brand-text h1,
+[data-theme="light"] .brand-text h1 {
+    background: linear-gradient(135deg, #00447A 0%, var(--foster-blue) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .brand-sub {
-    font-size: 9.5px;
+    font-size: 9px;
     color: var(--text-muted);
     font-weight: 700;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.12em;
     font-family: var(--font-mono);
+}
+
+/* ── FOSTER BRAND LOCKUP (A8031 - 0.5A CLEAR SPACE STANDARD) ── */
+.brand-divider {
+    width: 1px;
+    height: 26px;
+    margin: 0 4px;
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(148, 163, 184, 0.35) 20%,
+        rgba(148, 163, 184, 0.35) 80%,
+        transparent 100%
+    );
+    flex-shrink: 0;
+}
+
+.foster-lockup {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+/* Khoảng đệm an toàn tuyệt đối 0.5A (9px mỗi cạnh khi A = 18px) */
+.foster-clear-zone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(var(--foster-a) * 0.5); /* 9px khi A = 18px */
+    color: #ffffff; /* Mặc định Dark Mode */
+    flex-shrink: 0;
+    transition: color 0.15s ease;
+}
+
+.foster-logo-svg {
+    height: var(--foster-a);
+    width: auto; /* Tự giữ đúng tỷ lệ 7.215 : 1 (~129.9px) */
+    display: block;
+    shape-rendering: geometricPrecision;
+}
+
+.foster-slogan {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    white-space: nowrap;
+    padding-left: 2px;
+}
+
+body.light-theme .foster-clear-zone,
+[data-theme="light"] .foster-clear-zone,
+body.light-mode .foster-clear-zone {
+    color: var(--foster-blue);
+}
+
+body.light-theme .foster-slogan,
+[data-theme="light"] .foster-slogan,
+body.light-mode .foster-slogan {
+    color: #475569;
+}
+
+@media (max-width: 1520px) {
+    .foster-slogan {
+        display: none;
+    }
+}
+
+@media (max-width: 1280px) {
+    .brand-text .brand-sub {
+        display: none;
+    }
+    .header-main-bar {
+        flex-wrap: wrap;
+        row-gap: 8px;
+    }
 }
 
 /* Navigation Tabs Bar */
@@ -273,10 +437,10 @@ body {
     display: inline-flex;
     align-items: center;
     background: var(--bg-surface-elevated);
-    padding: 4px 6px;
-    border-radius: 12px;
+    padding: 3px 5px;
+    border-radius: 10px;
     border: 1px solid var(--border-color);
-    gap: 4px;
+    gap: 3px;
     max-width: 100%;
 }
 
@@ -284,29 +448,42 @@ body {
     background: transparent;
     border: 1px solid transparent;
     color: var(--text-muted);
-    padding: 7px 14px;
+    padding: 6px 13px;
     font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    border-radius: var(--radius-sm);
+    font-weight: 600;
+    letter-spacing: 0.015em;
+    border-radius: var(--btn-radius-sm);
     cursor: pointer;
-    transition: all 0.16s ease;
+    transition: var(--btn-transition);
     white-space: nowrap;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     flex-shrink: 0;
+    user-select: none;
 }
 
-.nav-tab:hover {
+.nav-tab:hover:not(.active) {
     color: var(--text-main);
     background: var(--surface3);
 }
 
+.nav-tab:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.nav-tab:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--bg-base), 0 0 0 4px var(--focus-ring);
+}
+
 .nav-tab.active {
-    background: linear-gradient(135deg, #00f2fe, #38bdf8);
-    color: #04121b;
-    box-shadow: 0 6px 18px -6px rgba(0, 242, 254, 0.55);
+    background: var(--foster-blue);
+    color: #ffffff;
+    border-color: #004c87;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 2px 6px rgba(0, 98, 172, 0.35);
 }
 
 .nav-count-badge {
@@ -318,13 +495,13 @@ body {
     font-size: 10px;
     font-family: var(--font-mono);
     font-weight: 800;
-    background: rgba(4, 18, 27, 0.22);
+    background: rgba(4, 18, 27, 0.25);
     color: inherit;
 }
 
 .nav-tab:not(.active) .nav-count-badge {
-    background: rgba(0, 242, 254, 0.16);
-    color: var(--accent-cyan);
+    background: var(--accent-subtle-bg);
+    color: var(--accent-ink);
 }
 
 .header-actions {
@@ -395,94 +572,287 @@ body {
     50% { opacity: 0.3; transform: scale(0.85); }
 }
 
-/* Buttons */
+/* ════════════ TACTILE BUTTON & INTERACTIVE CONTROL SYSTEM ════════════ */
+/* A. BASE TACTILE BUTTON (.btn) */
 .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    padding: 8px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 9px;
+    gap: 7px;
+    min-height: 34px;
+    padding: 0 14px;
+    border-radius: var(--btn-radius);
     border: 1px solid transparent;
-    cursor: pointer;
-    transition: all 0.16s ease;
-    white-space: nowrap;
     font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.015em;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    transition: var(--btn-transition);
 }
 
+/* Tactile Press (Phản hồi cơ học tức thì khi nhấn) */
+.btn:active:not(:disabled) {
+    transform: translateY(1px) scale(0.985);
+    transition-duration: var(--dur-press);
+}
+
+/* Keyboard Focus Ring */
+.btn:focus-visible,
+.btn-icon:focus-visible,
+.agc-btn:focus-visible,
+.analysis-subnav-btn:focus-visible,
+.settings-nav-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--bg-base), 0 0 0 4px var(--focus-ring);
+}
+
+/* Global Disabled Guard */
+.btn:disabled,
+.btn[aria-disabled="true"],
+.btn-icon:disabled {
+    opacity: 0.42;
+    cursor: not-allowed;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: grayscale(0.25);
+}
+
+/* Sizes */
+.btn-sm {
+    min-height: 28px;
+    padding: 0 10px;
+    font-size: 11.5px;
+    border-radius: var(--btn-radius-sm);
+    gap: 5px;
+}
+
+.btn-lg {
+    min-height: 44px;
+    padding: 0 22px;
+    font-size: 13.5px;
+    letter-spacing: 0.03em;
+    border-radius: var(--btn-radius-lg);
+}
+
+.btn-block {
+    width: 100%;
+    display: flex;
+}
+
+/* 1. Primary (Foster Blue Industrial Matte with Micro-Bevel) */
 .btn-primary {
-    background: linear-gradient(135deg, #00f2fe, #38bdf8);
-    color: #04121b;
+    background: linear-gradient(180deg, #0b74c4 0%, var(--foster-blue) 100%);
+    color: #ffffff;
+    border-color: #004c87;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.24),
+        0 2px 0 #003b69,
+        0 3px 8px rgba(0, 98, 172, 0.28);
 }
 
 .btn-primary:hover:not(:disabled) {
-    box-shadow: 0 4px 14px rgba(56, 189, 248, 0.4);
-    transform: translateY(-1px);
+    background: linear-gradient(180deg, #1280d4 0%, var(--foster-blue-hover) 100%);
+    border-color: #005a9e;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 2px 0 #003b69,
+        0 4px 12px rgba(0, 98, 172, 0.38);
 }
 
-.btn-primary:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
+.btn-primary:active:not(:disabled) {
+    background: var(--foster-blue-active);
+    box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, 0.25),
+        0 1px 0 #003b69;
 }
 
+/* 2. Secondary (Hairline Matte Surface) */
 .btn-secondary {
-    background: var(--bg-surface-elevated);
-    color: var(--text-main);
-    border-color: var(--border-color);
+    background: var(--ctrl-surface);
+    color: var(--ctrl-text);
+    border-color: var(--ctrl-border);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
-.btn-secondary:hover {
-    background: var(--surface3);
-    border-color: var(--border-color-hover);
+.btn-secondary:hover:not(:disabled) {
+    background: var(--ctrl-surface-hover);
+    border-color: var(--ctrl-border-strong);
+    color: var(--ctrl-text);
 }
 
+.btn-secondary:active:not(:disabled) {
+    background: var(--ctrl-surface-active);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 3. Outline (Technical Accent Hairline) */
 .btn-outline {
-    background: rgba(0, 242, 254, 0.07);
-    color: var(--accent-cyan);
-    border-color: rgba(0, 242, 254, 0.32);
+    background: var(--accent-subtle-bg);
+    color: var(--accent-ink);
+    border-color: var(--accent-subtle-border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-.btn-outline:hover {
-    background: rgba(0, 242, 254, 0.16);
-    border-color: var(--accent-cyan);
+.btn-outline:hover:not(:disabled) {
+    background: var(--accent-subtle-bg-hover);
+    border-color: var(--accent-ink);
+    color: #ffffff;
+}
+
+body.light-theme .btn-outline:hover:not(:disabled),
+[data-theme="light"] .btn-outline:hover:not(:disabled) {
+    color: var(--foster-blue);
+    background: rgba(0, 98, 172, 0.12);
+}
+
+.btn-outline:active:not(:disabled) {
+    background: var(--accent-subtle-bg);
+}
+
+/* 4. Ghost (Minimal Japanese Breathing Space) */
+.btn-ghost {
+    background: transparent;
+    color: var(--ctrl-text-muted);
+    border-color: transparent;
+    font-weight: 500;
+}
+
+.btn-ghost:hover:not(:disabled) {
+    background: var(--surface3);
+    color: var(--ctrl-text);
+    border-color: var(--ctrl-border);
+}
+
+.btn-ghost:active:not(:disabled) {
+    background: var(--ctrl-surface-active);
+}
+
+/* 5. Danger & Semantic Status */
+.btn-danger {
+    background: linear-gradient(180deg, #ef4444 0%, var(--danger-bg) 100%);
+    color: #ffffff;
+    border-color: var(--danger-lip);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 2px 0 var(--danger-lip),
+        0 3px 8px rgba(220, 38, 38, 0.25);
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: linear-gradient(180deg, #f87171 0%, var(--danger-hover) 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.25),
+        0 2px 0 var(--danger-lip),
+        0 4px 12px rgba(220, 38, 38, 0.35);
+}
+
+.btn-danger:active:not(:disabled) {
+    background: var(--danger-hover);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .btn-outline-danger {
-    background: rgba(239, 68, 68, 0.08);
-    color: #f87171;
-    border-color: rgba(239, 68, 68, 0.32);
+    background: var(--danger-soft);
+    color: var(--danger-text);
+    border-color: rgba(239, 68, 68, 0.4);
 }
 
-.btn-outline-danger:hover {
-    background: rgba(239, 68, 68, 0.18);
+.btn-outline-danger:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.22);
+    border-color: var(--danger-bg);
+    color: #ffffff;
 }
 
-.btn-success { background: #10b981; color: #ffffff; }
-.btn-danger  { background: #ef4444; color: #ffffff; }
-.btn-sm { padding: 6px 11px; font-size: 11.5px; }
-.btn-lg { padding: 12px 24px; font-size: 13.5px; }
-.btn-block { width: 100%; }
+.btn-success {
+    background: linear-gradient(180deg, #34d399 0%, var(--status-pass) 100%);
+    color: #ffffff;
+    border-color: #065f46;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 2px 0 #064e3b,
+        0 3px 8px rgba(16, 185, 129, 0.25);
+}
 
+.btn-success:hover:not(:disabled) {
+    background: linear-gradient(180deg, #6ee7b7 0%, var(--status-pass-hover) 100%);
+}
+
+.btn-success:active:not(:disabled) {
+    background: var(--status-pass-hover);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* 6. Big Scan Button (Flagship CTA - Acoustic Precision) */
+.btn-scan {
+    min-height: 48px;
+    padding: 0 24px;
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-radius: var(--btn-radius-lg);
+    background: linear-gradient(180deg, #1280d4 0%, var(--foster-blue) 100%);
+    color: #ffffff;
+    border: 1px solid rgba(191, 216, 234, 0.32);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.28),
+        0 2px 0 #003b69,
+        0 4px 14px rgba(0, 98, 172, 0.35);
+}
+
+.btn-scan:hover:not(:disabled) {
+    background: linear-gradient(180deg, #1d8fe8 0%, var(--foster-blue-hover) 100%);
+    border-color: rgba(191, 216, 234, 0.55);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        0 2px 0 #003b69,
+        0 6px 18px rgba(0, 98, 172, 0.45);
+}
+
+.btn-scan:active:not(:disabled) {
+    background: var(--foster-blue-active);
+    transform: translateY(1px) scale(0.985);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+/* 7. Icon Button (.btn-icon) */
 .btn-icon {
     width: 34px;
     height: 34px;
     padding: 0;
-    border-radius: 9px;
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-color);
+    border-radius: var(--btn-radius-sm);
+    background: var(--ctrl-surface);
+    border: 1px solid var(--ctrl-border);
     font-size: 14px;
     cursor: pointer;
-    display: grid;
-    place-items: center;
-    color: var(--text-muted);
-    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ctrl-text-muted);
+    user-select: none;
+    transition: var(--btn-transition);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.btn-icon:hover {
-    color: var(--accent-cyan);
-    border-color: var(--border-color-hover);
+.btn-icon:hover:not(:disabled) {
+    background: var(--ctrl-surface-hover);
+    color: var(--accent-ink);
+    border-color: var(--foster-blue-75);
+}
+
+.btn-icon:active:not(:disabled) {
+    transform: translateY(1px) scale(0.95);
+    box-shadow: none;
 }
 
 /* Meta Chips */
@@ -500,9 +870,9 @@ body {
 }
 
 .meta-chip-cyan {
-    background: rgba(0, 242, 254, 0.1);
-    border-color: rgba(0, 242, 254, 0.3);
-    color: var(--accent-cyan);
+    background: var(--accent-subtle-bg);
+    border-color: var(--accent-subtle-border);
+    color: var(--accent-ink);
     font-weight: 700;
 }
 
@@ -557,17 +927,17 @@ body {
 }
 
 .drop-zone {
-    border: 2px dashed rgba(56, 189, 248, 0.35);
+    border: 2px dashed rgba(64, 137, 193, 0.35);
     border-radius: var(--radius-md);
     padding: 28px 20px;
-    background: rgba(56, 189, 248, 0.03);
+    background: rgba(0, 98, 172, 0.03);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.drop-zone:hover, .drop-zone-active {
-    border-color: #00f2fe;
-    background: rgba(56, 189, 248, 0.07);
+.drop-zone:hover, .drop-zone-active, .drop-zone.drag-over {
+    border-color: var(--foster-blue);
+    background: rgba(0, 98, 172, 0.08);
 }
 
 .drop-zone-icon {
@@ -674,8 +1044,8 @@ body {
 }
 
 .input-glow-wrapper input:focus {
-    border-color: var(--accent-cyan);
-    box-shadow: 0 0 0 4px rgba(0, 242, 254, 0.14), 0 0 36px -10px var(--accent-cyan);
+    border-color: var(--foster-blue);
+    box-shadow: 0 0 0 3px var(--foster-blue-ring), 0 0 24px -6px rgba(0, 98, 172, 0.35);
 }
 
 .scan-icon-indicator {
@@ -704,7 +1074,7 @@ body {
     position: absolute;
     inset: 0;
     width: 28%;
-    background: linear-gradient(90deg, transparent, #00f2fe, transparent);
+    background: linear-gradient(90deg, transparent, var(--foster-blue-50), transparent);
     animation: qitSweep 2.1s linear infinite;
 }
 
@@ -979,9 +1349,9 @@ body {
 }
 
 .audit-group-card.active-group-card {
-    border-color: var(--accent-cyan);
-    background: linear-gradient(135deg, rgba(0, 242, 254, 0.11), rgba(56, 189, 248, 0.03));
-    box-shadow: 0 8px 26px -12px rgba(0, 242, 254, 0.45);
+    border-color: var(--foster-blue-75);
+    background: linear-gradient(135deg, rgba(0, 98, 172, 0.14), rgba(64, 137, 193, 0.04));
+    box-shadow: 0 6px 20px -8px rgba(0, 98, 172, 0.35);
 }
 
 .audit-group-card.done-group-card {
@@ -1030,7 +1400,7 @@ body {
 .agc-progress-fill {
     height: 100%;
     border-radius: 6px;
-    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue));
+    background: linear-gradient(90deg, var(--foster-blue), var(--foster-blue-75));
     transition: width 0.3s ease;
 }
 
@@ -1058,25 +1428,44 @@ body {
 
 .agc-btn {
     flex: 1;
-    padding: 4px 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 5px 8px;
     font-size: 10.5px;
-    font-weight: 700;
-    border-radius: 6px;
-    background: var(--bg-surface);
-    color: var(--text-muted);
-    border: 1px solid var(--border-color);
+    font-weight: 600;
+    border-radius: var(--btn-radius-sm);
+    background: var(--ctrl-surface);
+    color: var(--ctrl-text);
+    border: 1px solid var(--ctrl-border);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: var(--btn-transition);
+    user-select: none;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.2);
 }
 
-.agc-btn:hover {
-    color: var(--accent-cyan);
-    border-color: var(--accent-cyan);
+.agc-btn:hover:not(:disabled) {
+    color: var(--accent-ink);
+    border-color: var(--foster-blue-75);
+    background: var(--accent-subtle-bg);
 }
 
-.agc-btn-danger:hover {
-    color: #ef4444;
-    border-color: #ef4444;
+.agc-btn:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+.agc-btn-danger {
+    color: var(--danger-text);
+    border-color: rgba(239, 68, 68, 0.35);
+    background: var(--danger-soft);
+}
+
+.agc-btn-danger:hover:not(:disabled) {
+    color: #ffffff;
+    background: var(--danger-bg);
+    border-color: var(--danger-hover);
 }
 
 .audit-io-grid {
@@ -1479,9 +1868,10 @@ body {
 }
 
 .settings-nav-btn.active {
-    background: rgba(0, 242, 254, 0.12);
+    background: var(--accent-subtle-bg);
     color: var(--text-main);
-    border-color: rgba(0, 242, 254, 0.3);
+    border-color: var(--accent-subtle-border);
+    border-left: 3px solid var(--foster-blue);
 }
 
 .settings-content-wrapper {
@@ -1622,7 +2012,7 @@ body {
     font-size: 20px;
     font-weight: 900;
     letter-spacing: 0.24em;
-    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+    background: linear-gradient(135deg, var(--foster-blue-25) 0%, var(--foster-blue-75) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -1645,7 +2035,7 @@ body {
 .qit-splash-bar {
     width: 45%;
     height: 100%;
-    background: linear-gradient(90deg, #00f2fe, #38bdf8);
+    background: linear-gradient(90deg, var(--foster-blue), var(--foster-blue-75));
     border-radius: 4px;
     animation: splashSweep 1.6s infinite ease-in-out;
 }
@@ -1686,11 +2076,12 @@ body {
     font-weight: 700;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.18s ease;
+    transition: var(--btn-transition);
     display: inline-flex;
     align-items: center;
     gap: 7px;
     white-space: nowrap;
+    user-select: none;
 }
 
 .analysis-subnav-btn:hover {
@@ -1699,10 +2090,17 @@ body {
 }
 
 .analysis-subnav-btn.active {
-    background: rgba(0, 242, 254, 0.12);
-    color: var(--accent-cyan);
-    border: 1px solid rgba(0, 242, 254, 0.32);
-    box-shadow: 0 0 15px -3px rgba(0, 242, 254, 0.22);
+    background: var(--accent-subtle-bg);
+    color: var(--accent-ink);
+    border: 1px solid var(--accent-subtle-border);
+    box-shadow: 0 2px 10px -2px rgba(0, 98, 172, 0.25);
+}
+
+body.light-theme .analysis-subnav-btn.active,
+[data-theme="light"] .analysis-subnav-btn.active {
+    background: rgba(0, 98, 172, 0.1);
+    color: var(--foster-blue);
+    border-color: rgba(0, 98, 172, 0.35);
 }
 
 /* ════════════ UNIFIED PROGRESSIVE DISCLOSURE ARCHITECTURE (TAB 2) ════════════ */
@@ -1738,8 +2136,8 @@ body {
 }
 
 .audit-scanner-input-large:focus {
-    border-color: var(--accent-cyan) !important;
-    box-shadow: 0 0 20px -4px rgba(0, 242, 254, 0.35) !important;
+    border-color: var(--foster-blue) !important;
+    box-shadow: 0 0 0 3px var(--foster-blue-ring), 0 0 20px -4px rgba(0, 98, 172, 0.35) !important;
 }
 
 /* Floating Camera Dock (Part 4) */
@@ -2007,7 +2405,7 @@ body {
 .hero-progress-bar {
     height: 100%;
     border-radius: 8px;
-    background: linear-gradient(90deg, #00f2fe, #38bdf8, #10b981);
+    background: linear-gradient(90deg, var(--foster-blue), var(--foster-blue-75), #10b981);
     transition: width 0.35s ease;
 }
 
@@ -2040,9 +2438,9 @@ body {
 }
 
 .audit-group-strip-card.active-group-card {
-    border-color: var(--accent-cyan);
-    background: rgba(0, 242, 254, 0.08);
-    box-shadow: 0 6px 18px -8px var(--accent-cyan);
+    border-color: var(--foster-blue-75);
+    background: var(--accent-subtle-bg);
+    box-shadow: 0 4px 14px -4px rgba(0, 98, 172, 0.35);
 }
 
 .audit-group-strip-card.locked-group-card {
@@ -2108,7 +2506,7 @@ body {
 
 .agsc-popover-item:hover {
     background: var(--surface3);
-    color: var(--accent-cyan);
+    color: var(--accent-ink);
 }
 
 .agsc-popover-item.danger-item:hover {
@@ -2125,7 +2523,7 @@ body {
 .agsc-progress-fill {
     height: 100%;
     border-radius: 6px;
-    background: linear-gradient(90deg, #00f2fe, #34d399);
+    background: linear-gradient(90deg, var(--foster-blue), #10b981);
     transition: width 0.3s ease;
 }
 
@@ -2217,8 +2615,8 @@ body {
     <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" aria-hidden="true">
         <defs>
             <linearGradient id="qGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#00f2fe"/>
-                <stop offset="100%" stop-color="#4facfe"/>
+                <stop offset="0%" stop-color="#4089C1"/>
+                <stop offset="100%" stop-color="#0062AC"/>
             </linearGradient>
             <linearGradient id="barGrad1" x1="0%" y1="100%" x2="0%" y2="0%">
                 <stop offset="0%" stop-color="#0f2b5c"/>
@@ -2253,10 +2651,10 @@ body {
                         <rect x="174" y="135" width="14" height="50" fill="url(#barGrad4)"/>
                     </g>
                     <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-                    <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-                    <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-                    <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                    <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+                    <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+                    <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+                    <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
                 </svg>
             </div>
             <div class="qit-splash-title">QIT SCANNER V2 PRO</div>
@@ -2286,16 +2684,34 @@ body {
                             </g>
                             <g>
                                 <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-                                <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-                                <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-                                <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+                                <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+                                <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+                                <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+                                <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
                             </g>
                         </svg>
                     </div>
                     <div class="brand-text">
                         <h1>QIT SCANNER V2 PRO</h1>
                         <span class="brand-sub" data-i18n="HỆ THỐNG KIỂM TRA MÃ VẠCH TỰ ĐỘNG">KLIPPEL ACOUSTIC QC · SPC &amp; MULTI-GROUP AUDIT</span>
+                    </div>
+
+                    <!-- Foster Electric Brand Co-Sign & 0.5A Clear Space Lockup -->
+                    <span class="brand-divider" aria-hidden="true"></span>
+                    <div class="foster-lockup" aria-label="Foster Electric — Sound to Life Standard">
+                        <div class="foster-clear-zone" title="Foster Electric — Sound to Life Standard">
+                            <svg class="foster-logo-svg" viewBox="197.723 220.394 463.184 64.192" role="img" aria-label="FOSTER">
+                                <g fill="currentColor">
+                                    <path fill-rule="nonzero" d="M660.907 241.148L660.907 235.045C660.907 227.472 654.711 221.277 647.138 221.277L647.138 221.232L585.822 221.232L585.822 283.786L603.959 283.780L603.951 261.845C603.951 261.845 626.385 261.849 630.465 261.847C630.465 261.847 633.516 261.683 635.930 263.726C638.014 265.326 638.814 267.810 638.814 267.810C639.652 271.055 642.998 283.797 642.998 283.797L660.606 283.797L657.928 265.012C657.183 261.425 654.518 258.775 654.518 258.775C651.222 255.325 647.144 254.924 647.144 254.924L647.138 254.917C654.711 254.917 660.907 248.721 660.907 241.148ZM642.131 244.356C642.131 246.421 640.441 248.111 638.375 248.111L603.952 248.111L603.952 234.948L638.375 234.948C640.441 234.986 642.131 236.676 642.131 238.741L642.131 244.356Z"/>
+                                    <path fill-rule="nonzero" d="M525.145 221.214L579.566 221.214L579.572 235.050L528.868 235.050L528.872 246.290L575.166 246.290L575.171 258.782L528.877 258.782L528.881 270.054L579.557 270.054L579.561 283.795L510.728 283.795L510.728 235.426C510.728 235.426 510.578 230.929 513.007 227.479C513.007 227.479 514.828 224.471 518.195 222.787C518.195 222.787 520.734 221.214 525.145 221.214Z"/>
+                                    <path fill-rule="nonzero" d="M435.621 221.214L435.621 234.955L457.215 234.955C459.269 234.955 460.951 236.626 460.968 238.676L460.968 283.793L479.116 283.793L479.116 238.710C479.116 236.644 480.806 234.955 482.871 234.955L504.451 234.955L504.451 221.214L435.621 221.214Z"/>
+                                    <path fill-rule="nonzero" d="M348.283 252.507L348.283 252.505C348.237 243.210 348.044 235.117 348.044 235.117C348.044 235.117 348.412 224.604 337.502 221.623C337.502 221.623 333.933 220.427 310.492 220.488L310.477 220.488C287.037 220.427 283.467 221.623 283.467 221.623C272.557 224.604 272.925 235.117 272.925 235.117C272.925 235.117 272.732 243.210 272.686 252.505L272.686 252.507C272.732 261.802 272.925 269.894 272.925 269.894C272.925 269.894 272.557 280.409 283.467 283.390C283.467 283.390 287.037 284.586 310.477 284.525L310.492 284.525C333.933 284.586 337.502 283.390 337.502 283.390C348.412 280.409 348.044 269.894 348.044 269.894C348.044 269.894 348.238 261.802 348.283 252.507ZM328.958 267.101C328.958 267.101 328.476 268.888 326.088 269.420C326.088 269.420 321.784 270.034 310.472 270.030L310.477 270.030L310.467 270.030L310.472 270.030C299.161 270.034 294.856 269.420 294.856 269.420C292.468 268.888 291.986 267.101 291.986 267.101C291.986 267.101 291.316 265.720 291.250 252.552L291.250 252.510C291.316 239.342 291.986 237.961 291.986 237.961C291.986 237.961 292.468 236.173 294.856 235.643C294.856 235.643 299.161 235.029 310.472 235.032L310.467 235.032L310.477 235.032L310.472 235.032C321.784 235.029 326.088 235.643 326.088 235.643C328.476 236.173 328.958 237.961 328.958 237.961C328.958 237.961 329.628 239.342 329.694 252.510L329.694 252.552C329.628 265.720 328.958 267.101 328.958 267.101Z"/>
+                                    <path fill-rule="nonzero" d="M391.000 257.670L375.781 257.199C375.781 257.199 366.224 256.928 364.458 256.345C364.458 256.345 353.833 254.353 354.178 239.984C354.207 238.225 354.180 237.016 354.182 236.202C354.184 235.031 354.206 234.676 354.206 234.676C354.206 234.676 353.848 224.454 364.455 221.557C364.455 221.557 368.964 220.394 391.750 220.453L391.766 220.453C414.553 220.394 419.086 221.557 419.086 221.557C429.693 224.454 429.386 234.676 429.386 234.676L429.386 239.956L411.227 239.956C411.227 239.956 411.328 236.722 411.034 236.115C411.034 236.115 410.444 233.995 407.990 233.566C407.990 233.566 400.527 232.915 391.750 232.972C391.750 232.972 380.859 232.919 375.809 233.526C375.809 233.526 373.380 233.802 372.736 235.819C372.736 235.819 371.753 239.459 372.745 242.178C373.602 244.399 375.781 244.471 375.781 244.471L392.326 245.195L408.171 245.747C408.171 245.747 417.693 245.908 419.459 246.492C419.459 246.492 424.730 247.513 427.490 252.537C427.490 252.537 428.981 254.524 429.367 258.359C429.367 258.359 429.505 263.178 429.391 264.966C429.378 265.812 429.376 266.579 429.363 267.250C429.326 269.144 429.262 270.274 429.262 270.274C429.262 270.274 429.645 280.496 419.039 283.393C419.039 283.393 414.542 284.556 391.757 284.497L391.741 284.497C368.954 284.556 364.632 283.393 364.632 283.393C354.026 280.496 354.332 270.274 354.332 270.274L354.332 264.143L372.442 264.143C372.442 264.143 372.362 268.687 372.638 269.132C372.638 269.132 373.039 270.767 375.728 271.385C375.728 271.385 382.979 272.035 391.757 271.978C391.757 271.978 402.634 272.032 407.685 271.424C407.685 271.424 410.113 271.148 410.757 269.132C411.870 266.131 411.290 262.057 411.290 262.057C410.876 258.388 407.398 258.396 407.398 258.396L391.000 257.670Z"/>
+                                    <path fill-rule="nonzero" d="M198.275 231.343C199.545 226.706 203.077 224.140 203.077 224.140C207.189 221.021 211.467 221.227 211.467 221.227C220.272 221.223 266.654 221.227 266.654 221.227L266.654 235.055L215.925 235.055L215.925 248.797L262.883 248.797L262.888 262.555L215.939 262.555L215.939 283.800L197.783 283.807C197.783 283.807 197.784 243.256 197.783 236.956C197.783 236.956 197.723 233.220 198.275 231.343Z"/>
+                                </g>
+                            </svg>
+                        </div>
+                        <span class="foster-slogan">Sound to Life</span>
                     </div>
                 </div>
 
@@ -2575,7 +2991,7 @@ body {
                                     </div>
                                     <div class="kpi-card" style="padding:10px 12px;">
                                         <div class="kpi-label" data-i18n="Tỷ Lệ Final Pass">Tỷ Lệ Final Pass</div>
-                                        <div class="kpi-val" id="sc-yield-rate" style="color:#38bdf8; font-size:20px;">0%</div>
+                                        <div class="kpi-val" id="sc-yield-rate" style="color:var(--accent-ink); font-size:20px;">0%</div>
                                     </div>
                                     <div class="kpi-card" style="padding:10px 12px;">
                                         <div class="kpi-label" data-i18n="DUT Đạt (PASS)">DUT Đạt (PASS)</div>
@@ -12648,7 +13064,7 @@ function exportAuditHTML() {
   :root {
     --bg: #090d16; --bg-card: rgba(17, 24, 39, 0.9); --bg-elevated: #1e293b;
     --border: rgba(148, 163, 184, 0.16); --txt: #f1f5f9; --txt-sub: #94a3b8;
-    --cyan: #00f2fe; --blue: #38bdf8; --pass: #10b981; --pass-bg: rgba(16, 185, 129, 0.16);
+    --cyan: #80B0D6; --blue: #4089C1; --foster-blue: #0062AC; --pass: #10b981; --pass-bg: rgba(16, 185, 129, 0.16);
     --fail: #ef4444; --fail-bg: rgba(239, 68, 68, 0.16); --warn: #f59e0b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -13089,7 +13505,7 @@ function renderAnalysisDashboard() {
 /* ════════════ KHÔNG GIAN 1: TỔNG QUAN & PARETO 80/20 ════════════ */
 function renderWorkspace1_Pareto(container) {
     const topDefects = analysisData.errorPareto.slice(0, 5);
-    const colors = ['#ef4444', '#f97316', '#f59e0b', '#38bdf8', '#a855f7'];
+    const colors = ['#ef4444', '#f97316', '#f59e0b', '#4089C1', '#a855f7'];
 
     let topBarsHtml = '';
     if (topDefects.length > 0) {
@@ -13135,7 +13551,7 @@ function renderWorkspace1_Pareto(container) {
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">${_t('TỶ LỆ PASS THỰC TẾ')}</div>
-                    <div class="kpi-val" style="color:#38bdf8;">${analysisData.finalPassRate.toFixed(1)}%</div>
+                    <div class="kpi-val" style="color:var(--accent-ink);">${analysisData.finalPassRate.toFixed(1)}%</div>
                     <div style="font-size:10px; color:var(--text-muted);">${_t('Tỷ lệ đạt cuối cùng')}</div>
                 </div>
                 <div class="kpi-card">
@@ -13171,7 +13587,7 @@ function renderWorkspace1_Pareto(container) {
                             ${_t('📈 BIỂU ĐỒ PARETO LỖI 80/20 · DUAL AXIS')}
                         </h4>
                         <div style="display:flex; gap:12px; font-size:10px; color:var(--text-sub); font-family:var(--font-mono);">
-                            <span>${_t('■ SỐ LỖI')}</span><span style="color:#38bdf8;">${_t('— % LUỸ KẾ')}</span><span style="color:#ef4444;">-- 80%</span>
+                            <span>${_t('■ SỐ LỖI')}</span><span style="color:var(--accent-ink);">${_t('— % LUỸ KẾ')}</span><span style="color:#ef4444;">-- 80%</span>
                         </div>
                     </div>
                     <div style="position:relative; height:300px; width:100%;">
@@ -13372,9 +13788,9 @@ function renderWorkspace2_Matrix(container) {
 
                 <!-- 5 Thẻ Tóm Tắt Ma Trận -->
                 <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:14px;">
-                    <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
+                    <div style="background:rgba(0,98,172,0.1); border:1px solid rgba(0,98,172,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
                         <div style="font-size:10px; font-weight:800; color:var(--text-muted);">${_t('TỔNG SỐ LƯỢT ĐO')}</div>
-                        <div style="font-size:17px; font-weight:900; color:#38bdf8; font-family:var(--font-mono); margin-top:2px;">${totalRuns} ${_t('Lượt')}</div>
+                        <div style="font-size:17px; font-weight:900; color:var(--accent-ink); font-family:var(--font-mono); margin-top:2px;">${totalRuns} ${_t('Lượt')}</div>
                     </div>
                     <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
                         <div style="font-size:10px; font-weight:800; color:var(--text-muted);">${_t('TỔNG SỐ PCS')}</div>
@@ -13451,13 +13867,13 @@ function renderCorrelationMatrixTable() {
             let color = 'var(--text-muted)';
             if (count > 0) {
                 if (i === j) {
-                    bg = 'rgba(56,189,248,0.15)'; color = '#38bdf8';
+                    bg = 'rgba(0,98,172,0.18)'; color = 'var(--accent-ink)';
                 } else if (count >= 20) {
                     bg = 'rgba(239,68,68,0.35)'; color = '#fca5a5';
                 } else if (count >= 5) {
                     bg = 'rgba(245,158,11,0.25)'; color = '#fbbf24';
                 } else {
-                    bg = 'rgba(56,189,248,0.08)'; color = 'var(--text-main)';
+                    bg = 'rgba(0,98,172,0.08)'; color = 'var(--text-main)';
                 }
             }
             html += `<td style="background:${bg}; color:${color}; font-weight:${count > 0 ? '700' : 'normal'}; font-family:var(--font-mono);">${count > 0 ? count : '—'}</td>`;
@@ -13603,7 +14019,7 @@ function renderWorkspace3_Timeline(container) {
                 </div>
                 <div class="kpi-card">
                     <div class="kpi-label">${_t('KHUNG GIỜ ĐẠT CAO NHẤT')}</div>
-                    <div class="kpi-val" style="color:#38bdf8; font-size:16px; margin-top:2px;">
+                    <div class="kpi-val" style="color:var(--accent-ink); font-size:16px; margin-top:2px;">
                         ${sum.peakBucket ? `${sum.peakBucket.label} (${sum.peakBucket.yieldRate.toFixed(1)}%)` : '—'}
                     </div>
                     <div style="font-size:10px; color:var(--text-muted);">${sum.worstBucket ? _t('Thấp nhất: {0} ({1}%)', sum.worstBucket.label, sum.worstBucket.yieldRate.toFixed(1)) : '—'}</div>
@@ -13625,7 +14041,7 @@ function renderWorkspace3_Timeline(container) {
                         ${!isFilteringDefect ? `
                             <span style="color:#10b981;">■ ${_t('ĐẠT (PASS)')}</span>
                             <span style="color:#ef4444;">■ ${_t('LỖI (FAIL)')}</span>
-                            <span style="color:#00f2fe; font-weight:800;">— ${_t('TỶ LỆ ĐẠT (%)')}</span>
+                            <span style="color:var(--accent-ink); font-weight:800;">— ${_t('TỶ LỆ ĐẠT (%)')}</span>
                         ` : `
                             <span style="color:#0ea5e9;">■ ${_t('KHÔNG BỊ LỖI NÀY')}</span>
                             <span style="color:#ef4444; font-weight:700;">■ ${_t('SỐ LẦN DÍNH LỖI NÀY')}</span>
@@ -13789,10 +14205,10 @@ function renderProductionTimelineChart() {
                 data: yieldData,
                 type: 'line',
                 order: 1, // ĐƯỜNG Ở TRÊN CÙNG
-                borderColor: '#00f2fe',
-                backgroundColor: 'rgba(0, 242, 254, 0.15)',
+                borderColor: '#4089C1',
+                backgroundColor: 'rgba(64, 137, 193, 0.15)',
                 borderWidth: 3,
-                pointBackgroundColor: '#00f2fe',
+                pointBackgroundColor: '#0062AC',
                 pointBorderColor: '#ffffff',
                 pointBorderWidth: 1.5,
                 pointRadius: 4.5,
@@ -13891,9 +14307,9 @@ function renderProductionTimelineChart() {
                     position: 'right', 
                     min: 0, 
                     max: 100, 
-                    ticks: { color: isFilteringDefect ? '#f59e0b' : '#00f2fe', callback: val => `${val}%` }, 
+                    ticks: { color: isFilteringDefect ? '#f59e0b' : '#4089C1', callback: val => `${val}%` }, 
                     grid: { drawOnChartArea: false }, 
-                    title: { display: true, text: isFilteringDefect ? _t('Tỷ Lệ Lỗi Này (%)') : _t('Tỷ Lệ Đạt (%)'), color: isFilteringDefect ? '#f59e0b' : '#00f2fe' } 
+                    title: { display: true, text: isFilteringDefect ? _t('Tỷ Lệ Lỗi Này (%)') : _t('Tỷ Lệ Đạt (%)'), color: isFilteringDefect ? '#f59e0b' : '#4089C1' } 
                 }
             }
         }
@@ -14246,7 +14662,7 @@ function renderParetoTableAndChart() {
                 tr.onclick = () => openDrilldownModal(item.rawName);
 
                 const is80Cutoff = item.cumPercent <= 80 || (idx > 0 && analysisData.errorPareto[idx - 1].cumPercent < 80);
-                const cumColor = is80Cutoff ? '#ef4444' : '#38bdf8';
+                const cumColor = is80Cutoff ? '#ef4444' : '#4089C1';
 
                 tr.innerHTML = `
                     <td style="text-align:center; font-weight:700; color:var(--text-muted);">${idx + 1}</td>
@@ -14308,10 +14724,10 @@ function renderParetoTableAndChart() {
                     data: cumPcts,
                     type: 'line',
                     order: 1, // ĐƯỜNG Ở TRÊN CÙNG
-                    borderColor: '#38bdf8',
-                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
+                    borderColor: '#4089C1',
+                    backgroundColor: 'rgba(64, 137, 193, 0.2)',
                     borderWidth: 2.5,
-                    pointBackgroundColor: '#00f2fe',
+                    pointBackgroundColor: '#0062AC',
                     pointRadius: 4,
                     yAxisID: 'y1'
                 }
@@ -14328,7 +14744,7 @@ function renderParetoTableAndChart() {
             scales: {
                 x: { ticks: { color: textCol, maxRotation: 45, minRotation: 0, font: { size: 10 } }, grid: { color: gridCol } },
                 y: { type: 'linear', position: 'left', ticks: { color: textCol }, grid: { color: gridCol }, title: { display: true, text: _t('Số Lỗi'), color: textCol } },
-                y1: { type: 'linear', position: 'right', min: 0, max: 100, ticks: { color: '#38bdf8', callback: val => `${val}%` }, grid: { drawOnChartArea: false }, title: { display: true, text: _t('% Tích Lũy'), color: '#38bdf8' } }
+                y1: { type: 'linear', position: 'right', min: 0, max: 100, ticks: { color: '#4089C1', callback: val => `${val}%` }, grid: { drawOnChartArea: false }, title: { display: true, text: _t('% Tích Lũy'), color: '#4089C1' } }
             }
         }
     });
@@ -14383,7 +14799,7 @@ function renderHourlyYieldHeatmap() {
         } else if (failRate > 15) {
             bg = 'rgba(245, 158, 11, 0.2)'; border = 'rgba(245, 158, 11, 0.5)'; textCol = '#fbbf24';
         } else if (failRate > 5) {
-            bg = 'rgba(56, 189, 248, 0.15)'; border = 'rgba(56, 189, 248, 0.4)'; textCol = '#38bdf8';
+            bg = 'rgba(0, 98, 172, 0.15)'; border = 'rgba(0, 98, 172, 0.4)'; textCol = 'var(--accent-ink)';
         }
 
         const hStr = `${String(s.hour).padStart(2, '0')}:00`;
@@ -14440,7 +14856,7 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
                         <span style="color:var(--accent-blue);">🔍 ${escapeHtml(runInfo.shortLabel)}</span> 
                         <span style="font-size:12px; color:var(--text-muted); font-weight:normal;">(${_t('Trạm')}: ${escapeHtml(runInfo.stationName)})</span>
                         <div style="font-size:13px; color:var(--text-main); font-weight:700; margin-top:2px;">
-                            PCS: <strong style="font-family:var(--font-mono); color:#38bdf8;">${escapeHtml(ev.rawSN || sn)}</strong>
+                            PCS: <strong style="font-family:var(--font-mono); color:var(--accent-ink);">${escapeHtml(ev.rawSN || sn)}</strong>
                         </div>
                     </div>
                     <button class="btn btn-sm btn-secondary" onclick="openMatrixDetailModal('${escapeHtml(sn)}', '${escapeHtml(runId)}', true)" style="font-size:11px;">
@@ -14452,7 +14868,7 @@ function openMatrixDetailModal(sn, runId, showAllRuns = false) {
             titleEl.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                     <div>
-                        <span style="color:#38bdf8;">🔍 ${_t('TOÀN BỘ LỊCH SỬ ĐO ({0} LẦN)', ev.records.length)}</span>
+                        <span style="color:var(--accent-ink);">🔍 ${_t('TOÀN BỘ LỊCH SỬ ĐO ({0} LẦN)', ev.records.length)}</span>
                         <div style="font-size:13px; color:var(--text-main); font-weight:700; margin-top:2px;">
                             PCS: <strong style="font-family:var(--font-mono); color:var(--accent-blue);">${escapeHtml(ev.rawSN || sn)}</strong>
                         </div>
@@ -14673,11 +15089,12 @@ function exportMatrixStandaloneHTML() {
     --bg-card: rgba(17, 24, 39, 0.88);
     --bg-elevated: #1e293b;
     --border: rgba(148, 163, 184, 0.16);
-    --border-hover: rgba(0, 242, 254, 0.35);
+    --border-hover: rgba(64, 137, 193, 0.45);
     --txt: #f1f5f9;
     --txt-sub: #94a3b8;
-    --cyan: #00f2fe;
-    --blue: #38bdf8;
+    --cyan: #80B0D6;
+    --blue: #4089C1;
+    --foster-blue: #0062AC;
     --pass: #10b981;
     --pass-bg: rgba(16, 185, 129, 0.16);
     --fail: #ef4444;
@@ -14749,7 +15166,7 @@ function exportMatrixStandaloneHTML() {
     <div class="brand">
       <svg viewBox="50 50 200 200" width="38" height="38">
         <defs>
-          <linearGradient id="qGradExp" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient>
+          <linearGradient id="qGradExp" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4089C1"/><stop offset="100%" stop-color="#0062AC"/></linearGradient>
           <linearGradient id="b1" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#0f2b5c"/><stop offset="100%" stop-color="#0ea5e9"/></linearGradient>
           <linearGradient id="b2" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#2d1363"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient>
           <linearGradient id="b3" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#093d5c"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
@@ -14762,10 +15179,10 @@ function exportMatrixStandaloneHTML() {
         <rect x="146" y="125" width="14" height="60" fill="url(#b3)"/>
         <rect x="174" y="135" width="14" height="50" fill="url(#b4)"/>
         <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+        <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
       </svg>
       <div class="brand-text">
         <h1>🧩 ${_t('BÁO CÁO MA TRẬN ĐA LƯỢT ĐO & BIẾN ĐỔI CHẤT LƯỢNG')}</h1>
@@ -14949,7 +15366,7 @@ function exportKPIStandaloneHTML() {
             </td>
             <td style="font-family:monospace; font-weight:800; color:#f87171;">${item.count}</td>
             <td style="font-family:monospace;">${item.pctOfDefects.toFixed(2)}%</td>
-            <td style="font-family:monospace; font-weight:700; color:${isVital ? '#ef4444' : '#38bdf8'};">${item.cumPercent.toFixed(2)}%</td>
+            <td style="font-family:monospace; font-weight:700; color:${isVital ? '#ef4444' : '#4089C1'};">${item.cumPercent.toFixed(2)}%</td>
             <td><span class="badge ${isVital ? 'badge-fail' : 'badge-pass'}">${isVital ? _t('Top 80% Trọng Tâm') : _t('Vùng Dài 20%')}</span></td>
         </tr>`;
     });
@@ -14966,11 +15383,12 @@ function exportKPIStandaloneHTML() {
     --bg-card: rgba(17, 24, 39, 0.88);
     --bg-elevated: #1e293b;
     --border: rgba(148, 163, 184, 0.16);
-    --border-hover: rgba(0, 242, 254, 0.35);
+    --border-hover: rgba(64, 137, 193, 0.45);
     --txt: #f1f5f9;
     --txt-sub: #94a3b8;
-    --cyan: #00f2fe;
-    --blue: #38bdf8;
+    --cyan: #80B0D6;
+    --blue: #4089C1;
+    --foster-blue: #0062AC;
     --pass: #10b981;
     --pass-bg: rgba(16, 185, 129, 0.16);
     --fail: #ef4444;
@@ -15033,7 +15451,7 @@ function exportKPIStandaloneHTML() {
     <div class="brand">
       <svg viewBox="50 50 200 200" width="38" height="38">
         <defs>
-          <linearGradient id="qGradExp2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00f2fe"/><stop offset="100%" stop-color="#4facfe"/></linearGradient>
+          <linearGradient id="qGradExp2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4089C1"/><stop offset="100%" stop-color="#0062AC"/></linearGradient>
           <linearGradient id="b12" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#0f2b5c"/><stop offset="100%" stop-color="#0ea5e9"/></linearGradient>
           <linearGradient id="b22" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#2d1363"/><stop offset="100%" stop-color="#8b5cf6"/></linearGradient>
           <linearGradient id="b32" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="#093d5c"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient>
@@ -15046,10 +15464,10 @@ function exportKPIStandaloneHTML() {
         <rect x="146" y="125" width="14" height="60" fill="url(#b32)"/>
         <rect x="174" y="135" width="14" height="50" fill="url(#b42)"/>
         <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
-        <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3"/>
+        <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
+        <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3"/>
       </svg>
       <div class="brand-text">
         <h1>📊 ${_t('BÁO CÁO TỔNG QUAN CHẤT LƯỢNG & PARETO 80/20')}</h1>
@@ -15218,8 +15636,8 @@ function renderAllMetricsSummaryMatrix() {
                 badge = `<span class="badge-pill badge-pass">🌟 6-Sigma (&ge;${CFG.CPK_EXCELLENT})</span>`;
                 cpkCol = '#10b981';
             } else if (item.cpk >= CFG.CPK_CAPABLE) {
-                badge = `<span class="badge-pill" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35);">${_t('✓ Đạt')} (&ge;${CFG.CPK_CAPABLE})</span>`;
-                cpkCol = '#38bdf8';
+                badge = `<span class="badge-pill" style="background:var(--accent-subtle-bg); color:var(--accent-ink); border:1px solid var(--accent-subtle-border);">${_t('✓ Đạt')} (&ge;${CFG.CPK_CAPABLE})</span>`;
+                cpkCol = 'var(--accent-ink)';
             } else if (item.cpk >= CFG.CPK_MARGINAL) {
                 badge = `<span class="badge-pill badge-warn">${_t('⚠️ Cận biên')}</span>`;
                 cpkCol = '#f59e0b';
@@ -15314,7 +15732,7 @@ function renderSelectedMetricCpk() {
             ratingColor = '#10b981';
         } else if (m.cpk >= CFG.CPK_CAPABLE) {
             ratingBadge = _t('✓ ĐẠT NĂNG LỰC (CAPABLE)');
-            ratingColor = '#38bdf8';
+            ratingColor = 'var(--accent-ink)';
         } else if (m.cpk >= CFG.CPK_MARGINAL) {
             ratingBadge = _t('⚠️ CẬN BIÊN (MARGINAL)');
             ratingColor = '#f59e0b';
@@ -15388,7 +15806,7 @@ function renderSelectedMetricCpk() {
                     ${_t('📈 BIỂU ĐỒ PHÂN PHỐI HISTOGRAM & ĐƯỜNG CONG GAUSS —')} <span style="color:var(--accent-cyan);">${escapeHtml(m.name)} ${m.condition ? '(' + escapeHtml(m.condition) + ')' : ''}</span>
                 </div>
                 <div style="display:flex; gap:14px; font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
-                    <span style="color:#38bdf8;">${_t('■ Tần suất mẫu (n={0})', m.count)}</span>
+                    <span style="color:var(--accent-ink);">${_t('■ Tần suất mẫu (n={0})', m.count)}</span>
                     <span style="color:#f59e0b;">${_t('— Chuẩn Gauss N(μ,σ)')}</span>
                     <span style="color:#ef4444;">┆ LSL: ${m.lsl !== null ? m.lsl : '—'} / USL: ${m.usl !== null ? m.usl : '—'}</span>
                     <span style="color:#10b981;">┆ Mean μ: ${m.mean.toFixed(3)}</span>
@@ -15560,8 +15978,8 @@ function renderHistogramChart(m) {
                     order: 2,
                     label: _t('Tần suất mẫu thực tế'),
                     data: hist.counts,
-                    backgroundColor: 'rgba(56, 189, 248, 0.62)',
-                    borderColor: '#38bdf8',
+                    backgroundColor: 'rgba(64, 137, 193, 0.45)',
+                    borderColor: '#4089C1',
                     borderWidth: 1,
                     borderRadius: 4
                 },
@@ -15695,8 +16113,8 @@ function exportCpkHTML() {
   :root {
     --bg: #090d16; --bg-card: rgba(17, 24, 39, 0.88); --bg-elevated: #1e293b;
     --border: rgba(148, 163, 184, 0.16); --txt: #f1f5f9; --txt-sub: #94a3b8;
-    --cyan: #00f2fe; --blue: #38bdf8; --pass: #10b981; --pass-bg: rgba(16, 185, 129, 0.16);
-    --capable-bg: rgba(56, 189, 248, 0.16); --fail: #ef4444; --fail-bg: rgba(239, 68, 68, 0.16);
+    --cyan: #80B0D6; --blue: #4089C1; --foster-blue: #0062AC; --pass: #10b981; --pass-bg: rgba(16, 185, 129, 0.16);
+    --capable-bg: rgba(64, 137, 193, 0.16); --fail: #ef4444; --fail-bg: rgba(239, 68, 68, 0.16);
     --warn: #f59e0b; --warn-bg: rgba(245, 158, 11, 0.16);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
@@ -17079,8 +17497,8 @@ function openFastScanModal(folderName) {
                         <svg class="qit-logo-analyzing" viewBox="50 50 200 200" style="width:100%; height:100%;">
                             <defs>
                                 <linearGradient id="qScanG" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#00f2fe"/>
-                                    <stop offset="100%" stop-color="#38bdf8"/>
+                                    <stop offset="0%" stop-color="#4089C1"/>
+                                    <stop offset="100%" stop-color="#0062AC"/>
                                 </linearGradient>
                             </defs>
                             <line x1="175" y1="175" x2="230" y2="230" stroke="url(#qScanG)" stroke-width="26" stroke-linecap="round"/>
@@ -17092,10 +17510,10 @@ function openFastScanModal(folderName) {
                                 <rect x="174" y="135" width="14" height="50" fill="#a855f7" class="qit-bar-bounce-4"/>
                             </g>
                             <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3" class="qit-node-pulse"/>
-                            <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3" class="qit-node-pulse"/>
-                            <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3" class="qit-node-pulse"/>
-                            <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3" class="qit-node-pulse"/>
+                            <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3" class="qit-node-pulse"/>
+                            <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3" class="qit-node-pulse"/>
+                            <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3" class="qit-node-pulse"/>
+                            <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3" class="qit-node-pulse"/>
                         </svg>
                     </div>
                     <div>
@@ -17226,7 +17644,7 @@ function openNetworkShareGuideModal() {
         <div class="modal-card" style="max-width:680px;">
             <div class="modal-header">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,#00f2fe,#38bdf8); display:grid; place-items:center; font-size:16px;">🌐</div>
+                    <div style="width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--foster-blue-75),var(--foster-blue)); display:grid; place-items:center; font-size:16px;">🌐</div>
                     <div>
                         <h3 style="font-size:16px; font-weight:800; margin:0;">${_t('MẸO TÌM FILE SUMMARY SIÊU TỐC TRÊN Ổ MẠNG (MILLION FILES)')}</h3>
                         <div style="font-size:10.5px; color:var(--text-muted); font-family:var(--font-mono);">HIGH-SCALE NETWORK SHARED DRIVE SCANNING</div>
@@ -17270,7 +17688,7 @@ function openNetworkShareGuideModal() {
                     <h4 style="font-size:13px; font-weight:800; color:#a855f7; margin-bottom:6px;">
                         ⚡ ${_t('Cách 3: Lệnh PowerShell tự động lọc gom file ra thư mục riêng')}
                     </h4>
-                    <div style="position:relative; background:#0b0f19; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px 12px; font-family:var(--font-mono); font-size:11.5px; color:#38bdf8;">
+                    <div style="position:relative; background:#0b0f19; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px 12px; font-family:var(--font-mono); font-size:11.5px; color:var(--accent-ink);">
                         <code>Get-ChildItem -Path "Z:\\Log" -Filter "*summary*.log" -Recurse | Copy-Item -Destination "C:\\QIT_Logs\\"</code>
                         <button class="btn btn-sm btn-secondary" onclick="copyPowerShellCommand()" style="position:absolute; right:8px; top:8px; font-size:11px;">📋 Copy</button>
                     </div>

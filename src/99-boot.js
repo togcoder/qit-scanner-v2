@@ -413,8 +413,8 @@ function openFastScanModal(folderName) {
                         <svg class="qit-logo-analyzing" viewBox="50 50 200 200" style="width:100%; height:100%;">
                             <defs>
                                 <linearGradient id="qScanG" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#00f2fe"/>
-                                    <stop offset="100%" stop-color="#38bdf8"/>
+                                    <stop offset="0%" stop-color="#4089C1"/>
+                                    <stop offset="100%" stop-color="#0062AC"/>
                                 </linearGradient>
                             </defs>
                             <line x1="175" y1="175" x2="230" y2="230" stroke="url(#qScanG)" stroke-width="26" stroke-linecap="round"/>
@@ -426,10 +426,10 @@ function openFastScanModal(folderName) {
                                 <rect x="174" y="135" width="14" height="50" fill="#a855f7" class="qit-bar-bounce-4"/>
                             </g>
                             <polyline points="97,125 125,140 153,105 181,115" fill="none" stroke="#f8fafc" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3" class="qit-node-pulse"/>
-                            <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3" class="qit-node-pulse"/>
-                            <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3" class="qit-node-pulse"/>
-                            <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#00f2fe" stroke-width="3" class="qit-node-pulse"/>
+                            <circle cx="97" cy="125" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3" class="qit-node-pulse"/>
+                            <circle cx="125" cy="140" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3" class="qit-node-pulse"/>
+                            <circle cx="153" cy="105" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3" class="qit-node-pulse"/>
+                            <circle cx="181" cy="115" r="5" fill="#0b0f19" stroke="#4089C1" stroke-width="3" class="qit-node-pulse"/>
                         </svg>
                     </div>
                     <div>
@@ -560,7 +560,7 @@ function openNetworkShareGuideModal() {
         <div class="modal-card" style="max-width:680px;">
             <div class="modal-header">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <div style="width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,#00f2fe,#38bdf8); display:grid; place-items:center; font-size:16px;">🌐</div>
+                    <div style="width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--foster-blue-75),var(--foster-blue)); display:grid; place-items:center; font-size:16px;">🌐</div>
                     <div>
                         <h3 style="font-size:16px; font-weight:800; margin:0;">${_t('MẸO TÌM FILE SUMMARY SIÊU TỐC TRÊN Ổ MẠNG (MILLION FILES)')}</h3>
                         <div style="font-size:10.5px; color:var(--text-muted); font-family:var(--font-mono);">HIGH-SCALE NETWORK SHARED DRIVE SCANNING</div>
@@ -604,7 +604,7 @@ function openNetworkShareGuideModal() {
                     <h4 style="font-size:13px; font-weight:800; color:#a855f7; margin-bottom:6px;">
                         ⚡ ${_t('Cách 3: Lệnh PowerShell tự động lọc gom file ra thư mục riêng')}
                     </h4>
-                    <div style="position:relative; background:#0b0f19; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px 12px; font-family:var(--font-mono); font-size:11.5px; color:#38bdf8;">
+                    <div style="position:relative; background:#0b0f19; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:10px 12px; font-family:var(--font-mono); font-size:11.5px; color:var(--accent-ink);">
                         <code>Get-ChildItem -Path "Z:\\Log" -Filter "*summary*.log" -Recurse | Copy-Item -Destination "C:\\QIT_Logs\\"</code>
                         <button class="btn btn-sm btn-secondary" onclick="copyPowerShellCommand()" style="position:absolute; right:8px; top:8px; font-size:11px;">📋 Copy</button>
                     </div>
