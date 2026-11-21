@@ -214,7 +214,7 @@ function renderFlagZoneChips() {
     let html = '';
     flagZones.forEach((fz, idx) => {
         html += `
-            <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.3); border-radius:8px; padding:6px 12px; font-size:12px; display:flex; align-items:center; gap:8px;">
+            <div style="background:rgba(0,98,172,0.1); border:1px solid rgba(0,98,172,0.32); border-radius:8px; padding:6px 12px; font-size:12px; display:flex; align-items:center; gap:8px;">
                 <span style="font-family:var(--font-mono); font-weight:700; color:var(--accent-blue);">⏰ ${escapeHtml(fz.time)}</span>
                 <span style="font-weight:600; color:var(--text-main);">${escapeHtml(fz.label)}</span>
                 <button onclick="removeFlagZone(${idx})" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:13px;" title="${_t('Xóa mốc')}">✕</button>

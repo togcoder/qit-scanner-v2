@@ -571,7 +571,7 @@ function openNetworkShareGuideModal() {
             </div>
 
             <div class="modal-body" style="padding:18px; display:flex; flex-direction:column; gap:16px; font-size:13px; line-height:1.6;">
-                <div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); border-radius:10px; padding:12px 14px;">
+                <div style="background:rgba(0,98,172,0.1); border:1px solid rgba(0,98,172,0.28); border-radius:10px; padding:12px 14px;">
                     <strong style="color:var(--accent-blue);">💡 ${_t('Tại sao quét ổ mạng qua trình duyệt có thể chậm?')}</strong>
                     <div style="color:var(--text-sub); font-size:12px; margin-top:4px;">
                         ${_t('Khi thư mục mạng chứa hàng trăm ngàn đến hàng triệu file con (đặc biệt là file sóng .wav, file dữ liệu thô), giao thức SMB qua mạng LAN tạo độ trễ kết nối cho từng file. Dưới đây là 3 cách tối ưu nhất:')}

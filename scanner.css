@@ -863,22 +863,33 @@ body.light-theme .btn-outline:hover:not(:disabled),
 }
 
 .drop-zone {
-    border: 2px dashed rgba(64, 137, 193, 0.35);
+    border: 2px dashed rgba(64, 137, 193, 0.4);
     border-radius: var(--radius-md);
-    padding: 28px 20px;
+    padding: 32px 24px;
     background: rgba(0, 98, 172, 0.03);
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    overflow: hidden;
 }
 
 .drop-zone:hover, .drop-zone-active, .drop-zone.drag-over {
     border-color: var(--foster-blue);
     background: rgba(0, 98, 172, 0.08);
+    box-shadow: 0 0 32px rgba(0, 98, 172, 0.18), inset 0 0 20px rgba(0, 98, 172, 0.06);
+    transform: translateY(-1px);
+}
+
+.drop-zone-active .drop-zone-icon,
+.drop-zone.drag-over .drop-zone-icon {
+    transform: scale(1.12) translateY(-2px);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .drop-zone-icon {
-    font-size: 38px;
+    font-size: 42px;
     margin-bottom: 8px;
+    transition: transform 0.2s ease;
 }
 
 .drop-zone-text {
@@ -1407,15 +1418,25 @@ body.light-theme .btn-outline:hover:not(:disabled),
     overflow: hidden;
 }
 
+@keyframes progressShimmerSweep {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
 .agc-progress-fill {
     height: 100%;
     border-radius: 6px;
-    background: linear-gradient(90deg, var(--foster-blue), var(--foster-blue-75));
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, var(--foster-blue) 0%, var(--foster-blue-75) 50%, #60a5fa 75%, var(--foster-blue) 100%);
+    background-size: 200% 100%;
+    animation: progressShimmerSweep 3s linear infinite;
+    transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .agc-progress-fill.fill-done {
-    background: linear-gradient(90deg, #10b981, #34d399);
+    background: linear-gradient(90deg, #059669 0%, #10b981 50%, #34d399 75%, #059669 100%);
+    background-size: 200% 100%;
+    animation: progressShimmerSweep 2.5s linear infinite;
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.45);
 }
 
 .agc-stats-row {
@@ -1747,6 +1768,29 @@ body.light-theme .btn-outline:hover:not(:disabled),
     text-overflow: ellipsis;
 }
 
+@keyframes paretoFillGrow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+}
+
+.pareto-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    position: relative;
+    border-left: 3px solid transparent;
+}
+
+.pareto-bar-row:hover {
+    background: rgba(0, 98, 172, 0.08);
+    border-left-color: var(--foster-blue);
+    transform: translateX(3px);
+}
+
 .pareto-bar-track {
     flex: 1;
     background: rgba(148, 163, 184, 0.14);
@@ -1758,7 +1802,9 @@ body.light-theme .btn-outline:hover:not(:disabled),
 .pareto-bar-fill {
     height: 100%;
     border-radius: 4px;
-    transition: width 0.3s ease;
+    transform-origin: left center;
+    animation: paretoFillGrow 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: width 0.4s ease;
 }
 
 .pareto-bar-val {
@@ -1985,18 +2031,37 @@ body.light-theme .btn-outline:hover:not(:disabled),
     pointer-events: none;
 }
 
+@keyframes toastSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(110%) scale(0.92);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
 .toast {
-    background: var(--bg-surface-elevated);
-    border: 1px solid var(--border-color);
+    background: rgba(17, 24, 39, 0.92);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     color: var(--text-main);
-    padding: 11px 16px;
-    border-radius: 10px;
+    padding: 12px 18px;
+    border-radius: 12px;
     font-size: 12.5px;
     font-weight: 700;
-    box-shadow: var(--shadow-lg);
-    transition: all 0.3s ease;
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     pointer-events: auto;
     max-width: 440px;
+    line-height: 1.4;
+}
+
+body.light-theme .toast {
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.18);
 }
 
 .toast-success { border-left: 4px solid var(--status-pass); }
@@ -2231,7 +2296,7 @@ body.light-theme .analysis-subnav-btn.active,
     position: relative;
     width: 180px;
     height: 180px;
-    border: 1.5px dashed rgba(56, 189, 248, 0.5);
+    border: 1.5px dashed var(--foster-blue-50);
     border-radius: 12px;
     box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
     transition: border-color 0.2s ease;
@@ -2433,8 +2498,11 @@ body.light-theme .analysis-subnav-btn.active,
 .hero-progress-bar {
     height: 100%;
     border-radius: 8px;
-    background: linear-gradient(90deg, var(--foster-blue), var(--foster-blue-75), #10b981);
-    transition: width 0.35s ease;
+    background: linear-gradient(90deg, var(--foster-blue) 0%, var(--foster-blue-75) 45%, #60a5fa 70%, #10b981 100%);
+    background-size: 200% 100%;
+    animation: progressShimmerSweep 3.2s linear infinite;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 0 14px rgba(0, 98, 172, 0.35);
 }
 
 /* Horizontal Multi-Group Strip (Tầng 2) */
